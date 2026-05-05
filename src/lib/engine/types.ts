@@ -43,6 +43,7 @@ export type GateInputs = {
   recoveryWarning: boolean
   coldStart: boolean
   sizeCap: boolean
+  sizeAdjustment: number
 }
 
 export type ResolverResult = {

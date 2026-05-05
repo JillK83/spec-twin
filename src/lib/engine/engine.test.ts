@@ -67,6 +67,7 @@ const MOCK_ROWS: BrandOffset[] = [
   mockRow({ brand_name: 'Madewell', category: 'All',    gender: 'mens',   weighted_offset: -0.5, tier: 'B', fit_tag: 'vanity_high' }),
   mockRow({ brand_name: "Levi's",   category: 'Denim',  gender: 'womens', weighted_offset:  0.5, tier: 'C', fit_tag: 'rigid_bias'  }),
   mockRow({ brand_name: 'Theory',   category: 'All',    gender: 'womens', weighted_offset:  0.0, tier: 'C', fit_tag: 'true_spec'  }),
+  mockRow({ brand_name: 'AG Jeans', category: 'Denim',  gender: 'womens', weighted_offset:  0.0, tier: 'C', fit_tag: 'true_spec'  }),
 ]
 
 // ─── 1. Normalization ─────────────────────────────────────────────────────────
@@ -216,10 +217,10 @@ test('mapDeltaToSizeAdjustment(0.5) → size_up_1 / +1', () => {
   assert.equal(r.label,      'size_up_1')
 })
 
-test('mapDeltaToSizeAdjustment(1.5) → size_up_2 / +2', () => {
+test('mapDeltaToSizeAdjustment(1.5) → size_up_1 / +1', () => {
   const r = mapDeltaToSizeAdjustment(1.5)
-  assert.equal(r.adjustment, 2)
-  assert.equal(r.label,      'size_up_2')
+  assert.equal(r.adjustment, 1)
+  assert.equal(r.label,      'size_up_1')
 })
 
 test('mapDeltaToSizeAdjustment(-0.5) → size_down_1 / -1', () => {
@@ -342,20 +343,21 @@ test('recoveryWarning: unknown → low → false (null anchor not high)', () => 
 console.log('\n── demo scenarios ───────────────────────────────────────────────')
 
 // Scenario 1 ─────────────────────────────────────────────────────────────────
-// J Brand Selena (comfort_stretch, offset 0.0, mid-rise)
-//   → Everlane (comfort_stretch, offset 0.0, mid-rise)
+// Madewell Perfect Vintage Straight (comfort_stretch, offset -1.5, high-rise)
+//   → Everlane (comfort_stretch, offset 0.0, high-rise)
 // Expected: verified_fit, HIGH confidence, no gates
+// Note: delta=+1.5 → size_up_2, but no gates fire → no compounding escalation
 
 test('Scenario 1 — verified_fit, no gates', () => {
-  const anchor = getBrandOffset('J Brand', 'Denim', 'womens', MOCK_ROWS)
+  const anchor = getBrandOffset('Madewell', 'Denim', 'womens', MOCK_ROWS)
   const target = getBrandOffset('Everlane', 'Denim', 'womens', MOCK_ROWS)
 
   const delta        = calculateFitDelta(anchor.effectiveOffset, target.effectiveOffset)
   const sizeAdj      = mapDeltaToSizeAdjustment(delta)
   const fabricGate   = evaluateFabricGate('comfort_stretch', 'comfort_stretch')
   const contractGate = evaluateContractGate('precision', 'precision')
-  const riseGate     = evaluateRiseGate('mid', 'mid')
-  const recovery     = evaluateRecoveryWarning('moderate', 'moderate')
+  const riseGate     = evaluateRiseGate('high', 'high')
+  const recovery     = evaluateRecoveryWarning('unknown', 'moderate')
 
   const result = resolveOutputState({
     fabricGate,
@@ -364,30 +366,32 @@ test('Scenario 1 — verified_fit, no gates', () => {
     recoveryWarning: recovery,
     coldStart: anchor.coldStart || target.coldStart,
     sizeCap: false,
+    sizeAdjustment: sizeAdj.adjustment,
   })
 
-  assert.equal(delta,                  0)
-  assert.equal(sizeAdj.adjustment,     0)
+  assert.equal(delta,                  1.5)
+  assert.equal(sizeAdj.adjustment,     1)
   assert.equal(result.outputState,     'verified_fit')
   assert.equal(result.confidenceLevel, 'HIGH')
   assert.equal(result.firedGates.length, 0)
 })
 
 // Scenario 2 ─────────────────────────────────────────────────────────────────
-// J Brand Selena (comfort_stretch, offset 0.0, mid-rise)
-//   → Madewell Curvy High Rise (comfort_stretch, offset -1.5, high-rise)
+// Madewell Perfect Vintage Straight (comfort_stretch, offset -1.5, high-rise)
+//   → AG Jeans Farrah Boot Jean (comfort_stretch, offset 0.0, mid-rise)
 // Expected: fit_advisory, MEDIUM confidence, RISE_MISMATCH gate
+// Note: delta=+1.5 → size_up_2, but fabric gate is NO_GATE → no compounding escalation
 
 test('Scenario 2 — fit_advisory, rise mismatch', () => {
-  const anchor = getBrandOffset('J Brand',  'Denim', 'womens', MOCK_ROWS)
-  const target = getBrandOffset('Madewell', 'Denim', 'womens', MOCK_ROWS)
+  const anchor = getBrandOffset('Madewell',  'Denim', 'womens', MOCK_ROWS)
+  const target = getBrandOffset('AG Jeans',  'Denim', 'womens', MOCK_ROWS)
 
   const delta        = calculateFitDelta(anchor.effectiveOffset, target.effectiveOffset)
   const sizeAdj      = mapDeltaToSizeAdjustment(delta)
   const fabricGate   = evaluateFabricGate('comfort_stretch', 'comfort_stretch')
   const contractGate = evaluateContractGate('precision', 'precision')
-  const riseGate     = evaluateRiseGate('mid', 'high')  // anchor mid, target high-rise
-  const recovery     = evaluateRecoveryWarning('moderate', 'moderate')
+  const riseGate     = evaluateRiseGate('high', 'mid')  // anchor high-rise, target mid-rise
+  const recovery     = evaluateRecoveryWarning('unknown', 'moderate')
 
   const result = resolveOutputState({
     fabricGate,
@@ -396,30 +400,32 @@ test('Scenario 2 — fit_advisory, rise mismatch', () => {
     recoveryWarning: recovery,
     coldStart: anchor.coldStart || target.coldStart,
     sizeCap: false,
+    sizeAdjustment: sizeAdj.adjustment,
   })
 
-  assert.equal(delta,                  -1.5)
-  assert.equal(sizeAdj.adjustment,     -2)       // Madewell runs ~1.5 larger → size down 2
+  assert.equal(delta,                  1.5)
+  assert.equal(sizeAdj.adjustment,     1)        // AG Jeans true-spec vs Madewell vanity → size up 1
   assert.equal(result.outputState,     'fit_advisory')
   assert.equal(result.confidenceLevel, 'MEDIUM')
   assert.ok(result.firedGates.includes('RISE_MISMATCH'))
 })
 
 // Scenario 3 ─────────────────────────────────────────────────────────────────
-// J Brand Selena (98% cotton / 2% polyurethane → elastane_pct=2 → comfort_stretch, offset 0.0)
-//   → Levi's (rigid, offset +0.5)
-// comfort_stretch → rigid = one-class delta → SOFT_WARNING → fit_advisory, MEDIUM confidence
+// Madewell Perfect Vintage Straight (comfort_stretch, offset -1.5, high-rise)
+//   → Levi's 501 (rigid, offset +0.5, high-rise)
+// comfort_stretch → rigid = SOFT_WARNING + delta=+2.0 (size_up_2)
+// → compounding uncertainty escalation → smart_estimate, LOW confidence
 
-test('Scenario 3 — fit_advisory, FABRIC_COMFORT_TO_RIGID one-class soft warning', () => {
-  const anchor = getBrandOffset("J Brand",  'Denim', 'womens', MOCK_ROWS)
+test('Scenario 3 — smart_estimate, compounding uncertainty (COMFORT_TO_RIGID + size_up_2)', () => {
+  const anchor = getBrandOffset('Madewell', 'Denim', 'womens', MOCK_ROWS)
   const target = getBrandOffset("Levi's",   'Denim', 'womens', MOCK_ROWS)
 
   const delta        = calculateFitDelta(anchor.effectiveOffset, target.effectiveOffset)
   const sizeAdj      = mapDeltaToSizeAdjustment(delta)
   const fabricGate   = evaluateFabricGate('comfort_stretch', 'rigid')
   const contractGate = evaluateContractGate('precision', 'precision')
-  const riseGate     = evaluateRiseGate('mid', 'mid')
-  const recovery     = evaluateRecoveryWarning('moderate', 'low')
+  const riseGate     = evaluateRiseGate('high', 'high')
+  const recovery     = evaluateRecoveryWarning('unknown', 'low')
 
   const result = resolveOutputState({
     fabricGate,
@@ -428,13 +434,14 @@ test('Scenario 3 — fit_advisory, FABRIC_COMFORT_TO_RIGID one-class soft warnin
     recoveryWarning: recovery,
     coldStart: anchor.coldStart || target.coldStart,
     sizeCap: false,
+    sizeAdjustment: sizeAdj.adjustment,
   })
 
-  assert.equal(delta,                  0.5)
-  assert.equal(sizeAdj.adjustment,     1)      // Levi's rigid bias → size up 1
+  assert.equal(delta,                  2.0)
+  assert.equal(sizeAdj.adjustment,     2)        // Madewell vanity + Levi's rigid bias → size up 2
   assert.equal(fabricGate.type,        'SOFT_WARNING')
-  assert.equal(result.outputState,     'fit_advisory')
-  assert.equal(result.confidenceLevel, 'MEDIUM')
+  assert.equal(result.outputState,     'smart_estimate')
+  assert.equal(result.confidenceLevel, 'LOW')
   assert.ok(result.firedGates.includes('FABRIC_COMFORT_TO_RIGID'))
 })
 

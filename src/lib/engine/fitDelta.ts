@@ -19,7 +19,7 @@ export function calculateFitDelta(
 //         [0.5, 1.5)  → +1  |  [1.5, +∞)    → +2
 
 export function mapDeltaToSizeAdjustment(delta: number): SizeAdjustment {
-  if (delta >= 1.5)  return { adjustment:  2, label: 'size_up_2'   }
+  if (delta > 1.5)   return { adjustment:  2, label: 'size_up_2'   }
   if (delta >= 0.5)  return { adjustment:  1, label: 'size_up_1'   }
   if (delta > -0.5)  return { adjustment:  0, label: 'stay_true'   }
   if (delta > -1.5)  return { adjustment: -1, label: 'size_down_1' }
