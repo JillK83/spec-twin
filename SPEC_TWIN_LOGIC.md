@@ -58,6 +58,16 @@ Derived from `poly_pct`:
 
 **`null` and `0` are not equivalent.** See `ENGINEERING_NOTES.md` Section 4 for the full parser contract.
 
+### Poly Blend Behavior Note
+Even low poly percentages (2–4%) in a high stretch blend meaningfully affect:
+- Recovery behavior — how quickly the fabric returns to its original shape after stretching
+- Waistband tension curve — how the waist tightens and releases through the day
+- How brands grade sizes — high stretch blends are often graded across a wider range per size
+
+This is why `poly_pct ≥ 4.0` is classified as `high` recovery — not because 4% is a large amount, but because at that threshold poly is actively changing how the fabric behaves under tension. In cotton/poly/spandex blends, poly and elastane work together: elastane provides stretch, poly provides snap-back. Removing or reducing poly from a high-elastane blend increases the risk of bag-out over the day.
+
+This reinforces why `rigid` ↔ `high_stretch` crossings are model mismatches (see Section 4) — poly blend behavior compounds the unpredictability of cross-boundary size translation.
+
 ---
 
 ## 4. Fabric Gate Matrix [MVP]
@@ -65,24 +75,29 @@ Derived from `poly_pct`:
 | Anchor fabric_class | Target fabric_class | Gate | Output State |
 |---|---|---|---|
 | `high_stretch` | `rigid` | Hard Stop | `smart_estimate` |
+| `rigid` | `high_stretch` | Hard Stop | `smart_estimate` |
 | `high_stretch` | `comfort_stretch` | Soft Warning | `fit_advisory` |
 | `comfort_stretch` | `rigid` | Soft Warning | `fit_advisory` |
-| `rigid` | `high_stretch` | Soft Warning | `fit_advisory` |
 | `comfort_stretch` | `high_stretch` | No Gate | — |
 | `rigid` | `comfort_stretch` | No Gate | — |
 | same | same | No Gate | — |
 
-**Two-class delta always triggers a Hard Stop** (`smart_estimate`).
-**One-class delta triggers a Soft Warning** (`fit_advisory`).
+**Sizing Model Mismatch Principle:** `rigid` ↔ `high_stretch` crossings in either direction are Hard Stops because the anchor loses its predictive value — these are different sizing systems, not just different stretch amounts.
+- `rigid` → waist = fixed circumference
+- `high_stretch` → waist = range of accommodation
+
+A rigid anchor cannot reliably predict fit in a high stretch garment (signal dilutes into a range). A high stretch anchor cannot reliably predict fit in a rigid garment (over-precise signal applied to a fixed system). Both directions fail for different reasons.
+
+**`comfort_stretch` acts as a bridge category** — limited elasticity, still size-specific, gradient difference only → Soft Warning.
 
 ### Confirmed FABRIC_GATES Constant
 
 ```typescript
 const FABRIC_GATES = {
   HIGH_STRETCH_TO_RIGID:   { type: 'HARD_STOP',    outputState: 'smart_estimate', sizingAdj: 'size_up_1_or_2',    userText: 'This item will likely feel much firmer and less stretchy than your reference item.' },
+  RIGID_TO_HIGH_STRETCH:   { type: 'HARD_STOP',    outputState: 'smart_estimate', sizingAdj: 'verify_sizing',      userText: 'This item uses a very different sizing system than your reference item — the stretch range means your usual size may not translate cleanly.' },
   HIGH_STRETCH_TO_COMFORT: { type: 'SOFT_WARNING', outputState: 'fit_advisory',   sizingAdj: 'stay_or_size_up_1', userText: 'This item has less give than your reference item and may feel slightly firmer.' },
   COMFORT_TO_RIGID:        { type: 'SOFT_WARNING', outputState: 'fit_advisory',   sizingAdj: 'stay_or_size_up_1', userText: 'This item has less stretch than your reference item and may feel tighter or more structured.' },
-  RIGID_TO_HIGH_STRETCH:   { type: 'SOFT_WARNING', outputState: 'fit_advisory',   sizingAdj: 'size_down_for_snug', userText: 'This item will likely feel softer and more forgiving than your reference item.' },
   COMFORT_TO_HIGH_STRETCH: { type: 'NO_GATE' },
   RIGID_TO_COMFORT:        { type: 'NO_GATE' },
 }
@@ -166,8 +181,22 @@ Apply gates in this order. The most severe gate wins:
 
 1. Size cap triggered → `smart_estimate`
 2. Hard Stop gate triggered (contract or fabric) → `smart_estimate`
-3. Soft Warning gate triggered (fabric, contract, rise, recovery) → `fit_advisory`
-4. No gates, clean match → `verified_fit`
+3. Compounding uncertainty triggered (see rule below) → `smart_estimate`
+4. Soft Warning gate triggered (fabric, contract, rise, recovery) → `fit_advisory`
+5. No gates, clean match → `verified_fit`
+
+### Compounding Uncertainty Escalation Rule [MVP]
+
+When **both** of the following are true simultaneously, escalate output state from `fit_advisory` to `smart_estimate`:
+
+- A fabric gate Soft Warning fires (`COMFORT_TO_RIGID` or equivalent one-class delta)
+- Fit delta produces `size_up_2` (fit_delta ≥ +1.5)
+
+**Rationale:** Two compounding uncertainties — fabric behavior difference AND a large brand offset gap — reduce confidence below the threshold for a firm recommendation. Neither condition alone triggers `smart_estimate`, but together they do.
+
+**Demo case (Scenario 3):** Madewell (`comfort_stretch`, offset −1.5) → Levi's 501 (`rigid`, offset +0.5). Fabric gate fires Soft Warning (`COMFORT_TO_RIGID`). Fit delta = +2.0 → `size_up_2`. Both conditions true → escalates to `smart_estimate`.
+
+**Applies to:** `COMFORT_TO_RIGID` + `size_up_2` confirmed at MVP. Extend to other Soft Warning gate combinations as additional category data confirms the pattern.
 
 ---
 
@@ -182,8 +211,8 @@ Each gate reason has a `reason_code`, `internal_text` (for debugging), and `user
   - user: "This item will likely feel much firmer and less stretchy than your reference item."
 
 - `FABRIC_RIGID_TO_HIGH_STRETCH`
-  - internal: "Anchor fabric_class=rigid, target fabric_class=high_stretch. Large increase in stretch."
-  - user: "This item will likely feel softer and more forgiving than your reference item."
+  - internal: "Anchor fabric_class=rigid, target fabric_class=high_stretch. Sizing model mismatch — rigid anchor signal dilutes into stretch range."
+  - user: "This item uses a very different sizing system than your reference item — the stretch range means your usual size may not translate cleanly."
 
 - `FABRIC_COMFORT_TO_RIGID`
   - internal: "Anchor fabric_class=comfort_stretch, target fabric_class=rigid. Reduced give."
@@ -245,11 +274,12 @@ Each gate reason has a `reason_code`, `internal_text` (for debugging), and `user
 
 ### LOW Confidence — any of the following:
 - Hard Stop gate triggered
-- Two classes apart on fabric
+- Sizing model mismatch (`rigid` ↔ `high_stretch` in either direction)
 - Contract mismatch (`range → precision`)
 - Multiple gates triggered simultaneously
 - Size cap triggered (waist ≥ 33" or size ≥ 18)
 - `poly_pct = null` on both anchor and target
+- Compounding uncertainty escalation triggered (Soft Warning + `size_up_2`)
 
 ---
 
