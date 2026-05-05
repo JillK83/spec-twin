@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;700;900&family=Geist+Mono:wght@400&display=swap');
+
+:root {
+  --background: oklch(0.96 0.01 85);
+  --foreground: oklch(0.2 0 0);
+  --card: oklch(0.98 0.01 85);
+  --border: oklch(0.2 0 0);
+  --primary: oklch(0.82 0.18 85);
+  --primary-foreground: oklch(0.2 0 0);
+  --secondary: oklch(0.88 0.2 130);
+  --secondary-foreground: oklch(0.2 0 0);
+  --muted: oklch(0.92 0.01 85);
+  --muted-foreground: oklch(0.4 0 0);
+  --accent-teal: oklch(0.75 0.15 200);
+  --accent-teal-foreground: oklch(0.2 0 0);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Geist', sans-serif;
+  background-image: radial-gradient(circle, var(--foreground) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+  opacity: 1;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-color: var(--background);
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@layer components {
+  .input-retro {
+    @apply border-2 border-border rounded-xl bg-card;
+    box-shadow: 2px 2px 0px 0px var(--border);
+    transition: all 0.1s ease;
+  }
+
+  .input-retro:focus {
+    @apply outline-none border-accent-teal;
+    box-shadow: 4px 4px 0px 0px var(--border);
+    ring: 3px solid oklch(0.75 0.15 200 / 0.3);
+    transform: translate(-2px, -2px);
+  }
+
+  .shadow-hard {
+    box-shadow: 4px 4px 0px 0px var(--border);
+  }
+
+  .sticker-teal {
+    @apply bg-accent-teal text-accent-teal-foreground border-2 border-border font-bold px-4 py-2 rounded-lg;
+    box-shadow: 4px 4px 0px 0px var(--border);
+    transform: rotate(-2deg);
+    transition: transform 0.15s ease;
+    max-width: 20rem;
+  }
+
+  .sticker-teal:hover {
+    transform: rotate(0deg);
+  }
+}
