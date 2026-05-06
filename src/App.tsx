@@ -16,7 +16,7 @@ import VerdictSmartEstimate from './screens/VerdictSmartEstimate'
 export default function App() {
   return (
     <>
-    <Toaster position="top-right" />
+    <Toaster position="bottom-center" />
     <Routes>
       <Route path="/" element={<Navigate to="/onboarding/1" replace />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
