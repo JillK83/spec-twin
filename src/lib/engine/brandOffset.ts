@@ -32,8 +32,8 @@ export function getBrandOffset(
     return { weightedOffset: 0, driftAdjustment: 0, effectiveOffset: 0, coldStart: true }
   }
 
-  const weightedOffset   = row.weighted_offset
-  const driftAdjustment  = row.drift_adjustment
+  const weightedOffset   = row.weighted_offset ?? 0
+  const driftAdjustment  = row.drift_adjustment ?? 0
   const effectiveOffset  = weightedOffset + driftAdjustment
   return { weightedOffset, driftAdjustment, effectiveOffset, coldStart: false }
 }
