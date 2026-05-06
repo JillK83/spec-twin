@@ -1,9 +1,12 @@
 import type { Pillar } from './VerdictCard'
 
-export const VERDICT_SAMPLE = {
-  garmentName: 'AGOLDE 90s Jean',
-  anchorLabel: 'Madewell Perfect Vintage Straight, Size 27x29',
-  recommendedSize: '27',
+const ANCHOR_LABEL = 'Madewell Perfect Vintage Straight, Size 27x29'
+
+// ── Scenario 1 — Verified Fit ──────────────────────────────────────────────────
+export const SCENARIO_1 = {
+  garmentName: 'Everlane 90s Cheeky Straight',
+  anchorLabel: ANCHOR_LABEL,
+  recommendedSize: '28 x 29',
 }
 
 export const verifiedPillars: Pillar[] = [
@@ -17,7 +20,7 @@ export const verifiedPillars: Pillar[] = [
   {
     id: 'waist-hip',
     name: 'Waist and Hip Fit',
-    headline: 'Sits where you expect it to sit.',
+    headline: 'Rise and fit match your anchor.',
     status: 'verified',
     detail: 'High rise, straight cut — matches your anchor rise and silhouette.',
   },
@@ -30,12 +33,24 @@ export const verifiedPillars: Pillar[] = [
   },
 ]
 
+// ── Scenario 2 — Fit Advisory ──────────────────────────────────────────────────
+export const SCENARIO_2 = {
+  garmentName: 'AG Jeans Farrah Boot Jean',
+  anchorLabel: ANCHOR_LABEL,
+  recommendedSize: '28 x 32',
+  sizeNote: 'INSEAM ADJUSTED FOR SILHOUETTE',
+  footerNote: 'New to our system — treat this as a starting point',
+}
+
+export const ADVISORY_BANNER_TEXT =
+  'This style sits differently than your usual preference, which may affect how the waist and hip feel.'
+
 export const advisoryPillars: Pillar[] = [
   {
     id: 'fabric',
     name: 'Fabric Behavior',
     headline: 'Similar stretch to your anchor.',
-    status: 'advisory',
+    status: 'verified',
     detail: 'Both items are comfort stretch — fabric feel should be close.',
   },
   {
@@ -53,6 +68,15 @@ export const advisoryPillars: Pillar[] = [
     detail: 'Similar fiber profile — expect consistent fit throughout the day.',
   },
 ]
+
+// ── Scenario 3 — Smart Estimate ────────────────────────────────────────────────
+export const SCENARIO_3 = {
+  garmentName: "Levi's 501 Original Jean",
+  anchorLabel: ANCHOR_LABEL,
+  recommendedSize: '29 x 30',
+  footerNote: 'VERIFY BEFORE BUYING',
+  bannerText: 'This item will likely feel much firmer and less stretchy than your reference item.',
+}
 
 export const estimatePillars: Pillar[] = [
   {
@@ -77,23 +101,3 @@ export const estimatePillars: Pillar[] = [
     detail: '100% cotton with no recovery fiber — expect the fabric to relax and loosen slightly over time.',
   },
 ]
-
-export const reducedPillars: Pillar[] = [
-  {
-    id: 'waist-hip',
-    name: 'Waist and Hip Fit',
-    headline: 'Estimated from category average.',
-    status: 'estimate',
-    detail: 'Brand size chart not available — using category benchmarks for waist and hip.',
-  },
-  {
-    id: 'shape',
-    name: 'Shape Retention',
-    headline: 'Estimated from category average.',
-    status: 'estimate',
-    detail: 'Without weave details, retention is projected from similar silhouettes.',
-  },
-]
-
-export const ADVISORY_BANNER_TEXT =
-  'This style sits differently than your usual preference, which may affect how the waist and hip feel.'
