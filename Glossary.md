@@ -180,7 +180,7 @@ When a new category is ready to ship, copy this template and complete it before 
 | Technical term | Customer-facing label | Plain-language explanation |
 |---|---|---|
 | Scripted Demo Mode | Demo | Three pre-loaded scenarios with fixed anchor and target data |
-| Scenario 1 | Scenario 1 | Verified Fit — Everlane Column Jean against Madewell anchor |
+| Scenario 1 | Scenario 1 | Verified Fit — Everlane 90s Cheeky Straight against Madewell anchor |
 | Scenario 2 | Scenario 2 | Fit Advisory — AG Jeans Farrah Boot Jean, rise mismatch |
 | Scenario 3 | Scenario 3 | Smart Estimate — Levi's 501 Original, fabric Hard Stop |
 | Open Mode | (no label) | Real user flow — free entry anchor and target |

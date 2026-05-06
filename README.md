@@ -51,7 +51,7 @@ All three use **Madewell Perfect Vintage Straight, Size 27x29** as the anchor.
 
 | # | Target | Expected output | Primary gate |
 |---|---|---|---|
-| 1 | Everlane Column Jean, 27x29 | `verified_fit` | None |
+| 1 | Everlane 90s Cheeky Straight, 27x29 | `verified_fit` | None |
 | 2 | AG Jeans Farrah Boot Jean, 27x32 | `fit_advisory` | Rise mismatch |
 | 3 | Levi's 501 Original, 27x30 | `smart_estimate` | Compounding uncertainty (`COMFORT_TO_RIGID` + `size_up_2`) |
 

@@ -199,7 +199,7 @@ Pillar dot colors by output state:
 
 **Scenario 1 — Verified Fit (`/verdict/1`):**
 - Target brand: Everlane
-- Target model: Column Jean
+- Target model: 90s Cheeky Straight
 - Target size: 27x31
 - Fabric: 98% Organic Cotton, 2% Elastane
 - `fabric_class`: `comfort_stretch`
@@ -306,6 +306,7 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 ### App Routes Contract
 | Route | Screen |
 |---|---|
+| `/` | Cover screen |
 | `/onboarding/1` – `/onboarding/5` | Five onboarding screens |
 | `/bridge` | Profile Synced screen |
 | `/anchor/new` | New Anchor form |
