@@ -166,7 +166,7 @@ export function AuditNewItemForm() {
             <ToggleGroup
               type="single"
               value={formData.rise}
-              onValueChange={(v) => v && handleChange('rise', v)}
+              onValueChange={(v) => v && handleChange('rise', String(v))}
               className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
             >
               <ToggleGroupItem value="high" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>

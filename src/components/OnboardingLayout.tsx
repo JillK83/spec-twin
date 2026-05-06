@@ -1,5 +1,4 @@
-import React from 'react'
-import { Card, CardContent, CardHeader } from './ui/magic/Card'
+import { Card, CardHeader } from './ui/magic/Card'
 
 interface OnboardingLayoutProps {
   currentStep: number

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card } from './ui/magic/Card'
 
 const LOADING_MESSAGES = [

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { CardContent, CardTitle, CardFooter } from './ui/magic/Card'
 import { Button } from './ui/magic/Button'
 import { Label } from './ui/magic/Label'

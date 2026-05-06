@@ -127,10 +127,8 @@ export function AddAnchorForm() {
               <div className="flex items-center gap-2">
                 <Label htmlFor="name" className="text-lg font-bold">Garment Name</Label>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
-                      <Info className="w-4 h-4" />
-                    </button>
+                  <TooltipTrigger className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Info className="w-4 h-4" />
                   </TooltipTrigger>
                   <TooltipContent className="bg-transparent border-none shadow-none p-0">
                     <div className="sticker-teal">Be specific! e.g. 'Vintage 1990s Levi's 501'</div>
@@ -209,7 +207,7 @@ export function AddAnchorForm() {
                 <ToggleGroup
                   type="single"
                   value={formData.gender}
-                  onValueChange={(v) => v && handleChange('gender', v)}
+                  onValueChange={(v) => v && handleChange('gender', String(v))}
                   className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.gender ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
                 >
                   <ToggleGroupItem value="women" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Women</ToggleGroupItem>
@@ -226,10 +224,8 @@ export function AddAnchorForm() {
                     <span className="text-muted-foreground font-normal text-sm ml-1">(Optional)</span>
                   </Label>
                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
-                        <Info className="w-4 h-4" />
-                      </button>
+                    <TooltipTrigger className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="w-4 h-4" />
                     </TooltipTrigger>
                     <TooltipContent className="bg-transparent border-none shadow-none p-0">
                       <div className="sticker-teal">
@@ -242,7 +238,7 @@ export function AddAnchorForm() {
                 <ToggleGroup
                   type="single"
                   value={formData.fitAllowance}
-                  onValueChange={(v) => v && handleChange('fitAllowance', v)}
+                  onValueChange={(v) => v && handleChange('fitAllowance', String(v))}
                   className="justify-start bg-muted p-1 rounded-xl border-2 border-border"
                 >
                   <ToggleGroupItem value="strict" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Strict</ToggleGroupItem>
@@ -257,10 +253,8 @@ export function AddAnchorForm() {
               <div className="flex items-center gap-2">
                 <Label htmlFor="material" className="text-lg font-bold">Material Composition</Label>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
-                      <Info className="w-4 h-4" />
-                    </button>
+                  <TooltipTrigger className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Info className="w-4 h-4" />
                   </TooltipTrigger>
                   <TooltipContent className="bg-transparent border-none shadow-none p-0">
                     <div className="sticker-teal">

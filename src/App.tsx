@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from './components/ui/magic/Sonner'
 import OnboardingRise from './screens/OnboardingRise'
 import OnboardingSilhouette from './screens/OnboardingSilhouette'
 import OnboardingHeight from './screens/OnboardingHeight'
@@ -14,6 +15,8 @@ import VerdictSmartEstimate from './screens/VerdictSmartEstimate'
 
 export default function App() {
   return (
+    <>
+    <Toaster position="top-right" />
     <Routes>
       <Route path="/" element={<Navigate to="/onboarding/1" replace />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
@@ -30,5 +33,6 @@ export default function App() {
       <Route path="/verdict/3" element={<VerdictSmartEstimate />} />
       <Route path="/verdict/4" element={<VerdictSmartEstimate />} />
     </Routes>
+    </>
   )
 }
