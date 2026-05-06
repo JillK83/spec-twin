@@ -107,7 +107,9 @@ export function VerdictCard({
       : 'w-full sm:w-auto bg-primary text-primary-foreground border-4 border-border shadow-hard shadow-hard-hover shadow-hard-active font-black text-base py-6 px-8 uppercase tracking-wide transition-all'
 
   return (
-    <Card className="w-full max-w-2xl mx-auto border-4 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden relative">
+    <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-2xl">
+      <Card className="w-full max-w-2xl mx-auto border-4 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden relative">
       {/* Purple left accent for estimate/reduced */}
       {isEstimateOrReduced && (
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#7C3AED] z-20" />
@@ -229,5 +231,7 @@ export function VerdictCard({
         </div>
       </div>
     </Card>
+      </div>
+    </div>
   )
 }

@@ -75,6 +75,8 @@ export function FitVault() {
   }, [openMenuId])
 
   return (
+    <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-2xl">
     <div className="w-full max-w-2xl mx-auto flex flex-col gap-8">
       {/* Header */}
       <div className="space-y-2">
@@ -211,6 +213,8 @@ export function FitVault() {
       >
         Start Audit
       </Button>
+    </div>
+      </div>
     </div>
   )
 }

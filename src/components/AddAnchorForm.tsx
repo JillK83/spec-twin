@@ -96,7 +96,9 @@ export function AddAnchorForm() {
     'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)] focus-visible:shadow-[4px_4px_0px_0px_var(--primary)] focus-visible:border-[var(--primary)]'
 
   return (
-    <TooltipProvider delayDuration={200}>
+    <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-2xl">
+      <TooltipProvider delayDuration={200}>
       <Card className="w-full max-w-2xl mx-auto border-4 border-border shadow-hard bg-card rounded-2xl overflow-hidden">
         <div className="bg-primary border-b-4 border-border p-6 relative overflow-hidden">
           <div
@@ -320,6 +322,8 @@ export function AddAnchorForm() {
           </Button>
         </CardFooter>
       </Card>
-    </TooltipProvider>
+      </TooltipProvider>
+      </div>
+    </div>
   )
 }

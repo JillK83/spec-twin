@@ -292,6 +292,7 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 ---
 
 
+- Desktop-first, responsive to tablet via sm: breakpoints. Max width: max-w-2xl (672px), centered.
 - Full design system is documented in `SPEC_TWIN_DESIGN_SYSTEM.md` — read before building any UI component
 - Typography: Geist (700–900) for all headings and labels, Geist Mono (400) for monospace and helper text
 - Core tokens: Paper `#F5F0E8`, Ink `#1A1A1A`, Amber `#FFBF00`, Electric Lime `#BFFF00`, Vibrant Teal `#00BCD4`
