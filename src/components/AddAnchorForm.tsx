@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Input } from './ui/magic/Input'
 import { Label } from './ui/magic/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/magic/Select'
@@ -13,6 +13,7 @@ import { Info, Sparkles, Tag, AlertTriangle } from 'lucide-react'
 
 export function AddAnchorForm() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
@@ -26,16 +27,29 @@ export function AddAnchorForm() {
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    setFormData({
-      name: '',
-      brand: '',
-      category: 'denim',
-      size: '',
-      gender: 'unisex',
-      fitAllowance: 'moderate',
-      material: '',
-      userNotes: '',
-    })
+    if (searchParams.get('demo') === 'true') {
+      setFormData({
+        name: 'Madewell Perfect Vintage Straight',
+        brand: 'Madewell',
+        category: 'denim',
+        size: '27x29',
+        gender: 'women',
+        fitAllowance: 'moderate',
+        material: '99% Cotton, 1% Elastane',
+        userNotes: '',
+      })
+    } else {
+      setFormData({
+        name: '',
+        brand: '',
+        category: 'denim',
+        size: '',
+        gender: 'unisex',
+        fitAllowance: 'moderate',
+        material: '',
+        userNotes: '',
+      })
+    }
     setErrors({})
   }, [])
 
@@ -73,6 +87,7 @@ export function AddAnchorForm() {
           boxShadow: '4px 4px 0px 0px var(--border)',
           fontWeight: 'bold',
           borderRadius: '0.75rem',
+          textAlign: 'center' as const,
         },
         icon: <Sparkles className="w-5 h-5" />,
       })
@@ -149,7 +164,7 @@ export function AddAnchorForm() {
             </div>
 
             {/* Brand & Category */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="brand" className="text-lg font-bold">Brand</Label>
                 <Input
@@ -166,7 +181,7 @@ export function AddAnchorForm() {
               <div className="space-y-2">
                 <Label htmlFor="category" className="text-lg font-bold">Category</Label>
                 <Select value={formData.category} onValueChange={(v) => handleChange('category', v)}>
-                  <SelectTrigger className={`input-retro py-6 text-base h-auto ${errors.category ? errorClass : ''}`}>
+                  <SelectTrigger className={`w-full input-retro py-6 text-base h-auto ${errors.category ? errorClass : ''}`}>
                     <SelectValue placeholder="Select category..." />
                   </SelectTrigger>
                   <SelectContent>

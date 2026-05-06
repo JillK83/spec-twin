@@ -69,14 +69,9 @@ export function OnboardingBodyFrame({ onContinue, onSkip }: OnboardingBodyFrameP
 export function OnboardingBodyFrameHeader() {
   return (
     <>
-      <div className="flex items-center gap-3">
-        <CardTitle className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
-          How would you describe your frame?
-        </CardTitle>
-        <span className="shrink-0 bg-muted border-2 border-border rounded-lg px-3 py-1 text-xs font-bold text-muted-foreground shadow-[2px_2px_0px_0px_var(--border)]">
-          OPTIONAL
-        </span>
-      </div>
+      <CardTitle className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+        How would you describe your frame?
+      </CardTitle>
       <p className="text-sm font-heading font-normal text-muted-foreground mt-3">
         Skipping this step may reduce your fit confidence score.
       </p>

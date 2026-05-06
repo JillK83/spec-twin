@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Card } from './ui/magic/Card'
 import { Button } from './ui/magic/Button'
 import { ChevronDown, AlertTriangle, Info } from 'lucide-react'
@@ -54,6 +54,8 @@ export function VerdictCard({
   footerNote,
 }: VerdictCardProps) {
   const navigate = useNavigate()
+  const location = useLocation()
+  const isDemoMode = ['/verdict/1', '/verdict/2', '/verdict/3'].includes(location.pathname)
   const [expandedIds, setExpandedIds] = useState<string[]>([])
 
   const togglePillar = (id: string) => {
@@ -103,8 +105,8 @@ export function VerdictCard({
 
   const ctaButtonClass =
     state === 'estimate' || state === 'reduced'
-      ? 'w-full sm:w-auto bg-[#7C3AED] text-white border-4 border-border shadow-hard shadow-hard-hover shadow-hard-active font-black text-base py-6 px-8 uppercase tracking-wide transition-all'
-      : 'w-full sm:w-auto bg-primary text-primary-foreground border-4 border-border shadow-hard shadow-hard-hover shadow-hard-active font-black text-base py-6 px-8 uppercase tracking-wide transition-all'
+      ? `w-full sm:w-auto bg-[#7C3AED] text-white border-4 border-border shadow-hard shadow-hard-hover shadow-hard-active font-black text-base py-6 px-8 uppercase tracking-wide transition-all${isDemoMode ? ' opacity-50 cursor-not-allowed' : ''}`
+      : `w-full sm:w-auto bg-primary text-primary-foreground border-4 border-border shadow-hard shadow-hard-hover shadow-hard-active font-black text-base py-6 px-8 uppercase tracking-wide transition-all${isDemoMode ? ' opacity-50 cursor-not-allowed' : ''}`
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
@@ -214,14 +216,12 @@ export function VerdictCard({
               </Button>
             )}
             <Button
+              disabled={isDemoMode}
               onClick={() => {
-                if (state === 'reduced') {
-                  navigate('/anchor/new')
-                } else if (state === 'estimate') {
-                  return
-                } else {
-                  navigate('/vault')
-                }
+                if (isDemoMode) return
+                if (state === 'reduced') navigate('/anchor/new')
+                else if (state === 'estimate') return
+                else navigate('/vault')
               }}
               className={ctaButtonClass}
             >
