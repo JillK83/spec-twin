@@ -1,5 +1,6 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { Toaster } from './components/ui/magic/Sonner'
+import CoverScreen from './components/CoverScreen'
 import OnboardingRise from './screens/OnboardingRise'
 import OnboardingSilhouette from './screens/OnboardingSilhouette'
 import OnboardingHeight from './screens/OnboardingHeight'
@@ -18,7 +19,7 @@ export default function App() {
     <>
     <Toaster position="bottom-center" />
     <Routes>
-      <Route path="/" element={<Navigate to="/onboarding/1" replace />} />
+      <Route path="/" element={<CoverScreen />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
       <Route path="/onboarding/2" element={<OnboardingSilhouette />} />
       <Route path="/onboarding/3" element={<OnboardingHeight />} />
