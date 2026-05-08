@@ -35,6 +35,7 @@ Output format:
 
 export async function parseProductDetails(rawText: string): Promise<ParseResult> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
+  console.log('API KEY:', apiKey?.slice(0, 8))
   if (!apiKey) {
     return { success: false, parser_error: 'VITE_GEMINI_API_KEY not set' }
   }
@@ -56,7 +57,9 @@ export async function parseProductDetails(rawText: string): Promise<ParseResult>
     }
 
     const json = await response.json()
+    console.log('Gemini raw response:', JSON.stringify(json, null, 2))
     const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+    console.log('Gemini extracted text:', raw)
 
     // Attempt 1: parse as-is
     // Attempt 2: strip markdown fences and retry once

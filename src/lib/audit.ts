@@ -133,9 +133,9 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const resolved: ResolverResult = resolveOutputState(gateInputs)
 
   // ── Step 9: Build recommended size string ────────────────────────────────────
-  const anchorWaist = parseInt(anchor.size?.split('x')[0] ?? '0', 10)
+  const anchorWaist = parseInt(anchor.size?.split(/x/i)[0] ?? '0', 10)
   const recommendedWaist = anchorWaist + sizeAdjustment.adjustment
-  const anchorInseam = anchor.size?.split('x')[1] ?? ''
+  const anchorInseam = anchor.size?.split(/x/i)[1] ?? ''
   const recommendedSize = `${recommendedWaist} x ${anchorInseam}`
 
   // ── Step 10: Save to product_audits ─────────────────────────────────────────

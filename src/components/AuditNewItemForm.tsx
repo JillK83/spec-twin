@@ -44,15 +44,8 @@ export function AuditNewItemForm() {
       setAllAnchors(fetched)
       setAnchor(fetched[0] ?? null)
 
-      const { data: profileRows } = await supabase
-        .from('user_profiles' as any)
-        .select('primary_rise')
-        .limit(1)
-
-      const rise = (profileRows?.[0] as { primary_rise?: string } | undefined)?.primary_rise
-      if (rise === 'high' || rise === 'mid' || rise === 'low') {
-        setProfileRise(rise as Rise)
-      }
+      // user_profiles table not yet created — default to 'high' until onboarding persistence is wired
+      setProfileRise('high')
 
       setAnchorLoading(false)
     }
@@ -210,15 +203,23 @@ export function AuditNewItemForm() {
             <div className="space-y-2">
               <Label className="text-lg font-bold block">Compare against</Label>
               <Select
-                value={anchor?.id ?? ''}
-                onValueChange={(id) => setAnchor(allAnchors.find((a) => a.id === id) ?? null)}
+                value={anchor ? `${anchor.brand_model}, Size ${anchor.size}` : ''}
+                onValueChange={(v) =>
+                  setAnchor(
+                    allAnchors.find((a) => `${a.brand_model}, Size ${a.size}` === v) ?? null
+                  )
+                }
               >
                 <SelectTrigger className="w-full input-retro py-6 text-base h-auto">
                   <SelectValue placeholder="Select an anchor..." />
                 </SelectTrigger>
                 <SelectContent>
                   {allAnchors.map((a) => (
-                    <SelectItem key={a.id} value={a.id} className="font-bold">
+                    <SelectItem
+                      key={a.id}
+                      value={`${a.brand_model}, Size ${a.size}`}
+                      className="font-bold"
+                    >
                       {a.brand_model}, Size {a.size}
                     </SelectItem>
                   ))}
