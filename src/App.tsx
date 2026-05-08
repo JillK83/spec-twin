@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from './components/ui/magic/Sonner'
+import { DemoSelectorStrip } from './components/DemoSelectorStrip'
 import CoverScreen from './components/CoverScreen'
 import OnboardingRise from './screens/OnboardingRise'
 import OnboardingSilhouette from './screens/OnboardingSilhouette'
@@ -13,11 +14,13 @@ import AuditNew from './screens/AuditNew'
 import VerdictVerifiedFit from './screens/VerdictVerifiedFit'
 import VerdictFitAdvisory from './screens/VerdictFitAdvisory'
 import VerdictSmartEstimate from './screens/VerdictSmartEstimate'
+import VerdictOpenPage from './screens/VerdictOpenPage'
 
 export default function App() {
   return (
     <>
     <Toaster position="bottom-center" />
+    <DemoSelectorStrip />
     <Routes>
       <Route path="/" element={<CoverScreen />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
@@ -33,6 +36,7 @@ export default function App() {
       <Route path="/verdict/2" element={<VerdictFitAdvisory />} />
       <Route path="/verdict/3" element={<VerdictSmartEstimate />} />
       <Route path="/verdict/4" element={<VerdictSmartEstimate />} />
+      <Route path="/verdict/open" element={<VerdictOpenPage />} />
     </Routes>
     </>
   )

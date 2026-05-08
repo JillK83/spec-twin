@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import { Input } from './ui/magic/Input'
 import { Label } from './ui/magic/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/magic/Select'
@@ -13,7 +14,6 @@ import { Info, Sparkles, Tag, AlertTriangle } from 'lucide-react'
 
 export function AddAnchorForm() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
@@ -27,29 +27,7 @@ export function AddAnchorForm() {
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    if (searchParams.get('demo') === 'true') {
-      setFormData({
-        name: 'Madewell Perfect Vintage Straight',
-        brand: 'Madewell',
-        category: 'denim',
-        size: '27x29',
-        gender: 'women',
-        fitAllowance: 'moderate',
-        material: '99% Cotton, 1% Elastane',
-        userNotes: '',
-      })
-    } else {
-      setFormData({
-        name: '',
-        brand: '',
-        category: 'denim',
-        size: '',
-        gender: 'unisex',
-        fitAllowance: 'moderate',
-        material: '',
-        userNotes: '',
-      })
-    }
+    setFormData({ name: '', brand: '', category: 'denim', size: '', gender: 'unisex', fitAllowance: 'moderate', material: '', userNotes: '' })
     setErrors({})
   }, [])
 
@@ -76,23 +54,9 @@ export function AddAnchorForm() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (validate()) {
-      toast.success(`Anchor Saved — ${formData.name}`, {
-        style: {
-          backgroundColor: 'var(--secondary)',
-          color: 'var(--secondary-foreground)',
-          border: '2px solid var(--border)',
-          boxShadow: '4px 4px 0px 0px var(--border)',
-          fontWeight: 'bold',
-          borderRadius: '0.75rem',
-          textAlign: 'center' as const,
-        },
-        icon: <Sparkles className="w-5 h-5" />,
-      })
-      navigate('/vault')
-    } else {
+    if (!validate()) {
       toast.error('Missing Data — Please address required fields.', {
         style: {
           backgroundColor: 'var(--primary)',
@@ -104,7 +68,59 @@ export function AddAnchorForm() {
         },
         icon: <AlertTriangle className="w-5 h-5" />,
       })
+      return
     }
+
+    const [, inseamStr] = formData.size.replace(/\s/g, '').split('x')
+    const anchorInseam = inseamStr ? parseInt(inseamStr, 10) : null
+    const genderMap: Record<string, string> = { women: 'womens', men: 'mens', unisex: 'unisex' }
+
+    const { data, error } = await supabase
+      .from('user_anchors')
+      .insert({
+        brand_model: formData.name,
+        brand_name: formData.brand,
+        category: formData.category,
+        size: formData.size,
+        gender: genderMap[formData.gender] ?? 'unisex',
+        fiber_content: formData.material,
+        user_notes: formData.userNotes || null,
+        anchor_inseam: anchorInseam,
+        contract_type: formData.fitAllowance === 'forgiving' ? 'range' : 'precision',
+      })
+      .select()
+
+    console.log('Anchor insert data:', data)
+    console.log('Anchor insert error:', error)
+
+    if (error) {
+      toast.error(`Save failed: ${error.message}`, {
+        style: {
+          backgroundColor: 'var(--primary)',
+          color: 'var(--primary-foreground)',
+          border: '2px solid var(--border)',
+          boxShadow: '4px 4px 0px 0px var(--border)',
+          fontWeight: 'bold',
+          borderRadius: '0.75rem',
+        },
+        icon: <AlertTriangle className="w-5 h-5" />,
+      })
+      return
+    }
+
+    toast.success(`Anchor Saved — ${formData.name}`, {
+      style: {
+        backgroundColor: 'var(--secondary)',
+        color: 'var(--secondary-foreground)',
+        border: '2px solid var(--border)',
+        boxShadow: '4px 4px 0px 0px var(--border)',
+        fontWeight: 'bold',
+        borderRadius: '0.75rem',
+        textAlign: 'center' as const,
+      },
+      icon: <Sparkles className="w-5 h-5" />,
+    })
+    navigate('/vault')
   }
 
   const errorClass =

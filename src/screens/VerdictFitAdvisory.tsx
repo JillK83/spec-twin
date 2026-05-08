@@ -1,11 +1,9 @@
 import { VerdictCard } from '@/components/VerdictCard'
-import { DemoSelectorStrip } from '@/components/DemoSelectorStrip'
 import { SCENARIO_2, advisoryPillars, ADVISORY_BANNER_TEXT } from '@/components/verdictSampleData'
 
 export default function VerdictFitAdvisory() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-16">
-      <DemoSelectorStrip />
       <VerdictCard
         state="advisory"
         garmentName={SCENARIO_2.garmentName}
