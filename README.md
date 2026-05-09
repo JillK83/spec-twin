@@ -95,7 +95,7 @@ Validation target to confirm before moving on:
 ### Phase B — Live App Build
 
 1. Port validated gate logic from Phase A into `/build/src/engine`.
-2. Connect Anthropic API key for the parser (`claude-sonnet-4-20250514`).
+2. Connect Gemini API key for the parser (`gemini-3.1-flash-lite`).
 3. Wire Supabase for `user_anchors`, `product_audits`, `brand_offsets`.
 4. Build onboarding flow (5 screens), anchor form, target form, verdict card.
 5. QA all three demo scenarios end-to-end in Scripted Mode.

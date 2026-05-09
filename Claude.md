@@ -330,6 +330,6 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 | CSS / Components | Tailwind CSS + shadcn/ui |
 | Database | Supabase (MCP-connected) |
 | UI Generation | Magic Patterns (MCP-connected) |
-| Parser / AI | Anthropic API `claude-sonnet-4-20250514` |
+| Parser / AI | Gemini API gemini-3.1-flash-lite |
 | Typography | Geist, Geist Mono |
 | Deployment | Vercel |

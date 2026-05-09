@@ -36,7 +36,7 @@ Every recommendation traces back to the exact garment the system treated as the 
 
 ## Section 2: Target Product Info
 
-These fields store everything the Anthropic API parser extracted from the product details text the user pasted or entered.
+These fields store everything the Gemini API parser extracted from the product details text the user pasted or entered.
 
 - `target_brand` — brand of the target product.
 - `target_model` — model or product name.
@@ -96,7 +96,7 @@ const getRecoveryClass = (polyPct: number | null): string => {
 }
 ```
 
-The Anthropic API system prompt must include: *"If polyester percentage is not present in the material composition, return null for poly_pct. Do not return 0 or an empty string."*
+The Gemini API system prompt must include: *"If polyester percentage is not present in the material composition, return null for poly_pct. Do not return 0 or an empty string."*
 
 `recovery_class = 'unknown'` renders an amber dot on the Recovery and Aging pillar with the note: *"Recovery data unavailable for this item; expect standard denim behavior."* It is a valid, explicit, traceable state — not a fallback default.
 
@@ -125,7 +125,7 @@ The hardware warning gate is **inactive at MVP**. The `closure_type` column is r
 
 ## Section 7: Parser Confidence
 
-`parser_confidence` is stored on `user_anchors` for every anchor submission. It reflects the Anthropic API's confidence in the parsed output (0–1 scale).
+`parser_confidence` is stored on `user_anchors` for every anchor submission. It reflects the Gemini API's confidence in the parsed output (0–1 scale).
 
 - If `parser_confidence < 0.8`, the UI surfaces amber "Confirm" chips on low-confidence fields.
 - The user may save the anchor regardless — saving with unconfirmed fields is allowed.
@@ -267,25 +267,24 @@ Recommended size displays as waist x inseam: `"27 x 30"`
 
 ## Section 14: API Call Architecture
 
-The Anthropic API (`claude-sonnet-4-20250514`) is called at exactly two points in the MVP. All other logic — gate evaluation, fit delta calculation, output state resolution, verdict copy rendering — is deterministic TypeScript running client-side. No additional API calls are needed.
+The Gemini API (`gemini-3.1-flash-lite`) is called at exactly two points in the MVP. All other logic — gate evaluation, fit delta calculation, output state resolution, verdict copy rendering — is deterministic TypeScript running client-side. No additional API calls are needed.
 
 ### Call 1 — Anchor Parse (triggered on Save Anchor)
 **Trigger:** User taps "Lock In First Anchor" on the anchor form.
 **Input:** Raw `fiber_content` string from the Material Composition field.
-**System prompt instructs the model to:** Parse fiber percentages, derive fabric_class, recovery_class, contract_type, and closure_type. Return only JSON. If polyester is absent from the label, return `null` for `poly_pct` — never `0`.
+**System prompt instructs the model to:** Parse fiber percentages and closure type. Return only JSON. If polyester is absent from the label, return `null` for `poly_pct` — never `0`.
 **Output — structured JSON:**
 ```json
 {
   "elastane_pct": 1,
   "poly_pct": null,
-  "fabric_class": "comfort_stretch",
-  "recovery_class": "unknown",
-  "contract_type": "precision",
   "closure_type": "zipper",
   "parser_confidence": 0.92
 }
 ```
 **Storage:** All values written to `user_anchors` row on save. `parser_confidence < 0.8` surfaces amber confirm chips on low-confidence fields in the UI.
+
+**Note:** At MVP, the anchor form does not call the parser on save. `fabric_class` and `recovery_class` are derived at audit time in `audit.ts` via regex on `fiber_content` when the column is null. Full parser integration on anchor save is post-MVP.
 
 ### Call 2 — Target Parse (triggered on Run Audit)
 **Trigger:** User taps "Run Audit" on the audit form.
@@ -296,16 +295,37 @@ The Anthropic API (`claude-sonnet-4-20250514`) is called at exactly two points i
 {
   "elastane_pct": 2,
   "poly_pct": 0,
-  "fabric_class": "comfort_stretch",
-  "recovery_class": "low",
-  "contract_type": "precision",
   "closure_type": "zipper",
   "parser_confidence": 0.88
 }
 ```
 **Storage:** All values written to `product_audits` snapshot fields (`target_elastane_pct`, `target_fabric_class`, `target_recovery_class`, etc.).
 
-### What does NOT need an API call
+### Gemini Request Format
+```typescript
+const body = {
+  system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+  contents: [{ parts: [{ text: rawText }] }]
+}
+
+const response = await fetch(
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`,
+  {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }
+)
+```
+
+### Response Extraction
+```typescript
+const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+const cleaned = raw.replace(/```json\n?|```\n?/g, '').trim()
+const parsed = JSON.parse(cleaned)
+```
+
+### What Does NOT Need an API Call
 - Brand offset lookup → Supabase query only
 - Fit delta calculation → deterministic TypeScript
 - Gate logic evaluation → deterministic TypeScript switch statement
@@ -318,7 +338,11 @@ Both calls must include these instructions in the system prompt:
 - Return only valid JSON — no preamble, no markdown, no backticks
 - If a fiber type is not present in the label, return `null` for that field — never `0` or empty string
 - Normalize all elastane synonyms: elastane, spandex, lycra, elaspan, creora, ROICA, dorlastan, linel, ESPA → `elastane_pct`
-- `fabric_class` must be one of: `rigid`, `comfort_stretch`, `high_stretch`
-- `recovery_class` must be one of: `low`, `moderate`, `high`, `unknown`
-- `contract_type` must be one of: `precision`, `range`
+- `fabric_class` and `recovery_class` are derived in the engine from `elastane_pct` and `poly_pct` — do not return them from the parser
 - `parser_confidence` must be a float between 0 and 1
+
+### Environment Variable
+```
+VITE_GEMINI_API_KEY=your_key_here
+```
+The key is passed as a URL query parameter per Gemini API spec — not as an auth header.
