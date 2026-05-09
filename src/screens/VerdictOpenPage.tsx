@@ -55,11 +55,11 @@ export default function VerdictOpenPage() {
       id: 'fabric',
       name: 'Fabric Behavior',
       headline: auditOutput.fabricGate
-        ? (auditOutput.fabricGateReason ?? 'Fabric class differs from your anchor.')
+        ? (auditOutput.fabricGateUserText ?? 'Fabric class differs from your anchor.')
         : 'Fabric class matches your anchor.',
       status: pillarStatus(auditOutput.fabricGate),
       detail: auditOutput.fabricGate
-        ? `Fabric gate triggered: ${auditOutput.fabricGateReason ?? 'fabric class mismatch'}.`
+        ? (auditOutput.fabricGateUserText ?? 'Fabric class differs from your anchor.')
         : 'The fabric composition is comparable to your anchor item.',
     },
     {
@@ -68,12 +68,12 @@ export default function VerdictOpenPage() {
       headline: auditOutput.riseMismatchWarning
         ? (auditOutput.riseMismatchNote ?? 'Rise differs from your preference.')
         : auditOutput.contractGate
-          ? 'This item uses a different sizing system than your anchor — the fit may feel less exact.'
+          ? (auditOutput.contractGateUserText ?? 'Sizing system differs from your anchor.')
           : 'Rise and fit contract align with your anchor.',
       status: pillarStatus(auditOutput.riseMismatchWarning || auditOutput.contractGate),
       detail: auditOutput.riseMismatchNote
         ?? (auditOutput.contractGate
-          ? 'This item uses a more flexible size system than your anchor, so the fit may feel less exact.'
+          ? (auditOutput.contractGateUserText ?? 'Sizing system differs from your anchor.')
           : 'Rise and fit contract align with your anchor.'),
     },
     {

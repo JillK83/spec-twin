@@ -29,8 +29,10 @@ export type AuditOutput = {
   recommendedSize: string
   fabricGate: boolean
   fabricGateReason: string | null
+  fabricGateUserText: string | null
   contractGate: boolean
   contractGateReason: string | null
+  contractGateUserText: string | null
   riseMismatchWarning: boolean
   riseMismatchNote: string | null
   recoveryWarning: boolean
@@ -209,8 +211,10 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     recommendedSize,
     fabricGate: fabricGateResult.type !== 'NO_GATE',
     fabricGateReason: fabricGateResult.reasonCode ?? null,
+    fabricGateUserText: fabricGateResult.userText ?? null,
     contractGate: contractGateResult.type !== 'NO_GATE',
     contractGateReason: contractGateResult.reasonCode ?? null,
+    contractGateUserText: contractGateResult.userText ?? null,
     riseMismatchWarning: riseGateResult.type !== 'NO_GATE',
     riseMismatchNote: riseGateResult.type !== 'NO_GATE'
       ? 'This style sits differently than your usual preference, which may affect how the waist and hip feel.'
