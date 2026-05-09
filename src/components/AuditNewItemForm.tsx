@@ -72,7 +72,7 @@ export function AuditNewItemForm() {
     const newErrors: Record<string, string> = {}
     if (!formData.brand.trim()) newErrors.brand = 'Required.'
     if (!formData.size.trim()) newErrors.size = 'Required.'
-    if (!profileRise && !formData.rise) newErrors.rise = 'Required.'
+    if (!formData.rise) newErrors.rise = 'Required.'
     if (!formData.details.trim()) newErrors.details = 'Required.'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -111,7 +111,7 @@ export function AuditNewItemForm() {
       targetModel: formData.styleName.trim() || undefined,
       targetSize: formData.size.trim(),
       targetFiberText: formData.details.trim(),
-      targetRise: (formData.rise as Rise) || userPrimaryRise,
+      targetRise: formData.rise as Rise,
       targetUrl: formData.url.trim() || undefined,
       userPrimaryRise,
     })
@@ -269,22 +269,20 @@ export function AuditNewItemForm() {
                 {errors.size && <p className="text-[var(--primary)] font-bold text-sm">{errors.size}</p>}
               </div>
 
-              {!profileRise && (
-                <div className="space-y-3">
-                  <Label className="text-lg font-bold block">Rise</Label>
-                  <ToggleGroup
-                    type="single"
-                    value={formData.rise}
-                    onValueChange={(v) => v && handleChange('rise', String(v))}
-                    className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
-                  >
-                    <ToggleGroupItem value="high" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
-                    <ToggleGroupItem value="mid" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
-                    <ToggleGroupItem value="low" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Low</ToggleGroupItem>
-                  </ToggleGroup>
-                  {errors.rise && <p className="text-[var(--primary)] font-bold text-sm">{errors.rise}</p>}
-                </div>
-              )}
+              <div className="space-y-3">
+                <Label className="text-lg font-bold block">This item's rise</Label>
+                <ToggleGroup
+                  type="single"
+                  value={formData.rise}
+                  onValueChange={(v) => v && handleChange('rise', String(v))}
+                  className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
+                >
+                  <ToggleGroupItem value="high" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
+                  <ToggleGroupItem value="mid" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
+                  <ToggleGroupItem value="low" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Low</ToggleGroupItem>
+                </ToggleGroup>
+                {errors.rise && <p className="text-[var(--primary)] font-bold text-sm">{errors.rise}</p>}
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="details" className="text-lg font-bold">

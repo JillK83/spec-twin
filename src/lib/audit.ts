@@ -107,7 +107,17 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const sizeAdjustment = mapDeltaToSizeAdjustment(fitDelta)
 
   // ── Step 7: Gate evaluation ──────────────────────────────────────────────────
-  const anchorFabricClass = anchor.fabric_class as FabricClass
+  // Derive anchor fabric class from fiber_content when not stored (anchors saved pre-parser)
+  const anchorFabricClass: FabricClass = (() => {
+    if (anchor.fabric_class) return anchor.fabric_class as FabricClass
+    if (anchor.fiber_content) {
+      const match = anchor.fiber_content.match(
+        /(\d+(?:\.\d+)?)\s*%?\s*(?:elastane|spandex|lycra|elaspan|creora|roica|dorlastan|linel|espa)/i
+      )
+      return getFabricClass(match ? parseFloat(match[1]) : 0)
+    }
+    return 'rigid'
+  })()
   const anchorContractType = anchor.contract_type as ContractType
   const targetContractType = (targetSizeRange ? 'precision' : 'range') as ContractType
 

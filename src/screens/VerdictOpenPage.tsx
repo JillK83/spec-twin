@@ -67,9 +67,14 @@ export default function VerdictOpenPage() {
       name: 'Waist and Hip Fit',
       headline: auditOutput.riseMismatchWarning
         ? (auditOutput.riseMismatchNote ?? 'Rise differs from your preference.')
-        : 'Rise and fit contract align with your anchor.',
+        : auditOutput.contractGate
+          ? 'This item uses a different sizing system than your anchor — the fit may feel less exact.'
+          : 'Rise and fit contract align with your anchor.',
       status: pillarStatus(auditOutput.riseMismatchWarning || auditOutput.contractGate),
-      detail: auditOutput.riseMismatchNote ?? 'Rise matches your profile preference.',
+      detail: auditOutput.riseMismatchNote
+        ?? (auditOutput.contractGate
+          ? 'This item uses a more flexible size system than your anchor, so the fit may feel less exact.'
+          : 'Rise and fit contract align with your anchor.'),
     },
     {
       id: 'shape',
