@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { runAudit } from '../lib/audit'
@@ -23,11 +23,13 @@ export function AuditNewItemForm() {
   const [anchorLoading, setAnchorLoading] = useState(true)
   const [profileRise, setProfileRise] = useState<Rise | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const auditPromiseRef = useRef<ReturnType<typeof runAudit> | null>(null)
   const [formData, setFormData] = useState({
     brand: '',
     styleName: '',
     size: '',
     rise: '' as Rise | '',
+    silhouette: '',
     details: '',
     url: '',
   })
@@ -53,7 +55,7 @@ export function AuditNewItemForm() {
   }, [])
 
   useEffect(() => {
-    setFormData({ brand: '', styleName: '', size: '', rise: '', details: '', url: '' })
+    setFormData({ brand: '', styleName: '', size: '', rise: '', silhouette: '', details: '', url: '' })
     setErrors({})
   }, [])
 
@@ -73,6 +75,7 @@ export function AuditNewItemForm() {
     if (!formData.brand.trim()) newErrors.brand = 'Required.'
     if (!formData.size.trim()) newErrors.size = 'Required.'
     if (!formData.rise) newErrors.rise = 'Required.'
+    if (!formData.silhouette) newErrors.silhouette = 'Required.'
     if (!formData.details.trim()) newErrors.details = 'Required.'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -97,24 +100,27 @@ export function AuditNewItemForm() {
       return
     }
 
-    setIsLoading(true)
-  }
-
-  const handleLoadingComplete = async () => {
-    if (!anchor) return
-
     const userPrimaryRise: Rise = profileRise ?? (formData.rise as Rise)
 
-    const result = await runAudit({
+    auditPromiseRef.current = runAudit({
       anchorId: anchor.id,
       targetBrand: formData.brand.trim(),
       targetModel: formData.styleName.trim() || undefined,
       targetSize: formData.size.trim(),
+      targetSilhouette: formData.silhouette,
       targetFiberText: formData.details.trim(),
       targetRise: formData.rise as Rise,
       targetUrl: formData.url.trim() || undefined,
       userPrimaryRise,
     })
+
+    setIsLoading(true)
+  }
+
+  const handleLoadingComplete = async () => {
+    if (!anchor || !auditPromiseRef.current) return
+
+    const result = await auditPromiseRef.current
 
     if ('error' in result) {
       setIsLoading(false)
@@ -285,6 +291,23 @@ export function AuditNewItemForm() {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="silhouette" className="text-lg font-bold">This item's leg shape</Label>
+                <Select value={formData.silhouette} onValueChange={(v) => handleChange('silhouette', v)}>
+                  <SelectTrigger className={`w-full input-retro py-6 text-base h-auto ${errors.silhouette ? errorClass : ''}`}>
+                    <SelectValue placeholder="Select leg shape..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="skinny" className="font-bold">Skinny</SelectItem>
+                    <SelectItem value="straight" className="font-bold">Straight</SelectItem>
+                    <SelectItem value="relaxed_loose" className="font-bold">Relaxed / Loose</SelectItem>
+                    <SelectItem value="bootcut_flare" className="font-bold">Bootcut / Flare</SelectItem>
+                    <SelectItem value="wide_leg" className="font-bold">Wide Leg</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.silhouette && <p className="text-[var(--primary)] font-bold text-sm">{errors.silhouette}</p>}
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="details" className="text-lg font-bold">
                   Paste or enter fabric and care details
                 </Label>
@@ -332,7 +355,7 @@ export function AuditNewItemForm() {
               variant="outline"
               className="w-full sm:w-auto border-2 border-border font-bold text-base py-6 px-8 hover:bg-background shadow-[2px_2px_0px_0px_var(--border)] hover:shadow-[4px_4px_0px_0px_var(--border)] hover:-translate-y-0.5 transition-all"
               onClick={() => {
-                setFormData({ brand: '', styleName: '', size: '', rise: '', details: '', url: '' })
+                setFormData({ brand: '', styleName: '', size: '', rise: '', silhouette: '', details: '', url: '' })
                 setErrors({})
               }}
             >

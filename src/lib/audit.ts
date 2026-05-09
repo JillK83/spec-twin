@@ -8,7 +8,7 @@ import { getBrandOffset } from './engine/brandOffset'
 import { calculateFitDelta, mapDeltaToSizeAdjustment } from './engine/fitDelta'
 import { evaluateFabricGate, evaluateContractGate, evaluateRiseGate, evaluateRecoveryWarning } from './engine/gates'
 import { resolveOutputState } from './engine/resolver'
-import type { OutputState, ConfidenceLevel, FabricClass, RecoveryClass, ContractType, Rise, GateInputs, ResolverResult } from './engine/types'
+import type { OutputState, ConfidenceLevel, FabricClass, RecoveryClass, ContractType, Rise, Gender, GateInputs, ResolverResult } from './engine/types'
 import type { UserAnchor } from './database.types'
 
 export type AuditInput = {
@@ -16,6 +16,7 @@ export type AuditInput = {
   targetBrand: string
   targetModel?: string
   targetSize: string
+  targetSilhouette: string
   targetFiberText: string
   targetRise: Rise
   targetUrl?: string
@@ -41,6 +42,7 @@ export type AuditOutput = {
   targetRecoveryClass: RecoveryClass
   parserConfidence: number
   parserError?: string
+  inseamNote: string | null
 }
 
 const ENGINE_VERSION = 'open-mode-v1'
@@ -79,24 +81,25 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const sizeCapped = checkSizeCap(input.targetSize)
 
   // ── Step 5: Brand offset lookup ──────────────────────────────────────────────
+  const gender = (anchor.gender ?? 'womens') as Gender
   const { data: offsetRows } = await supabase
     .from('brand_offsets')
     .select('*')
     .eq('category', 'denim')
-    .eq('gender', 'womens')
+    .eq('gender', gender)
 
   // Fetch offset for anchor brand and target brand from the same pre-fetched rows
   const anchorBrandOffsetResult = getBrandOffset(
     anchor.brand_name,
     'denim',
-    'womens',
+    gender,
     offsetRows ?? []
   )
 
   const brandOffsetResult = getBrandOffset(
     input.targetBrand,
     'denim',
-    'womens',
+    gender,
     offsetRows ?? []
   )
 
@@ -109,19 +112,9 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const sizeAdjustment = mapDeltaToSizeAdjustment(fitDelta)
 
   // ── Step 7: Gate evaluation ──────────────────────────────────────────────────
-  // Derive anchor fabric class from fiber_content when not stored (anchors saved pre-parser)
-  const anchorFabricClass: FabricClass = (() => {
-    if (anchor.fabric_class) return anchor.fabric_class as FabricClass
-    if (anchor.fiber_content) {
-      const match = anchor.fiber_content.match(
-        /(\d+(?:\.\d+)?)\s*%?\s*(?:elastane|spandex|lycra|elaspan|creora|roica|dorlastan|linel|espa)/i
-      )
-      return getFabricClass(match ? parseFloat(match[1]) : 0)
-    }
-    return 'rigid'
-  })()
+  const anchorFabricClass: FabricClass = (anchor.fabric_class as FabricClass) ?? 'rigid'
   const anchorContractType = anchor.contract_type as ContractType
-  const targetContractType = (targetSizeRange ? 'precision' : 'range') as ContractType
+  const targetContractType: ContractType = /[a-zA-Z]/.test(input.targetSize.trim()) ? 'range' : 'precision'
 
   const fabricGateResult = evaluateFabricGate(anchorFabricClass, targetFabricClass)
   const contractGateResult = evaluateContractGate(anchorContractType, targetContractType)
@@ -147,8 +140,38 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   // ── Step 9: Build recommended size string ────────────────────────────────────
   const anchorWaist = parseInt(anchor.size?.split(/x/i)[0] ?? '0', 10)
   const recommendedWaist = anchorWaist + sizeAdjustment.adjustment
-  const anchorInseam = anchor.size?.split(/x/i)[1] ?? ''
-  const recommendedSize = `${recommendedWaist} x ${anchorInseam}`
+
+  const INSEAM_SUBTRACTION: Record<string, number> = {
+    skinny: 36,
+    straight: 35.5,
+    relaxed_loose: 35.5,
+    bootcut_flare: 35,
+    wide_leg: 34.5,
+  }
+
+  const anchorInseamFallback = anchor.anchor_inseam ?? parseInt(anchor.size?.split(/x/i)[1] ?? '0', 10)
+  const overrides = anchor.preferred_inseam_overrides as Record<string, number> | null
+  const overrideInseam = overrides?.[input.targetSilhouette] ?? null
+
+  let targetInseam: number
+  let inseamNote: string | null = null
+
+  if (overrideInseam !== null) {
+    targetInseam = overrideInseam
+  } else if (input.targetSilhouette === anchor.silhouette) {
+    targetInseam = anchorInseamFallback
+  } else {
+    // User height not stored at MVP — falls back to anchor_inseam until height is wired from onboarding
+    const userHeight = null as number | null
+    if (userHeight !== null && INSEAM_SUBTRACTION[input.targetSilhouette] !== undefined) {
+      targetInseam = Math.round(userHeight - INSEAM_SUBTRACTION[input.targetSilhouette])
+      inseamNote = 'Inseam adjusted for silhouette'
+    } else {
+      targetInseam = anchorInseamFallback
+    }
+  }
+
+  const recommendedSize = `${recommendedWaist} x ${targetInseam}`
 
   // ── Step 10: Save to product_audits ─────────────────────────────────────────
   const { data: savedAuditRaw, error: saveError } = await supabase
@@ -170,6 +193,8 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
       target_recovery_class: targetRecoveryClass,
       target_closure_type: targetClosureType,
       target_rise: input.targetRise,
+      target_silhouette: input.targetSilhouette,
+      target_inseam_suggested: targetInseam,
       brand_offset_used: brandOffsetResult.weightedOffset,
       drift_adjustment_used: brandOffsetResult.driftAdjustment,
       effective_offset: targetEffectiveOffset,
@@ -227,5 +252,6 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     targetRecoveryClass,
     parserConfidence,
     parserError,
+    inseamNote,
   }
 }

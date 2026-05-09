@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { parseProductDetails } from '../lib/parser'
+import { getFabricClass, getRecoveryClass } from '../lib/engine/normalization'
 import { Input } from './ui/magic/Input'
 import { Label } from './ui/magic/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/magic/Select'
@@ -71,12 +73,21 @@ export function AddAnchorForm() {
       return
     }
 
-    const [, inseamStr] = formData.size.replace(/\s/g, '').split('x')
+    const [, inseamStr] = formData.size.replace(/\s/g, '').split(/x/i)
     const anchorInseam = inseamStr ? parseInt(inseamStr, 10) : null
     const genderMap: Record<string, string> = { women: 'womens', men: 'mens', unisex: 'unisex' }
 
+    const parseResult = await parseProductDetails(formData.material.trim())
+    const parsed = parseResult.success ? parseResult.data : null
+    const elastanePct = parsed?.elastane_pct ?? 0
+    const polyPct = parsed?.poly_pct ?? null
+    const parserConfidence = parsed?.parser_confidence ?? 0
+    const fabricClass = getFabricClass(elastanePct)
+    const recoveryClass = getRecoveryClass(polyPct)
+
     const { data, error } = await supabase
       .from('user_anchors')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert({
         brand_model: formData.name,
         brand_name: formData.brand,
@@ -87,7 +98,12 @@ export function AddAnchorForm() {
         user_notes: formData.userNotes || null,
         anchor_inseam: anchorInseam,
         contract_type: formData.fitAllowance === 'forgiving' ? 'range' : 'precision',
-      })
+        elastane_pct: elastanePct,
+        poly_pct: polyPct,
+        parser_confidence: parserConfidence,
+        fabric_class: fabricClass,
+        recovery_class: recoveryClass,
+      } as any)
       .select()
 
     console.log('Anchor insert data:', data)

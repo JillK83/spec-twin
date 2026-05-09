@@ -263,6 +263,15 @@ Recommended size displays as waist x inseam: `"27 x 30"`
 | Audit form Size field | Waist only — "e.g. 27 or M, L" — inseam never entered on audit form |
 | Anchor form Size field | "e.g. 27x30 or 28x32" |
 
+### Known Gap — Brand Inseam Availability
+The engine derives a suggested inseam from height and silhouette but has no visibility into what inseam lengths a brand actually offers. If a user enters an available inseam that differs from their derived preference (e.g. their usual is 29" but the brand only offers 30" or 32"), the engine cannot flag that gap.
+The audit form currently captures waist only — inseam is never entered on the audit form. To surface this advisory, a future version would need to either:
+
+Add an optional inseam field to the audit form so the user can enter what's available
+Compare entered inseam against derived inseam and flag gaps beyond 1"
+
+Priority: post-MVP. Relevant especially for petite and tall users where brand inseam options are limited.
+
 ---
 
 ## Section 14: API Call Architecture
