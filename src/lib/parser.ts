@@ -2,7 +2,7 @@
 // Calls Gemini API to parse raw fabric/care text into structured data.
 // Swap GEMINI → Anthropic by changing the fetch URL, model string, and auth header.
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent'
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent'
 
 export type ParsedFabricData = {
   elastane_pct: number
@@ -58,21 +58,16 @@ export async function parseProductDetails(rawText: string): Promise<ParseResult>
 
     const json = await response.json()
     console.log('Gemini raw response:', JSON.stringify(json, null, 2))
-    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-    console.log('Gemini extracted text:', raw)
 
-    // Attempt 1: parse as-is
-    // Attempt 2: strip markdown fences and retry once
+    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+
+    const cleaned = raw.replace(/```json\n?|```\n?/g, '').trim()
+
     let parsed: ParsedFabricData | null = null
     try {
-      parsed = JSON.parse(raw)
+      parsed = JSON.parse(cleaned)
     } catch {
-      try {
-        const cleaned = raw.replace(/```json|```/g, '').trim()
-        parsed = JSON.parse(cleaned)
-      } catch {
-        return { success: false, parser_error: 'Malformed JSON from parser after retry' }
-      }
+      return { success: false, parser_error: 'Malformed JSON from parser after retry' }
     }
 
     if (parsed === null) {
