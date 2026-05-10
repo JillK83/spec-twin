@@ -24,5 +24,14 @@
 -- MVP NOTE: All fields above are stored in localStorage under key 'spec_twin_profile'
 -- as a single JSON object. The onboarding flow writes to localStorage on each
 -- screen completion. The audit engine reads from localStorage at run time.
+-- Secondary rise and silhouette preferences are collected at onboarding
+-- but not used in MVP gate logic. Stored in localStorage under
+-- spec_twin_profile.rise_secondary and spec_twin_profile.silhouette_secondary
+-- for future personalization.
+--
+-- Pre-populate anchor form rise and silhouette from localStorage
+-- rise_primary and silhouette_primary respectively. User can override
+-- for each specific garment. Garment values save to user_anchors.rise
+-- and user_anchors.silhouette — distinct from user preferences.
 -- Migrate to this table when auth is implemented.
 -- ============================================================
