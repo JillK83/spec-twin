@@ -60,6 +60,10 @@ export function resolveOutputState(gates: GateInputs): ResolverResult {
     return { outputState: 'smart_estimate', confidenceLevel, firedGates: fired }
   }
 
+  if (gates.coldStart) {
+    return { outputState: 'smart_estimate', confidenceLevel: 'MEDIUM', firedGates: fired }
+  }
+
   // Compounding uncertainty: fabric soft warning + size_up_2 → escalate per §10
   if (gates.fabricGate.type === 'SOFT_WARNING' && gates.sizeAdjustment >= 2) {
     return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired }
