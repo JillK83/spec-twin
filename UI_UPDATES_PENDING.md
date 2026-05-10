@@ -6,13 +6,13 @@ Work through in session order below. Each session is a separate Claude Code prom
 ---
 
 ## Session 2 — Wire localStorage for onboarding
-- [ ] Onboarding Screen 1 (rise): save rise_primary and rise_secondary 
+- [x] Onboarding Screen 1 (rise): save rise_primary and rise_secondary 
       to localStorage key 'spec_twin_profile' on Continue
-- [ ] Onboarding Screen 2 (silhouette): save silhouette_primary and 
+- [x] Onboarding Screen 2 (silhouette): save silhouette_primary and 
       silhouette_secondary to localStorage on Continue
-- [ ] Onboarding Screen 3 (height): save height_inches to localStorage on Continue
+- [x] Onboarding Screen 3 (height): save height_inches to localStorage on Continue
 - [ ] Screens 4 and 5: wire after 1–3 confirmed working
-- [ ] Audit engine: replace hardcoded profileRise = 'high' in 
+- [x] Audit engine: replace hardcoded profileRise = 'high' in 
       AuditNewItemForm.tsx with localStorage read from 
       spec_twin_profile.rise_primary
 

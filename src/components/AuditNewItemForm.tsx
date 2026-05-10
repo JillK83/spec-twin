@@ -46,8 +46,9 @@ export function AuditNewItemForm() {
       setAllAnchors(fetched)
       setAnchor(fetched[0] ?? null)
 
-      // user_profiles table not yet created — default to 'high' until onboarding persistence is wired
-      setProfileRise('high')
+      // reads rise_primary written by onboarding Screen 1; falls back to 'high' if onboarding not completed
+      const profile = JSON.parse(localStorage.getItem('spec_twin_profile') ?? '{}')
+      setProfileRise((profile.rise_primary as Rise) ?? 'high')
 
       setAnchorLoading(false)
     }
