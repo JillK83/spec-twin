@@ -97,7 +97,11 @@ export default function VerdictOpenPage() {
         garmentName={garmentName}
         anchorLabel={pageState?.anchorLabel ?? 'Your anchor'}
         recommendedSize={auditOutput.recommendedSize}
-        sizeNote={auditOutput.inseamNote ?? undefined}
+        sizeNote={
+          !auditOutput.inseamAvailable
+            ? 'Inseam not available — check brand size guide'
+            : (auditOutput.inseamNote ?? undefined)
+        }
         pillars={pillars}
         advisoryBannerText={auditOutput.riseMismatchNote ?? undefined}
         onReset={() => navigate('/audit/new')}

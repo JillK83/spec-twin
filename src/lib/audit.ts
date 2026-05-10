@@ -43,6 +43,7 @@ export type AuditOutput = {
   parserConfidence: number
   parserError?: string
   inseamNote: string | null
+  inseamAvailable: boolean
 }
 
 const ENGINE_VERSION = 'open-mode-v1'
@@ -150,17 +151,16 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     wide_leg: 34.5,
   }
 
-  const anchorInseamFallback = anchor.anchor_inseam ?? 0
   const overrides = anchor.preferred_inseam_overrides as Record<string, number> | null
   const overrideInseam = overrides?.[input.targetSilhouette] ?? null
 
-  let targetInseam: number
+  let targetInseam: number | null
   let inseamNote: string | null = null
 
   if (overrideInseam !== null) {
     targetInseam = overrideInseam
   } else if (input.targetSilhouette === anchor.silhouette) {
-    targetInseam = anchorInseamFallback
+    targetInseam = anchor.anchor_inseam
   } else {
     // User height not stored at MVP — falls back to anchor_inseam until height is wired from onboarding
     const userHeight = null as number | null
@@ -168,14 +168,18 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
       targetInseam = Math.round(userHeight - INSEAM_SUBTRACTION[input.targetSilhouette])
       inseamNote = 'Inseam adjusted for silhouette'
     } else {
-      targetInseam = anchorInseamFallback
+      targetInseam = anchor.anchor_inseam
     }
   }
+
+  const inseamAvailable = targetInseam !== null
 
   const recommendedSize =
     anchorWaist === null || targetWaist === null
       ? 'See brand size guide'
-      : `${anchorWaist + sizeAdjustment.adjustment} x ${targetInseam}`
+      : inseamAvailable
+        ? `${anchorWaist + sizeAdjustment.adjustment} x ${targetInseam as number}`
+        : `${anchorWaist + sizeAdjustment.adjustment}`
 
   // ── Step 10: Save to product_audits ─────────────────────────────────────────
   const { data: savedAuditRaw, error: saveError } = await supabase
@@ -258,5 +262,6 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     parserConfidence,
     parserError,
     inseamNote,
+    inseamAvailable,
   }
 }
