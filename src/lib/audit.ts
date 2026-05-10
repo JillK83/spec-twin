@@ -3,7 +3,7 @@
 
 import { supabase } from './supabase'
 import { parseProductDetails } from './parser'
-import { getSizeRangeFromLabel, checkSizeCap, getFabricClass, getRecoveryClass, parseWaistSize } from './engine/normalization'
+import { getSizeRangeFromLabel, checkSizeCap, getFabricClass, getRecoveryClass, parseWaistSize, parseInseam } from './engine/normalization'
 import { getBrandOffset } from './engine/brandOffset'
 import { calculateFitDelta, mapDeltaToSizeAdjustment } from './engine/fitDelta'
 import { evaluateFabricGate, evaluateContractGate, evaluateRiseGate, evaluateRecoveryWarning } from './engine/gates'
@@ -71,6 +71,8 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   // ── Step 3: Derive target fabric and recovery class ──────────────────────────
   const targetElastanePct = parsed?.elastane_pct ?? 0
   const targetPolyPct = parsed?.poly_pct ?? null
+  // rayon_pct parsed for future gate logic — not yet stored (column pending schema extension)
+  // const targetRayonPct = parsed?.rayon_pct ?? null
   const targetClosureType = parsed?.closure_type ?? 'zipper'
   const parserConfidence = parsed?.parser_confidence ?? 0
 
@@ -121,10 +123,12 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const fabricGateResult = evaluateFabricGate(anchorFabricClass, targetFabricClass)
   const contractGateResult = evaluateContractGate(anchorContractType, targetContractType)
   const riseGateResult = evaluateRiseGate(input.userPrimaryRise, input.targetRise)
-  const recoveryWarning = evaluateRecoveryWarning(
+  const recoveryResult = evaluateRecoveryWarning(
     anchor.recovery_class as RecoveryClass,
     targetRecoveryClass
   )
+  const recoveryWarning = recoveryResult.warned
+  const recoveryNote = recoveryResult.note
 
   // ── Step 8: Resolve output state ─────────────────────────────────────────────
   const gateInputs: GateInputs = {
@@ -151,16 +155,22 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     wide_leg: 34.5,
   }
 
+  const anchorInseam = anchor.anchor_inseam ?? parseInseam(anchor.size ?? '')
+
   const overrides = anchor.preferred_inseam_overrides as Record<string, number> | null
   const overrideInseam = overrides?.[input.targetSilhouette] ?? null
+
+  const targetSizeInseam = parseInseam(input.targetSize)
 
   let targetInseam: number | null
   let inseamNote: string | null = null
 
   if (overrideInseam !== null) {
     targetInseam = overrideInseam
+  } else if (targetSizeInseam !== null) {
+    targetInseam = targetSizeInseam
   } else if (input.targetSilhouette === anchor.silhouette) {
-    targetInseam = anchor.anchor_inseam
+    targetInseam = anchorInseam
   } else {
     // User height not stored at MVP — falls back to anchor_inseam until height is wired from onboarding
     const userHeight = null as number | null
@@ -168,7 +178,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
       targetInseam = Math.round(userHeight - INSEAM_SUBTRACTION[input.targetSilhouette])
       inseamNote = 'Inseam adjusted for silhouette'
     } else {
-      targetInseam = anchor.anchor_inseam
+      targetInseam = anchorInseam
     }
   }
 
@@ -197,6 +207,8 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
       target_fiber_content: input.targetFiberText,
       target_elastane_pct: targetElastanePct,
       target_poly_pct: targetPolyPct,
+      // TODO: add rayon_pct column to product_audits when schema is extended
+      // target_rayon_pct: parsed?.rayon_pct ?? null,
       target_fabric_class: targetFabricClass,
       target_recovery_class: targetRecoveryClass,
       target_closure_type: targetClosureType,
@@ -222,9 +234,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
         ? 'This style sits differently than your usual preference, which may affect how the waist and hip feel.'
         : null,
       recovery_warning: recoveryWarning,
-      recovery_note: recoveryWarning
-        ? 'This item may feel tighter at first and may loosen more through the day than your reference item.'
-        : null,
+      recovery_note: recoveryNote,
       engine_version: ENGINE_VERSION,
     } as any)
     .select('id')
@@ -254,9 +264,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
       ? 'This style sits differently than your usual preference, which may affect how the waist and hip feel.'
       : null,
     recoveryWarning,
-    recoveryNote: recoveryWarning
-      ? 'This item may feel tighter at first and may loosen more through the day than your reference item.'
-      : null,
+    recoveryNote,
     targetFabricClass,
     targetRecoveryClass,
     parserConfidence,

@@ -7,6 +7,7 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
 export type ParsedFabricData = {
   elastane_pct: number
   poly_pct: number | null   // null = absent from label, NOT zero percent
+  rayon_pct: number | null  // null = absent from label, NOT zero percent
   closure_type: 'zipper' | 'button_fly' | 'elastic' | 'drawstring' | 'none'
   parser_confidence: number // 0.0 – 1.0
 }
@@ -22,6 +23,7 @@ Return ONLY valid JSON with no preamble, no markdown, no backticks.
 Rules:
 - elastane_pct: extract as a number (0 if absent). Normalize ALL stretch fiber synonyms to this field: elastane, spandex, lycra, elaspan, creora, ROICA, dorlastan, linel, ESPA.
 - poly_pct: extract as a number if polyester is present. If polyester is NOT mentioned, return null — never return 0 or empty string for an absent field. null means data unavailable, not zero percent.
+- rayon_pct: extract as a number if any rayon-family fiber is present. Normalize ALL rayon synonyms to this field: rayon, viscose, lyocell, modal, tencel. If none are present, return null — never return 0 or empty string. null means data unavailable, not zero percent.
 - closure_type: one of "zipper", "button_fly", "elastic", "drawstring", "none". Infer from context if not explicit. Default to "zipper" for denim if no closure mentioned.
 - parser_confidence: float 0.0–1.0. 1.0 = all fields cleanly parsed. Reduce by 0.2 for each field that required inference. Reduce by 0.3 if input is vague or incomplete.
 
@@ -29,6 +31,7 @@ Output format:
 {
   "elastane_pct": number,
   "poly_pct": number | null,
+  "rayon_pct": number | null,
   "closure_type": "zipper" | "button_fly" | "elastic" | "drawstring" | "none",
   "parser_confidence": number
 }`
