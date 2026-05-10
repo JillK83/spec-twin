@@ -1,0 +1,28 @@
+-- ============================================================
+-- SPEC-TWIN FIT AUDITOR — ADDENDUM V4
+-- User Profiles table — FULL VISION ONLY
+-- DO NOT RUN AT MVP — profile data stored in localStorage at MVP
+-- Run after auth is implemented in full vision build
+-- ============================================================
+
+-- create table user_profiles (
+--   id                        uuid        default gen_random_uuid() primary key,
+--   user_id                   uuid        references auth.users(id) on delete cascade,
+--   rise_primary              text        check (rise_primary in ('high', 'mid', 'low')),
+--   rise_secondary            jsonb,
+--   silhouette_primary        text        check (silhouette_primary in ('skinny', 'straight', 'relaxed_loose', 'bootcut_flare', 'wide_leg')),
+--   silhouette_secondary      jsonb,
+--   height_inches             numeric,
+--   body_shape                text        check (body_shape in ('athletic_straight', 'pear', 'apple', 'hourglass')),
+--   fabric_preference         text        check (fabric_preference in ('rigid', 'comfort_stretch', 'high_stretch')),
+--   fabric_preference_secondary jsonb,
+--   preferred_inseam_overrides jsonb,
+--   created_at                timestamptz default now(),
+--   updated_at                timestamptz default now()
+-- );
+
+-- MVP NOTE: All fields above are stored in localStorage under key 'spec_twin_profile'
+-- as a single JSON object. The onboarding flow writes to localStorage on each
+-- screen completion. The audit engine reads from localStorage at run time.
+-- Migrate to this table when auth is implemented.
+-- ============================================================
