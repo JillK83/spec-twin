@@ -55,6 +55,20 @@ export function checkSizeCap(size: string): boolean {
   return range !== null && range.low >= 33
 }
 
+// ─── Waist size extraction ────────────────────────────────────────────────────
+// Returns the first number in 24–40 found in any size format.
+// '29' → 29, '29x30' → 29, 'size 30 (US 10)' → 30, '28 short' → 28, 'M' → null
+
+export function parseWaistSize(sizeString: string): number | null {
+  const matches = sizeString.match(/\d+(?:\.\d+)?/g)
+  if (!matches) return null
+  for (const m of matches) {
+    const n = parseFloat(m)
+    if (n >= 24 && n <= 40) return n
+  }
+  return null
+}
+
 // ─── Fabric classification ────────────────────────────────────────────────────
 // Derived from normalized elastane_pct. Thresholds per SPEC_TWIN_LOGIC.md §2.
 
