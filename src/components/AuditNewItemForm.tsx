@@ -235,32 +235,34 @@ export function AuditNewItemForm() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-2">
-                <Label htmlFor="brand" className="text-lg font-bold">Brand</Label>
-                <Input
-                  id="brand"
-                  placeholder="e.g. AGOLDE"
-                  autoComplete="off"
-                  className={`input-retro text-lg py-6 ${errors.brand ? errorClass : ''}`}
-                  value={formData.brand}
-                  onChange={(e) => handleChange('brand', e.target.value)}
-                />
-                {errors.brand && <p className="text-[var(--primary)] font-bold text-sm">{errors.brand}</p>}
-              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="brand" className="text-lg font-bold">Brand</Label>
+                  <Input
+                    id="brand"
+                    placeholder="e.g. AGOLDE"
+                    autoComplete="off"
+                    className={`input-retro text-lg py-6 ${errors.brand ? errorClass : ''}`}
+                    value={formData.brand}
+                    onChange={(e) => handleChange('brand', e.target.value)}
+                  />
+                  {errors.brand && <p className="text-[var(--primary)] font-bold text-sm">{errors.brand}</p>}
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="styleName" className="text-lg font-bold">
-                  Style / Model Name{' '}
-                  <span className="text-muted-foreground font-normal text-sm ml-1">(Optional)</span>
-                </Label>
-                <Input
-                  id="styleName"
-                  placeholder="e.g. 90s Cheeky, 501 Original"
-                  autoComplete="off"
-                  className="input-retro text-lg py-6"
-                  value={formData.styleName}
-                  onChange={(e) => handleChange('styleName', e.target.value)}
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="styleName" className="text-lg font-bold">
+                    Style / Model{' '}
+                    <span className="text-muted-foreground font-normal text-sm">(Optional)</span>
+                  </Label>
+                  <Input
+                    id="styleName"
+                    placeholder="e.g. 90s Cheeky"
+                    autoComplete="off"
+                    className="input-retro text-lg py-6"
+                    value={formData.styleName}
+                    onChange={(e) => handleChange('styleName', e.target.value)}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -276,36 +278,38 @@ export function AuditNewItemForm() {
                 {errors.size && <p className="text-[var(--primary)] font-bold text-sm">{errors.size}</p>}
               </div>
 
-              <div className="space-y-3">
-                <Label className="text-lg font-bold block">This item's rise</Label>
-                <ToggleGroup
-                  type="single"
-                  value={formData.rise}
-                  onValueChange={(v) => v && handleChange('rise', String(v))}
-                  className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
-                >
-                  <ToggleGroupItem value="high" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
-                  <ToggleGroupItem value="mid" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
-                  <ToggleGroupItem value="low" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Low</ToggleGroupItem>
-                </ToggleGroup>
-                {errors.rise && <p className="text-[var(--primary)] font-bold text-sm">{errors.rise}</p>}
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label className="text-lg font-bold block">This item's rise</Label>
+                  <ToggleGroup
+                    type="single"
+                    value={formData.rise}
+                    onValueChange={(v) => v && handleChange('rise', String(v))}
+                    className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
+                  >
+                    <ToggleGroupItem value="high" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
+                    <ToggleGroupItem value="mid" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
+                    <ToggleGroupItem value="low" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Low</ToggleGroupItem>
+                  </ToggleGroup>
+                  {errors.rise && <p className="text-[var(--primary)] font-bold text-sm">{errors.rise}</p>}
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="silhouette" className="text-lg font-bold">This item's leg shape</Label>
-                <Select value={formData.silhouette} onValueChange={(v) => handleChange('silhouette', v)}>
-                  <SelectTrigger className={`w-full input-retro py-6 text-base h-auto ${errors.silhouette ? errorClass : ''}`}>
-                    <SelectValue placeholder="Select leg shape..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="skinny" className="font-bold">Skinny</SelectItem>
-                    <SelectItem value="straight" className="font-bold">Straight</SelectItem>
-                    <SelectItem value="relaxed_loose" className="font-bold">Relaxed / Loose</SelectItem>
-                    <SelectItem value="bootcut_flare" className="font-bold">Bootcut / Flare</SelectItem>
-                    <SelectItem value="wide_leg" className="font-bold">Wide Leg</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.silhouette && <p className="text-[var(--primary)] font-bold text-sm">{errors.silhouette}</p>}
+                <div className="space-y-2">
+                  <Label htmlFor="silhouette" className="text-lg font-bold">This item's leg shape</Label>
+                  <Select value={formData.silhouette} onValueChange={(v) => handleChange('silhouette', v)}>
+                    <SelectTrigger className={`w-full input-retro py-6 text-base h-auto ${errors.silhouette ? errorClass : ''}`}>
+                      <SelectValue placeholder="Select leg shape..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="skinny" className="font-bold">Skinny</SelectItem>
+                      <SelectItem value="straight" className="font-bold">Straight</SelectItem>
+                      <SelectItem value="relaxed_loose" className="font-bold">Relaxed / Loose</SelectItem>
+                      <SelectItem value="bootcut_flare" className="font-bold">Bootcut / Flare</SelectItem>
+                      <SelectItem value="wide_leg" className="font-bold">Wide Leg</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.silhouette && <p className="text-[var(--primary)] font-bold text-sm">{errors.silhouette}</p>}
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -345,7 +349,7 @@ export function AuditNewItemForm() {
                   onChange={(e) => handleChange('url', e.target.value)}
                 />
                 <p className="text-muted-foreground font-normal text-base">
-                  Stored for reference only — no scraping.
+                  Save the link to revisit this item later.
                 </p>
               </div>
             </form>

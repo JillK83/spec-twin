@@ -22,14 +22,26 @@ export function AddAnchorForm() {
     category: 'denim',
     size: '',
     gender: 'unisex',
-    fitAllowance: 'moderate',
+    rise: '',
+    silhouette: '',
     material: '',
     userNotes: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    setFormData({ name: '', brand: '', category: 'denim', size: '', gender: 'unisex', fitAllowance: 'moderate', material: '', userNotes: '' })
+    const profile = JSON.parse(localStorage.getItem('spec_twin_profile') ?? '{}')
+    setFormData({
+      name: '',
+      brand: '',
+      category: 'denim',
+      size: '',
+      gender: 'unisex',
+      rise: (profile.rise_primary as string) ?? '',
+      silhouette: (profile.silhouette_primary as string) ?? '',
+      material: '',
+      userNotes: '',
+    })
     setErrors({})
   }, [])
 
@@ -51,6 +63,8 @@ export function AddAnchorForm() {
     if (!formData.category) newErrors.category = 'Required.'
     if (!formData.size.trim()) newErrors.size = 'Required.'
     if (!formData.gender) newErrors.gender = 'Required.'
+    if (!formData.rise) newErrors.rise = 'Required.'
+    if (!formData.silhouette) newErrors.silhouette = 'Required.'
     if (!formData.material.trim()) newErrors.material = 'Required.'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -75,6 +89,7 @@ export function AddAnchorForm() {
 
     const [, inseamStr] = formData.size.replace(/\s/g, '').split(/x/i)
     const anchorInseam = inseamStr ? parseInt(inseamStr, 10) : null
+    const anchorContractType = /\d/.test(formData.size.trim().split(/x/i)[0].trim()) ? 'precision' : 'range'
     const genderMap: Record<string, string> = { women: 'womens', men: 'mens', unisex: 'unisex' }
 
     const parseResult = await parseProductDetails(formData.material.trim())
@@ -97,7 +112,9 @@ export function AddAnchorForm() {
         fiber_content: formData.material,
         user_notes: formData.userNotes || null,
         anchor_inseam: anchorInseam,
-        contract_type: formData.fitAllowance === 'forgiving' ? 'range' : 'precision',
+        contract_type: anchorContractType,
+        rise: formData.rise || null,
+        silhouette: formData.silhouette || null,
         elastane_pct: elastanePct,
         poly_pct: polyPct,
         parser_confidence: parserConfidence,
@@ -213,7 +230,7 @@ export function AddAnchorForm() {
               <div className="space-y-2">
                 <Label htmlFor="category" className="text-lg font-bold">Category</Label>
                 <Select value={formData.category} onValueChange={(v) => handleChange('category', v)}>
-                  <SelectTrigger className={`w-full input-retro py-6 text-base h-auto ${errors.category ? errorClass : ''}`}>
+                  <SelectTrigger className={`w-full input-retro py-6 text-lg h-auto ${errors.category ? errorClass : ''}`}>
                     <SelectValue placeholder="Select category..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -249,7 +266,7 @@ export function AddAnchorForm() {
               )}
             </div>
 
-            {/* Gender & Fit Allowance */}
+            {/* Gender & Rise */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <Label className="text-lg font-bold block">Gender</Label>
@@ -267,34 +284,37 @@ export function AddAnchorForm() {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Label className="text-lg font-bold block">
-                    Fit Allowance{' '}
-                    <span className="text-muted-foreground font-normal text-sm ml-1">(Optional)</span>
-                  </Label>
-                  <Tooltip>
-                    <TooltipTrigger className="text-muted-foreground hover:text-foreground transition-colors">
-                      <Info className="w-4 h-4" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-transparent border-none shadow-none p-0">
-                      <div className="sticker-teal">
-                        Strict: Snug, no-stretch feel.<br />
-                        Forgiving: Easy fit that moves with you.
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+                <Label className="text-lg font-bold block">Rise</Label>
                 <ToggleGroup
                   type="single"
-                  value={formData.fitAllowance}
-                  onValueChange={(v) => v && handleChange('fitAllowance', String(v))}
-                  className="justify-start bg-muted p-1 rounded-xl border-2 border-border"
+                  value={formData.rise}
+                  onValueChange={(v) => v && handleChange('rise', String(v))}
+                  className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
                 >
-                  <ToggleGroupItem value="strict" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Strict</ToggleGroupItem>
-                  <ToggleGroupItem value="moderate" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Moderate</ToggleGroupItem>
-                  <ToggleGroupItem value="forgiving" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Forgiving</ToggleGroupItem>
+                  <ToggleGroupItem value="high" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
+                  <ToggleGroupItem value="mid" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
+                  <ToggleGroupItem value="low" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Low</ToggleGroupItem>
                 </ToggleGroup>
+                {errors.rise && <p className="text-[var(--primary)] font-bold text-sm">{errors.rise}</p>}
               </div>
+            </div>
+
+            {/* Silhouette */}
+            <div className="space-y-2">
+              <Label htmlFor="silhouette" className="text-lg font-bold">Silhouette</Label>
+              <Select value={formData.silhouette} onValueChange={(v) => handleChange('silhouette', v)}>
+                <SelectTrigger className={`w-full input-retro py-6 text-lg h-auto ${errors.silhouette ? errorClass : ''}`}>
+                  <SelectValue placeholder="Select silhouette..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="skinny" className="font-bold">Skinny</SelectItem>
+                  <SelectItem value="straight" className="font-bold">Straight</SelectItem>
+                  <SelectItem value="relaxed_loose" className="font-bold">Relaxed / Loose</SelectItem>
+                  <SelectItem value="bootcut_flare" className="font-bold">Bootcut / Flare</SelectItem>
+                  <SelectItem value="wide_leg" className="font-bold">Wide Leg</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.silhouette && <p className="text-[var(--primary)] font-bold text-sm">{errors.silhouette}</p>}
             </div>
 
             {/* Material Composition */}
@@ -314,7 +334,7 @@ export function AddAnchorForm() {
               </div>
               <Textarea
                 id="material"
-                maxLength={68}
+                maxLength={90}
                 rows={2}
                 placeholder="e.g. 98% Cotton, 2% Elastane"
                 autoComplete="off"
@@ -355,7 +375,7 @@ export function AddAnchorForm() {
             variant="outline"
             className="w-full sm:w-auto border-2 border-border font-bold text-base py-6 px-8 hover:bg-background shadow-[2px_2px_0px_0px_var(--border)] hover:shadow-[4px_4px_0px_0px_var(--border)] hover:-translate-y-0.5 transition-all"
             onClick={() => {
-              setFormData({ name: '', brand: '', category: 'denim', size: '', gender: 'unisex', fitAllowance: 'moderate', material: '', userNotes: '' })
+              setFormData({ name: '', brand: '', category: 'denim', size: '', gender: 'unisex', rise: '', silhouette: '', material: '', userNotes: '' })
               setErrors({})
             }}
           >
