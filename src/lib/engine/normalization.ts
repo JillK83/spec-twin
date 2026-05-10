@@ -57,15 +57,60 @@ export function checkSizeCap(size: string): boolean {
 
 // ─── Waist size extraction ────────────────────────────────────────────────────
 // Returns the first number in 24–40 found in any size format.
-// '29' → 29, '29x30' → 29, 'size 30 (US 10)' → 30, '28 short' → 28, 'M' → null
+// Women's numeric sizes (0–16) are mapped to their midpoint waist before the range check.
+// '29' → 29, '29x30' → 29, 'size 30 (US 10)' → 30, '10 regular' → 30, 'M' → null
+
+export const WOMENS_NUMERIC_TO_WAIST: Record<number, number> = {
+  0: 25, 2: 26, 4: 27, 6: 28, 8: 29,
+  10: 30, 12: 31, 14: 32, 16: 33
+}
 
 export function parseWaistSize(sizeString: string): number | null {
   const matches = sizeString.match(/\d+(?:\.\d+)?/g)
   if (!matches) return null
   for (const m of matches) {
     const n = parseFloat(m)
+    const mapped = WOMENS_NUMERIC_TO_WAIST[n]
+    if (mapped !== undefined) return mapped
     if (n >= 24 && n <= 40) return n
   }
+  return null
+}
+
+// ─── Inseam extraction ───────────────────────────────────────────────────────
+// Numeric extraction (x-split) takes precedence. Falls back to descriptor aliases.
+// '29x30' → 30, '28 short' → 28, '10 regular' → 30, 'M' → null
+
+type InseamDescriptor = 'extra_short' | 'short' | 'regular' | 'long' | 'tall'
+
+const INSEAM_MAP: Record<InseamDescriptor, number> = {
+  extra_short: 26, short: 28, regular: 30, long: 32, tall: 34
+}
+
+const INSEAM_ALIASES: Record<string, InseamDescriptor> = {
+  xs: 'extra_short', xshort: 'extra_short',
+  'x-short': 'extra_short', 'extra short': 'extra_short', 'extra_short': 'extra_short',
+  s: 'short', short: 'short',
+  r: 'regular', reg: 'regular', regular: 'regular',
+  l: 'long', long: 'long',
+  t: 'tall', tall: 'tall'
+}
+
+export function parseInseam(sizeString: string): number | null {
+  // Numeric extraction — segment after x separator takes precedence
+  const segments = sizeString.split(/x/i)
+  if (segments.length >= 2) {
+    const n = parseInt(segments[1].trim(), 10)
+    if (!isNaN(n) && n >= 20 && n <= 40) return n
+  }
+
+  // Descriptor alias scan — longest alias key first to prevent short keys matching first
+  const lower = sizeString.toLowerCase()
+  const aliasKeys = Object.keys(INSEAM_ALIASES).sort((a, b) => b.length - a.length)
+  for (const key of aliasKeys) {
+    if (lower.includes(key)) return INSEAM_MAP[INSEAM_ALIASES[key]]
+  }
+
   return null
 }
 

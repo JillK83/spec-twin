@@ -142,6 +142,8 @@ Any recommendation where the anchor or target size falls into the extended size 
 
 This applies regardless of gate logic or brand offset results.
 
+Note: Women's numeric size 16 maps to waist 33" via the conversion table in `parseWaistSize` and will trigger the size cap rule.
+
 ---
 
 ## Section 9: Brand Offset Lookup Pattern
@@ -271,6 +273,17 @@ Add an optional inseam field to the audit form so the user can enter what's avai
 Compare entered inseam against derived inseam and flag gaps beyond 1"
 
 Priority: post-MVP. Relevant especially for petite and tall users where brand inseam options are limited.
+
+### Size Format Normalization
+
+**Women's Numeric → Waist Conversion**
+Sizes 0–16 (even numbers) map to waist 25–33". Used by `parseWaistSize` before the 24–40 range check. Example: size 10 → waist 30.
+
+**Inseam Descriptor → Inches**
+extra_short: 26, short: 28, regular: 30, long: 32, tall: 34. Aliases normalized to canonical descriptor before lookup. Example: 'x-short', 'xs', 'xshort' all resolve to extra_short → 26. Numeric inseam takes precedence over descriptors when both are present.
+
+**Known Gap — Petite, Tall, Plus size ranges**
+These grade differently than standard women's 0–16 and are not supported at MVP. Inputs using petite or plus sizing will return null from `parseWaistSize` and show 'See brand size guide'.
 
 ---
 
