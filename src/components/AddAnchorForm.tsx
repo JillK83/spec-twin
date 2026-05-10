@@ -233,7 +233,7 @@ export function AddAnchorForm() {
                   <SelectTrigger className={`w-full input-retro py-6 text-lg h-auto ${errors.category ? errorClass : ''}`}>
                     <SelectValue placeholder="Select category..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="w-[var(--radix-select-trigger-width)]">
                     <SelectItem value="denim" className="font-bold">Denim</SelectItem>
                     <SelectItem value="woven-tops" disabled>Woven Tops (coming soon)</SelectItem>
                     <SelectItem value="knit-tops" disabled>Knit Tops (coming soon)</SelectItem>
