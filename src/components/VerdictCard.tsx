@@ -150,9 +150,13 @@ export function VerdictCard({
         <span className="font-mono text-xs uppercase tracking-[0.13em] text-muted-foreground mb-2">
           {sizeLabel}
         </span>
-        <span className={`font-heading font-black text-7xl leading-none ${sizeValueClass}`}>
-          {recommendedSize}
-        </span>
+        {recommendedSize === 'See brand size guide' ? (
+          <p className="font-mono text-sm text-muted-foreground text-center">{recommendedSize}</p>
+        ) : (
+          <span className={`font-heading font-black text-7xl leading-none ${sizeValueClass}`}>
+            {recommendedSize}
+          </span>
+        )}
         {sizeNote ? (
           <span className="font-mono text-xs text-muted-foreground mt-3">{sizeNote}</span>
         ) : isEstimateOrReduced ? (
