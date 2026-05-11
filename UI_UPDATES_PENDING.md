@@ -19,28 +19,28 @@ Work through in session order below. Each session is a separate Claude Code prom
 ---
 
 ## Session 3 — Anchor form fields
-- [ ] Add Rise toggle (High / Mid / Low) — required, saves to 
+- [x] Add Rise toggle (High / Mid / Low) — required, saves to 
       user_anchors.rise. Pre-populate from localStorage rise_primary.
       User can override for this specific garment.
-- [ ] Add Silhouette dropdown — required, saves to user_anchors.silhouette.
+- [x] Add Silhouette dropdown — required, saves to user_anchors.silhouette.
       Pre-populate from localStorage silhouette_primary.
       User can override for this specific garment.
-- [ ] Remove Fit Allowance toggle entirely — not wired to engine logic,
+- [x] Remove Fit Allowance toggle entirely — not wired to engine logic,
       creates false expectations
-- [ ] Expand Material Composition maxLength from 68 to 90
+- [x] Expand Material Composition maxLength from 68 to 90
 
 ---
 
 ## Session 4 — UI cleanup pass
 - [ ] Audit form: leg shape dropdown width — should match brand/style 
       field width, not full width
-- [ ] Audit form: leg shape dropdown display labels — show 'Bootcut / Flare'
+- [x] Audit form: leg shape dropdown display labels — show 'Bootcut / Flare'
       not 'bootcut_flare', 'Relaxed / Loose' not 'relaxed_loose', etc.
       Apply same label mapping to all engine value dropdowns
-- [ ] Audit form: Product URL helper text — replace 
+- [x] Audit form: Product URL helper text — replace 
       'Stored for reference only — no scraping' with 
       'Save the link to revisit this item later.'
-- [ ] Audit form: Product URL field — add onPaste handler to strip query 
+- [x] Audit form: Product URL field — add onPaste handler to strip query 
       parameters. Keep base URL only, discard everything after '?'
 - [ ] Anchor form: Category dropdown — fix formatting and styling issues
 - [ ] Vault dashboard: anchor cards — read rise and silhouette from 
@@ -74,14 +74,23 @@ Work through in session order below. Each session is a separate Claude Code prom
 
 ---
 
-## Known Gaps — Post-MVP
-- [ ] Brand inseam availability: engine has no visibility into what inseam 
-      lengths a brand offers. Documented in ENGINEERING_NOTES Section 13.
-- [ ] Petite, tall, plus size ranges: grade differently from standard 
-      women's 0–16, not supported at MVP
-- [ ] Rayon/viscose columns: rayon_pct parsed by Gemini but not stored.
-      Add rayon_pct to user_anchors and product_audits when schema extended.
-      TODO comment already in audit.ts at the storage point.
-- [ ] Fit Allowance toggle: collected on anchor form but not wired to 
-      engine. Remove from form at Session 3, revisit in full vision.
-- [ ] user_profiles table: see ADDENDUM_V4.sql. Implement when auth added.
+## Session 4 continued — carry into next session
+- [ ] Style / Model field on anchor form
+- [ ] Confidence level LOW vs MEDIUM mismatch — single soft 
+      warning should return MEDIUM not LOW
+- [ ] Inseam note capitalization — uppercase
+- [ ] Category trigger shows Denim not denim
+- [ ] Brand/Category width parity on anchor form
+- [ ] Size normalisation — store 27x30 not 27X30
+- [ ] MD files update — CLAUDE.md, ENGINEERING_NOTES.md, 
+      README.md reference bar format string
+
+---
+
+## Known Gaps — confirmed post-MVP
+- [ ] Vault not wired to real Supabase data
+- [ ] model_name null until Style/Model field lands
+- [ ] Rayon/viscose parsed but not stored
+- [ ] Brand inseam availability
+- [ ] user_profiles table
+- [ ] Post-purchase feedback loop UI
