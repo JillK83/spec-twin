@@ -49,24 +49,22 @@ export function resolveOutputState(gates: GateInputs): ResolverResult {
 
   const confidenceLevel = deriveConfidenceLevel(gates)
 
+  const coldStart = gates.coldStart
+
   if (gates.sizeCap) {
-    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired }
+    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired, coldStart }
   }
 
   const hasHardStop =
     gates.fabricGate.type   === 'HARD_STOP' ||
     gates.contractGate.type === 'HARD_STOP'
   if (hasHardStop) {
-    return { outputState: 'smart_estimate', confidenceLevel, firedGates: fired }
-  }
-
-  if (gates.coldStart) {
-    return { outputState: 'smart_estimate', confidenceLevel: 'MEDIUM', firedGates: fired }
+    return { outputState: 'smart_estimate', confidenceLevel, firedGates: fired, coldStart }
   }
 
   // Compounding uncertainty: fabric soft warning + size_up_2 → escalate per §10
   if (gates.fabricGate.type === 'SOFT_WARNING' && gates.sizeAdjustment >= 2) {
-    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired }
+    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired, coldStart }
   }
 
   const hasSoftWarning =
@@ -75,8 +73,8 @@ export function resolveOutputState(gates: GateInputs): ResolverResult {
     gates.riseGate.type     === 'SOFT_WARNING' ||
     gates.recoveryWarning
   if (hasSoftWarning) {
-    return { outputState: 'fit_advisory', confidenceLevel, firedGates: fired }
+    return { outputState: 'fit_advisory', confidenceLevel, firedGates: fired, coldStart }
   }
 
-  return { outputState: 'verified_fit', confidenceLevel, firedGates: fired }
+  return { outputState: 'verified_fit', confidenceLevel, firedGates: fired, coldStart }
 }

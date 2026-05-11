@@ -50,4 +50,5 @@ export type ResolverResult = {
   outputState: OutputState
   confidenceLevel: ConfidenceLevel
   firedGates: string[]
+  coldStart: boolean
 }

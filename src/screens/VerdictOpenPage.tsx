@@ -106,7 +106,11 @@ export default function VerdictOpenPage() {
         advisoryBannerText={auditOutput.riseMismatchNote ?? undefined}
         onReset={() => navigate('/audit/new')}
         footerNote={
-          auditOutput.parserError ? `Parser note: ${auditOutput.parserError}` : undefined
+          auditOutput.coldStart
+            ? 'New to our system — treat this as a starting point.'
+            : auditOutput.parserError
+              ? `Parser note: ${auditOutput.parserError}`
+              : undefined
         }
       />
     </div>

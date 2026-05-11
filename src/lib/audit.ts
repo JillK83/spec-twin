@@ -44,6 +44,7 @@ export type AuditOutput = {
   parserError?: string
   inseamNote: string | null
   inseamAvailable: boolean
+  coldStart: boolean
 }
 
 const ENGINE_VERSION = 'open-mode-v1'
@@ -271,5 +272,6 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     parserError,
     inseamNote,
     inseamAvailable,
+    coldStart: resolved.coldStart,
   }
 }
