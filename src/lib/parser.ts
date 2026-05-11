@@ -49,17 +49,24 @@ export async function parseProductDetails(rawText: string): Promise<ParseResult>
   }
 
   try {
-    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
+    const delays = [2000, 4000]
+    let response: Response | null = null
 
-    if (!response.ok) {
-      return { success: false, parser_error: `API error: ${response.status}` }
+    for (let attempt = 0; attempt < 3; attempt++) {
+      response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+      if (response.status !== 503) break
+      if (attempt < 2) await new Promise(res => setTimeout(res, delays[attempt]))
     }
 
-    const json = await response.json()
+    if (!response!.ok) {
+      return { success: false, parser_error: `API error: ${response!.status}` }
+    }
+
+    const json = await response!.json()
     console.log('Gemini raw response:', JSON.stringify(json, null, 2))
 
     const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
