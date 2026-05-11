@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/magic/Tooltip'
 import { toast } from 'sonner'
 import { Info, Sparkles, Tag, AlertTriangle } from 'lucide-react'
+import { SILHOUETTE_LABELS } from '../lib/anchorLabel'
 
 export function AddAnchorForm() {
   const navigate = useNavigate()
@@ -190,26 +191,20 @@ export function AddAnchorForm() {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Garment Name */}
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="name" className="text-lg font-bold">Garment Name</Label>
-                <Tooltip>
-                  <TooltipTrigger className="text-muted-foreground hover:text-foreground transition-colors">
-                    <Info className="w-4 h-4" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-transparent border-none shadow-none p-0">
-                    <div className="sticker-teal">Be specific! e.g. 'Vintage 1990s Levi's 501'</div>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+              <Label htmlFor="name" className="text-lg font-bold">Garment Name</Label>
               <Input
                 id="name"
-                placeholder="e.g. Levi's dark blue low rise denim."
+                placeholder="e.g. My dark wash everyday jean"
                 autoComplete="off"
                 className={`input-retro text-lg py-6 ${errors.name ? errorClass : ''}`}
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
               />
-              {errors.name && <p className="text-[var(--primary)] font-bold text-sm">{errors.name}</p>}
+              {errors.name ? (
+                <p className="text-[var(--primary)] font-bold text-sm">{errors.name}</p>
+              ) : (
+                <p className="text-muted-foreground font-normal text-base">Your personal label for the Vault — Brand and Model are used for your audit</p>
+              )}
             </div>
 
             {/* Brand & Category */}
@@ -304,7 +299,9 @@ export function AddAnchorForm() {
               <Label htmlFor="silhouette" className="text-lg font-bold">Silhouette</Label>
               <Select value={formData.silhouette} onValueChange={(v) => handleChange('silhouette', v)}>
                 <SelectTrigger className={`w-full input-retro py-6 text-lg h-auto ${errors.silhouette ? errorClass : ''}`}>
-                  <SelectValue placeholder="Select silhouette..." />
+                  {formData.silhouette
+                    ? <span>{SILHOUETTE_LABELS[formData.silhouette]}</span>
+                    : <SelectValue placeholder="Select silhouette..." />}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="skinny" className="font-bold">Skinny</SelectItem>

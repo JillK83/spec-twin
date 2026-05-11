@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { Search, AlertTriangle } from 'lucide-react'
 import type { Rise } from '../lib/engine/types'
 import type { UserAnchor } from '../lib/database.types'
+import { buildAnchorLabel, SILHOUETTE_LABELS } from '../lib/anchorLabel'
 
 export function AuditNewItemForm() {
   const navigate = useNavigate()
@@ -144,7 +145,7 @@ export function AuditNewItemForm() {
         auditOutput: result,
         targetBrand: formData.brand.trim(),
         targetModel: formData.styleName.trim() || undefined,
-        anchorLabel: anchor ? `${anchor.brand_model}, Size ${anchor.size}` : 'Your anchor',
+        anchorLabel: anchor ? buildAnchorLabel(anchor) : 'Your anchor',
       },
     })
   }
@@ -208,26 +209,20 @@ export function AuditNewItemForm() {
 
           <CardContent className="p-6 sm:p-8 space-y-8">
             <div className="space-y-2">
-              <Label className="text-lg font-bold block">Compare against</Label>
+              <Label className="text-lg font-bold block">Your reference item</Label>
               <Select
-                value={anchor ? `${anchor.brand_model}, Size ${anchor.size}` : ''}
-                onValueChange={(v) =>
-                  setAnchor(
-                    allAnchors.find((a) => `${a.brand_model}, Size ${a.size}` === v) ?? null
-                  )
-                }
+                value={anchor?.id ?? ''}
+                onValueChange={(v) => setAnchor(allAnchors.find((a) => a.id === v) ?? null)}
               >
                 <SelectTrigger className="w-full input-retro py-6 text-base h-auto">
-                  <SelectValue placeholder="Select an anchor..." />
+                  {anchor
+                    ? <span>{buildAnchorLabel(anchor)}</span>
+                    : <SelectValue placeholder="Select your reference item..." />}
                 </SelectTrigger>
                 <SelectContent>
                   {allAnchors.map((a) => (
-                    <SelectItem
-                      key={a.id}
-                      value={`${a.brand_model}, Size ${a.size}`}
-                      className="font-bold"
-                    >
-                      {a.brand_model}, Size {a.size}
+                    <SelectItem key={a.id} value={a.id} className="font-bold">
+                      {buildAnchorLabel(a)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -297,8 +292,10 @@ export function AuditNewItemForm() {
                 <div className="space-y-2">
                   <Label htmlFor="silhouette" className="text-lg font-bold">This item's leg shape</Label>
                   <Select value={formData.silhouette} onValueChange={(v) => handleChange('silhouette', v)}>
-                    <SelectTrigger className={`w-full input-retro py-6 text-base h-auto ${errors.silhouette ? errorClass : ''}`}>
-                      <SelectValue placeholder="Select leg shape..." />
+                    <SelectTrigger className={`w-full input-retro py-2.5 text-base h-auto ${errors.silhouette ? errorClass : ''}`}>
+                      {formData.silhouette
+                        ? <span>{SILHOUETTE_LABELS[formData.silhouette]}</span>
+                        : <SelectValue placeholder="Select leg shape..." />}
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="skinny" className="font-bold">Skinny</SelectItem>
@@ -347,6 +344,11 @@ export function AuditNewItemForm() {
                   className="input-retro py-6 text-base font-mono placeholder:font-mono"
                   value={formData.url}
                   onChange={(e) => handleChange('url', e.target.value)}
+                  onPaste={(e) => {
+                    e.preventDefault()
+                    const pasted = e.clipboardData.getData('text')
+                    handleChange('url', pasted.split('?')[0])
+                  }}
                 />
                 <p className="text-muted-foreground font-normal text-base">
                   Save the link to revisit this item later.
