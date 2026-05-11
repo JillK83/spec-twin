@@ -225,7 +225,7 @@ export function VerdictCard({
                 if (isDemoMode) return
                 if (state === 'reduced') navigate('/anchor/new')
                 else if (state === 'estimate') return
-                else navigate('/vault')
+                else navigate('/audit/new')
               }}
               className={ctaButtonClass}
             >

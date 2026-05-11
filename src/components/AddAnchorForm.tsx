@@ -153,7 +153,7 @@ export function AddAnchorForm() {
       },
       icon: <Sparkles className="w-5 h-5" />,
     })
-    navigate('/vault')
+    navigate('/audit/new')
   }
 
   const errorClass =

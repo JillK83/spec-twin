@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from './components/ui/magic/Sonner'
 import { DemoSelectorStrip } from './components/DemoSelectorStrip'
 import CoverScreen from './components/CoverScreen'
@@ -17,10 +17,13 @@ import VerdictSmartEstimate from './screens/VerdictSmartEstimate'
 import VerdictOpenPage from './screens/VerdictOpenPage'
 
 export default function App() {
+  const { pathname } = useLocation()
+  const isOpenModeVerdict = pathname === '/verdict/open'
+
   return (
     <>
     <Toaster position="bottom-center" />
-    <DemoSelectorStrip />
+    {!isOpenModeVerdict && <DemoSelectorStrip />}
     <Routes>
       <Route path="/" element={<CoverScreen />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
