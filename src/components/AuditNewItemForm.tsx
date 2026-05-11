@@ -103,6 +103,8 @@ export function AuditNewItemForm() {
     }
 
     const userPrimaryRise: Rise = profileRise ?? (formData.rise as Rise)
+    const profile = JSON.parse(localStorage.getItem('spec_twin_profile') ?? '{}')
+    const userHeightInches: number | null = (profile.height_inches as number) ?? null
 
     auditPromiseRef.current = runAudit({
       anchorId: anchor.id,
@@ -114,6 +116,7 @@ export function AuditNewItemForm() {
       targetRise: formData.rise as Rise,
       targetUrl: formData.url.trim() || undefined,
       userPrimaryRise,
+      userHeightInches,
     })
 
     setIsLoading(true)

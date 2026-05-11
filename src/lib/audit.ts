@@ -21,6 +21,7 @@ export type AuditInput = {
   targetRise: Rise
   targetUrl?: string
   userPrimaryRise: Rise
+  userHeightInches?: number | null
 }
 
 export type AuditOutput = {
@@ -85,11 +86,11 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const sizeCapped = checkSizeCap(input.targetSize)
 
   // ── Step 5: Brand offset lookup ──────────────────────────────────────────────
-  const gender = (anchor.gender ?? 'womens') as Gender
+  const anchorGender = anchor.gender as string | null
+  const gender: Gender = (anchorGender === 'mens' || anchorGender === 'womens') ? anchorGender : 'womens'
   const { data: offsetRows } = await supabase
     .from('brand_offsets')
     .select('*')
-    .eq('category', 'denim')
     .eq('gender', gender)
 
   // Fetch offset for anchor brand and target brand from the same pre-fetched rows
@@ -173,8 +174,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   } else if (input.targetSilhouette === anchor.silhouette) {
     targetInseam = anchorInseam
   } else {
-    // User height not stored at MVP — falls back to anchor_inseam until height is wired from onboarding
-    const userHeight = null as number | null
+    const userHeight = input.userHeightInches ?? null
     if (userHeight !== null && INSEAM_SUBTRACTION[input.targetSilhouette] !== undefined) {
       targetInseam = Math.round(userHeight - INSEAM_SUBTRACTION[input.targetSilhouette])
       inseamNote = 'Inseam adjusted for silhouette'
