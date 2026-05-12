@@ -73,6 +73,79 @@ function getWaistHipPillar(
   }
 }
 
+function getShapeRetentionPillar(output: AuditOutput, anchorBrand: string): Pillar {
+  const { recoveryWarning, targetRecoveryClass } = output
+
+  const status: PillarStatus =
+    (targetRecoveryClass === 'unknown' || (recoveryWarning && targetRecoveryClass === 'low'))
+      ? 'advisory'
+      : 'verified'
+
+  // State 1 — unknown recovery data (amber)
+  if (targetRecoveryClass === 'unknown') {
+    return {
+      id: 'shape',
+      name: 'Shape Retention',
+      status,
+      headline: 'Recovery data unavailable',
+      detail: "We don't have polyester data for this item, so we can't predict how well it holds its shape through wear. Expect standard denim behavior.",
+    }
+  }
+
+  // State 2 — downgrade: target has no recovery, anchor does (amber)
+  if (recoveryWarning && targetRecoveryClass === 'low') {
+    return {
+      id: 'shape',
+      name: 'Shape Retention',
+      status,
+      headline: `May loosen more than your ${anchorBrand}`,
+      detail: `Your ${anchorBrand} has recovery fiber that helps it bounce back. This item doesn't — it may relax and loosen slightly over time.`,
+    }
+  }
+
+  // State 6 — upgrade: target has more recovery than anchor (lime)
+  if (recoveryWarning) {
+    return {
+      id: 'shape',
+      name: 'Shape Retention',
+      status,
+      headline: `Holds shape better than your ${anchorBrand}`,
+      detail: `This item has more recovery fiber than your ${anchorBrand}. It should bounce back more reliably and hold its shape through wear.`,
+    }
+  }
+
+  // State 3 — both low (lime)
+  if (targetRecoveryClass === 'low') {
+    return {
+      id: 'shape',
+      name: 'Shape Retention',
+      status,
+      headline: `Matches your ${anchorBrand}`,
+      detail: `Both items have no recovery fiber. Expect a similar break-in pattern — the fabric may relax slightly with wear over time.`,
+    }
+  }
+
+  // State 4 — both moderate (lime)
+  if (targetRecoveryClass === 'moderate') {
+    return {
+      id: 'shape',
+      name: 'Shape Retention',
+      status,
+      headline: `Matches your ${anchorBrand}`,
+      detail: `Both items have a similar fiber profile. Shape retention should be consistent — expect the fit to hold through the day.`,
+    }
+  }
+
+  // State 5 — both high (lime)
+  return {
+    id: 'shape',
+    name: 'Shape Retention',
+    status,
+    headline: `Matches your ${anchorBrand}`,
+    detail: `Both items have strong recovery fiber. The fit should snap back and hold its shape reliably through wear.`,
+  }
+}
+
 export default function VerdictOpenPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -135,15 +208,7 @@ export default function VerdictOpenPage() {
         : 'The fabric composition is comparable to your anchor item.',
     },
     getWaistHipPillar(auditOutput, verdictState, anchorBrand),
-    {
-      id: 'shape',
-      name: 'Shape Retention',
-      headline: auditOutput.recoveryWarning
-        ? (auditOutput.recoveryNote ?? 'Recovery profile differs from your anchor.')
-        : 'Recovery profile is comparable to your anchor.',
-      status: pillarStatus(auditOutput.recoveryWarning),
-      detail: auditOutput.recoveryNote ?? 'Shape retention should be comparable to your anchor item.',
-    },
+    getShapeRetentionPillar(auditOutput, anchorBrand),
   ]
 
   const garmentName =
