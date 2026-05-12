@@ -174,7 +174,7 @@ Pillar dot colors by output state:
 
 ### Verdict Card Copy Rules
 
-Full copy reference lives in `/docs/copy/VERDICT_CARD_COPY.md` — read before writing or editing any pillar copy.
+Full copy reference lives in `/docs/VERDICT_CARD.md` — read before writing or editing any pillar copy.
 
 **Accordion hierarchy**
 Headline = the what. Detail = the why or when. Never restate the headline in the detail. The headline must work as a standalone verdict for users who never expand.

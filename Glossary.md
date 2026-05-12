@@ -122,7 +122,7 @@ Future category sections are templated at the bottom — populate before each ca
 
 ### Pillar Copy Rules
 
-See `/docs/copy/VERDICT_CARD_COPY.md` for the full copy reference.
+See `/docs/VERDICT_CARD.md` for the full copy reference.
 
 | Rule | Definition |
 |---|---|
