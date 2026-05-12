@@ -197,6 +197,7 @@ export function AddAnchorForm() {
               </Label>
               <Input
                 id="modelName"
+                maxLength={50}
                 placeholder="e.g. 501 Original"
                 autoComplete="off"
                 className="input-retro text-lg py-6"
@@ -330,7 +331,7 @@ export function AddAnchorForm() {
               </div>
               <Textarea
                 id="material"
-                maxLength={90}
+                maxLength={120}
                 rows={2}
                 placeholder="e.g. 98% Cotton, 2% Elastane"
                 autoComplete="off"
