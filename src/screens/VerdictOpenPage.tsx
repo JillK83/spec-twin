@@ -4,6 +4,75 @@ import type { VerdictState, Pillar, PillarStatus } from '@/components/VerdictCar
 import { Button } from '@/components/ui/magic/Button'
 import type { AuditOutput } from '@/lib/audit'
 
+// Waist and Hip Fit copy map — 9 states per locked voice spec.
+// Pending wiring (requires AuditOutput extension):
+//   - riseDirection (higher/lower): needs userPrimaryRise + targetRise comparison
+//   - fitDirection (smaller/larger): needs fitDelta sign exposed in AuditOutput
+//   - targetSizeOriginal: needs product_audits.target_size_original in AuditOutput
+//   - brand offset reason codes (euro_slim, rigid_bias, vanity_high): not yet in AuditOutput
+// anchorBrand: passed via pageState.anchorBrand — needs wiring from AuditNewItemForm
+function getWaistHipPillar(
+  output: AuditOutput,
+  verdictState: VerdictState,
+  anchorBrand: string,
+): Pillar {
+  const { riseMismatchWarning, contractGate, contractGateReason, coldStart } = output
+
+  const triggered = riseMismatchWarning || contractGate
+  const status: PillarStatus =
+    verdictState === 'estimate' ? 'estimate'
+    : triggered ? 'advisory'
+    : 'verified'
+
+  // State 9 — range → precision HARD_STOP: sizing systems incompatible (purple)
+  if (contractGateReason === 'CONTRACT_RANGE_TO_PRECISION') {
+    return {
+      id: 'waist-hip',
+      name: 'Waist and Hip Fit',
+      status,
+      headline: "Can't confirm waist fit",
+      detail: "This item's sizing system doesn't translate cleanly to your numeric anchor size. We can't confidently resolve the waist and hip fit. Check the brand's measurement guide before buying.",
+    }
+  }
+
+  // State 8 — cold start, no waist-hip gate (amber)
+  if (coldStart && !riseMismatchWarning && !contractGate) {
+    return {
+      id: 'waist-hip',
+      name: 'Waist and Hip Fit',
+      status,
+      headline: 'New to our system',
+      detail: "We don't have enough data on how this brand fits yet. The waist and hip recommendation is a starting point — check the brand's size guide before ordering.",
+    }
+  }
+
+  // State 3 — rise mismatch (amber)
+  // State 4 (rise + brand offset) collapses here until fitDirection is wired
+  // {higher/lower} in detail pending riseDirection wiring
+  if (riseMismatchWarning) {
+    return {
+      id: 'waist-hip',
+      name: 'Waist and Hip Fit',
+      status,
+      headline: `Different rise than your ${anchorBrand}`,
+      detail: `This style sits differently than your ${anchorBrand}. The waist and hips will feel different as a result — factor that in before ordering.`,
+    }
+  }
+
+  // States 5–7 — brand offset reason codes (euro_slim, rigid_bias, vanity_high)
+  // Not yet implementable — requires reason codes in AuditOutput
+
+  // State 1 — clean match (lime)
+  // State 2 (size adjustment, no gates) collapses here until fitDirection is wired
+  return {
+    id: 'waist-hip',
+    name: 'Waist and Hip Fit',
+    status,
+    headline: `Fits like your ${anchorBrand}`,
+    detail: `This sits and fits the same way as your ${anchorBrand}. You should be able to order your usual size with confidence.`,
+  }
+}
+
 export default function VerdictOpenPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -15,6 +84,7 @@ export default function VerdictOpenPage() {
     targetBrand?: string
     targetModel?: string
     anchorLabel?: string
+    anchorBrand?: string
   } | null
 
   const auditOutput = pageState?.auditOutput
@@ -50,6 +120,8 @@ export default function VerdictOpenPage() {
     return triggered ? 'advisory' : 'verified'
   }
 
+  const anchorBrand = pageState?.anchorBrand ?? 'your anchor'
+
   const pillars: Pillar[] = [
     {
       id: 'fabric',
@@ -62,20 +134,7 @@ export default function VerdictOpenPage() {
         ? (auditOutput.fabricGateUserText ?? 'Fabric class differs from your anchor.')
         : 'The fabric composition is comparable to your anchor item.',
     },
-    {
-      id: 'waist-hip',
-      name: 'Waist and Hip Fit',
-      headline: auditOutput.riseMismatchWarning
-        ? (auditOutput.riseMismatchNote ?? 'Rise differs from your preference.')
-        : auditOutput.contractGate
-          ? (auditOutput.contractGateUserText ?? 'Sizing system differs from your anchor.')
-          : 'Rise and fit contract align with your anchor.',
-      status: pillarStatus(auditOutput.riseMismatchWarning || auditOutput.contractGate),
-      detail: auditOutput.riseMismatchNote
-        ?? (auditOutput.contractGate
-          ? (auditOutput.contractGateUserText ?? 'Sizing system differs from your anchor.')
-          : 'Rise and fit contract align with your anchor.'),
-    },
+    getWaistHipPillar(auditOutput, verdictState, anchorBrand),
     {
       id: 'shape',
       name: 'Shape Retention',
