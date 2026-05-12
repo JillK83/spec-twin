@@ -15,9 +15,16 @@ export function getBrandOffset(
   gender: Gender,
   rows: BrandOffset[]
 ): BrandOffsetResult {
-  const normalize = (s: string) => s.toLowerCase().replace(/['‘’`]/g, '')
+  const normalize = (s: string) => s.toLowerCase().replace(/['\u2018\u2019`]/g, '')
   const brandNorm     = normalize(brand)
   const categoryLower = category.toLowerCase()
+
+  console.log('Brand offset lookup inputs:', {
+    brandNorm,
+    categoryLower,
+    gender,
+    rowCount: rows.length
+  })
 
   const find = (cat: string): BrandOffset | undefined =>
     rows.find(

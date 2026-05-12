@@ -93,6 +93,12 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     .select('*')
     .eq('gender', gender)
 
+  console.log('Brand offset prefetch result:', {
+    rowCount: offsetRows?.length,
+    gender,
+    sampleRow: offsetRows?.[0]
+  })
+
   // Fetch offset for anchor brand and target brand from the same pre-fetched rows
   const anchorBrandOffsetResult = getBrandOffset(
     anchor.brand_name,
