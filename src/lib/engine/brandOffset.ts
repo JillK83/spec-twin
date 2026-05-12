@@ -19,19 +19,12 @@ export function getBrandOffset(
   const brandNorm     = normalize(brand)
   const categoryLower = category.toLowerCase()
 
-  console.log('Brand offset lookup inputs:', {
-    brandNorm,
-    categoryLower,
-    gender,
-    rowCount: rows.length
-  })
-
   const find = (cat: string): BrandOffset | undefined =>
     rows.find(
       r =>
-        normalize(r.brand_name)    === brandNorm &&
-        r.category.toLowerCase()   === cat &&
-        r.gender                   === gender
+        normalize(r.brand_name)  === brandNorm &&
+        r.category.toLowerCase() === cat &&
+        r.gender                 === gender
     )
 
   const row = find(categoryLower) ?? find('all') ?? null
