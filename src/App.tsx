@@ -18,12 +18,16 @@ import VerdictOpenPage from './screens/VerdictOpenPage'
 
 export default function App() {
   const { pathname } = useLocation()
-  const isOpenModeVerdict = pathname === '/verdict/open'
+  const isOpenMode = pathname.startsWith('/onboarding') ||
+    pathname === '/bridge' ||
+    pathname === '/anchor/new' ||
+    pathname === '/audit/new' ||
+    pathname === '/verdict/open'
 
   return (
     <>
     <Toaster position="bottom-center" />
-    {!isOpenModeVerdict && <DemoSelectorStrip />}
+    {!isOpenMode && <DemoSelectorStrip />}
     <Routes>
       <Route path="/" element={<CoverScreen />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />

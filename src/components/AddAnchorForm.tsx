@@ -108,7 +108,7 @@ export function AddAnchorForm() {
         brand_model: formData.name,
         brand_name: formData.brand,
         category: formData.category,
-        size: formData.size,
+        size: formData.size.replace(/X/g, 'x'),
         gender: genderMap[formData.gender] ?? 'unisex',
         fiber_content: formData.material,
         user_notes: formData.userNotes || null,
@@ -226,7 +226,7 @@ export function AddAnchorForm() {
                 <Label htmlFor="category" className="text-lg font-bold">Category</Label>
                 <Select value={formData.category} onValueChange={(v) => handleChange('category', v)}>
                   <SelectTrigger className={`w-full input-retro py-6 text-lg h-auto ${errors.category ? errorClass : ''}`}>
-                    <SelectValue placeholder="Select category..." />
+                    {formData.category ? <span>{formData.category === 'denim' ? 'Denim' : formData.category}</span> : <SelectValue placeholder="Select category..." />}
                   </SelectTrigger>
                   <SelectContent className="w-[var(--radix-select-trigger-width)]">
                     <SelectItem value="denim" className="font-bold">Denim</SelectItem>
