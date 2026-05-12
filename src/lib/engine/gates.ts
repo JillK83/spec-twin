@@ -21,6 +21,7 @@ const FABRIC_CLASS_RANK: Record<FabricClass, number> = {
   rigid: 0,
   comfort_stretch: 1,
   high_stretch: 2,
+  unknown: -1,
 }
 
 const NO_FABRIC_GATE = (classesApart: number): FabricGateResult => ({

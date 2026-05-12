@@ -94,7 +94,7 @@ export function AddAnchorForm() {
 
     const parseResult = await parseProductDetails(formData.material.trim())
     const parsed = parseResult.success ? parseResult.data : null
-    const elastanePct = parsed?.elastane_pct ?? 0
+    const elastanePct = parsed?.elastane_pct ?? null
     const polyPct = parsed?.poly_pct ?? null
     const parserConfidence = parsed?.parser_confidence ?? 0
     const fabricClass = getFabricClass(elastanePct)

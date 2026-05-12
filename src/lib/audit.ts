@@ -71,7 +71,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const parsed = parseResult.success ? parseResult.data : null
 
   // ── Step 3: Derive target fabric and recovery class ──────────────────────────
-  const targetElastanePct = parsed?.elastane_pct ?? 0
+  const targetElastanePct = parsed?.elastane_pct ?? null
   const targetPolyPct = parsed?.poly_pct ?? null
   // rayon_pct parsed for future gate logic — not yet stored (column pending schema extension)
   // const targetRayonPct = parsed?.rayon_pct ?? null
@@ -117,7 +117,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const sizeAdjustment = mapDeltaToSizeAdjustment(fitDelta)
 
   // ── Step 7: Gate evaluation ──────────────────────────────────────────────────
-  const anchorFabricClass: FabricClass = (anchor.fabric_class as FabricClass) ?? 'rigid'
+  const anchorFabricClass: FabricClass = (anchor.fabric_class as FabricClass) ?? 'unknown'
   const anchorContractType = anchor.contract_type as ContractType
   const targetSizeFirstSegment = input.targetSize.trim().split(/x/i)[0]
   const targetContractType: ContractType = /\d/.test(targetSizeFirstSegment) ? 'precision' : 'range'

@@ -536,7 +536,7 @@ export type ProductAudit = Tables<'product_audits'>
 
 // ─── Named string-union types (columns are text in Postgres, typed here) ─────
 
-export type FabricClass    = 'rigid' | 'comfort_stretch' | 'high_stretch'
+export type FabricClass    = 'rigid' | 'comfort_stretch' | 'high_stretch' | 'unknown'
 export type RecoveryClass  = 'low' | 'moderate' | 'high' | 'unknown'
 export type ContractType   = 'precision' | 'range'
 export type ClosureType    = 'zipper' | 'button_fly' | 'elastic' | 'drawstring' | 'none'
