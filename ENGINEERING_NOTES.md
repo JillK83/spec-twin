@@ -261,7 +261,7 @@ Recommended size displays as waist x inseam: `"27 x 30"`
 | Surface | Format |
 |---|---|
 | Fit Vault dashboard anchor card | "Size 27x30" |
-| Audit form anchor reference bar | "Comparing against: Madewell Perfect Vintage Straight, Size 27x29" |
+| Audit form anchor reference bar | "Madewell Perfect Vintage Straight · High rise Straight · Size 27x29" |
 | Audit form Size field | Waist only — "e.g. 27 or M, L" — inseam never entered on audit form |
 | Anchor form Size field | "e.g. 27x30 or 28x32" |
 

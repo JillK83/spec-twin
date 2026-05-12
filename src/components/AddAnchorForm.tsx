@@ -104,9 +104,9 @@ export function AddAnchorForm() {
       .from('user_anchors')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert({
-        brand_model: [formData.brand, formData.modelName].filter(Boolean).join(' '),
+        brand_model: `${formData.brand.trim()} ${formData.modelName.trim()}`.trim(),
         brand_name: formData.brand,
-        model_name: formData.modelName || null,
+        model_name: formData.modelName.trim() || null,
         category: formData.category,
         size: formData.size.replace(/X/g, 'x'),
         gender: genderMap[formData.gender] ?? 'unisex',

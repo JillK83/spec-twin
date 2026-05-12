@@ -47,7 +47,7 @@ When a fabric gate Soft Warning fires (`COMFORT_TO_RIGID`) AND fit delta produce
 
 ## Demo Scenarios (Confirmed)
 
-All three use **Madewell Perfect Vintage Straight, Size 27x29** as the anchor.
+All three use **Madewell Perfect Vintage Straight · High rise Straight · Size 27x29** as the anchor.
 
 | # | Target | Expected output | Primary gate |
 |---|---|---|---|

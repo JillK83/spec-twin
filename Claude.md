@@ -138,7 +138,7 @@ const getRecoveryClass = (polyPct: number | null): string => {
 - When silhouette adjustment applied → show Geist Mono small note below size value: `"Inseam adjusted for silhouette"`
 - When user override applied → show: `"Based on your inseam preference"`
 - **Fit Vault dashboard** anchor cards display size as: `"Size 27x30"`
-- **Audit form anchor reference bar** displays as: `"Comparing against: Madewell Perfect Vintage Straight, Size 27x29"`
+- **Audit form anchor reference bar** displays as: `"Madewell Perfect Vintage Straight · High rise Straight · Size 27x29"`
 
 ---
 
