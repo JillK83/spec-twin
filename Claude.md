@@ -172,6 +172,33 @@ Pillar dot colors by output state:
 
 ---
 
+### Verdict Card Copy Rules
+
+Full copy reference lives in `/docs/copy/VERDICT_CARD_COPY.md` — read before writing or editing any pillar copy.
+
+**Accordion hierarchy**
+Headline = the what. Detail = the why or when. Never restate the headline in the detail. The headline must work as a standalone verdict for users who never expand.
+
+**Sizing redirect rule**
+Sizing redirects only allowed in `verified_fit` and `fit_advisory` states. Never include a specific size number or sizing direction in a `smart_estimate` detail.
+
+**Pillar status override rule**
+When `output_state = smart_estimate` all three pillar dots must return `estimate` (purple) regardless of individual gate resolution. No lime dots on a purple card.
+
+**Voice map**
+| Pillar | Term | Register |
+|---|---|---|
+| Fabric Behavior | Stretch | Material fact — what the fabric is made of |
+| Waist and Hip Fit | Give | Body interaction — how it feels on |
+| Shape Retention | Recovery | Time-based — how it behaves through the day |
+
+**Token rules**
+- `${anchorBrand}` resolves from `user_anchors.brand_name` — always use `"your ${anchorBrand}"` not bare `"${anchorBrand}"`
+- Fallback is `"your item"` — template strings must never contain "your" AND resolve to "your item" producing "your your item"
+- `${anchorStretchDesc}` — `high_stretch` anchor → `"significant stretch"` / `comfort_stretch` anchor → `"a little stretch"`
+
+---
+
 ### Verdict Card CTA Contract
 | Output State | CTA Label |
 |---|---|

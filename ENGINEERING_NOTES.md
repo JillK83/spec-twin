@@ -368,3 +368,15 @@ Both calls must include these instructions in the system prompt:
 VITE_GEMINI_API_KEY=your_key_here
 ```
 The key is passed as a URL query parameter per Gemini API spec — not as an auth header.
+
+### Copy Token: `anchorStretchDesc`
+
+Used in the Fabric Behavior Hard Stop detail copy. Conditional on anchor `fabric_class`:
+
+```typescript
+const anchorStretchDesc = anchorFabricClass === 'high_stretch'
+  ? 'significant stretch'
+  : 'a little stretch'
+```
+
+Applied in `getFabricBehaviorPillar()` when `fabricGateReason` is `FABRIC_COMFORT_TO_RIGID` or `FABRIC_HIGH_STRETCH_TO_RIGID`. Never hardcode `"significant stretch"` — always derive from anchor fabric class.
