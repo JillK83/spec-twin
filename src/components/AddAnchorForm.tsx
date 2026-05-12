@@ -18,7 +18,7 @@ import { SILHOUETTE_LABELS } from '../lib/anchorLabel'
 export function AddAnchorForm() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    name: '',
+    modelName: '',
     brand: '',
     category: 'denim',
     size: '',
@@ -33,7 +33,7 @@ export function AddAnchorForm() {
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem('spec_twin_profile') ?? '{}')
     setFormData({
-      name: '',
+      modelName: '',
       brand: '',
       category: 'denim',
       size: '',
@@ -59,7 +59,6 @@ export function AddAnchorForm() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-    if (!formData.name.trim()) newErrors.name = 'Required.'
     if (!formData.brand.trim()) newErrors.brand = 'Required.'
     if (!formData.category) newErrors.category = 'Required.'
     if (!formData.size.trim()) newErrors.size = 'Required.'
@@ -105,8 +104,9 @@ export function AddAnchorForm() {
       .from('user_anchors')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert({
-        brand_model: formData.name,
+        brand_model: [formData.brand, formData.modelName].filter(Boolean).join(' '),
         brand_name: formData.brand,
+        model_name: formData.modelName || null,
         category: formData.category,
         size: formData.size.replace(/X/g, 'x'),
         gender: genderMap[formData.gender] ?? 'unisex',
@@ -142,7 +142,7 @@ export function AddAnchorForm() {
       return
     }
 
-    toast.success(`Anchor Saved — ${formData.name}`, {
+    toast.success(`Anchor Saved — ${[formData.brand, formData.modelName].filter(Boolean).join(' ')}`, {
       style: {
         backgroundColor: 'var(--secondary)',
         color: 'var(--secondary-foreground)',
@@ -189,22 +189,21 @@ export function AddAnchorForm() {
 
         <CardContent className="p-6 sm:p-8 space-y-8">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Garment Name */}
+            {/* Style / Model */}
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-lg font-bold">Garment Name</Label>
+              <Label htmlFor="modelName" className="text-lg font-bold">
+                Style / Model{' '}
+                <span className="text-muted-foreground font-normal text-sm ml-1">(Optional)</span>
+              </Label>
               <Input
-                id="name"
-                placeholder="e.g. My dark wash everyday jean"
+                id="modelName"
+                placeholder="e.g. 501 Original"
                 autoComplete="off"
-                className={`input-retro text-lg py-6 ${errors.name ? errorClass : ''}`}
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
+                className="input-retro text-lg py-6"
+                value={formData.modelName}
+                onChange={(e) => handleChange('modelName', e.target.value)}
               />
-              {errors.name ? (
-                <p className="text-[var(--primary)] font-bold text-sm">{errors.name}</p>
-              ) : (
-                <p className="text-muted-foreground font-normal text-base">Your personal label for the Vault — Brand and Model are used for your audit</p>
-              )}
+              <p className="text-muted-foreground font-normal text-base">Product title from the label or product page — color and wash go in Notes</p>
             </div>
 
             {/* Brand & Category */}
@@ -372,7 +371,7 @@ export function AddAnchorForm() {
             variant="outline"
             className="w-full sm:w-auto border-2 border-border font-bold text-base py-6 px-8 hover:bg-background shadow-[2px_2px_0px_0px_var(--border)] hover:shadow-[4px_4px_0px_0px_var(--border)] hover:-translate-y-0.5 transition-all"
             onClick={() => {
-              setFormData({ name: '', brand: '', category: 'denim', size: '', gender: 'unisex', rise: '', silhouette: '', material: '', userNotes: '' })
+              setFormData({ modelName: '', brand: '', category: 'denim', size: '', gender: 'unisex', rise: '', silhouette: '', material: '', userNotes: '' })
               setErrors({})
             }}
           >

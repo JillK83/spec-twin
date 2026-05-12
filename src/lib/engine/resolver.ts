@@ -29,10 +29,6 @@ function deriveConfidenceLevel(gates: GateInputs): ConfidenceLevel {
 
   if (firedCount > 1) return 'LOW'
 
-  // Two-class fabric delta always lowers to LOW even if SOFT_WARNING
-  // (e.g. rigid → high_stretch fires SOFT_WARNING but is 2 classes apart)
-  if (gates.fabricGate.classesApart >= 2) return 'LOW'
-
   if (firedCount >= 1)                    return 'MEDIUM'
   if (gates.coldStart)                    return 'MEDIUM'
   if (gates.fabricGate.classesApart === 1) return 'MEDIUM'  // adjacent, no gate
