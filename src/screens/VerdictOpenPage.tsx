@@ -11,10 +11,13 @@ function getFabricBehaviorPillar(
 ): Pillar {
   const { fabricGate, fabricGateReason, targetFabricClass } = output
 
-  const status: PillarStatus =
-    verdictState === 'estimate' ? 'estimate'
-    : (fabricGate || targetFabricClass === 'unknown') ? 'advisory'
-    : 'verified'
+  const resolvedStatus: PillarStatus =
+    (fabricGate || targetFabricClass === 'unknown') ? 'advisory' : 'verified'
+  const status: PillarStatus = verdictState === 'estimate' ? 'estimate' : resolvedStatus
+
+  const anchorStretchDesc = fabricGateReason === 'FABRIC_HIGH_STRETCH_TO_RIGID'
+    ? 'significant stretch'
+    : 'a little stretch'
 
   // State 7 — unknown fabric class: composition unparseable (amber)
   if (targetFabricClass === 'unknown') {
@@ -34,7 +37,7 @@ function getFabricBehaviorPillar(
       name: 'Fabric Behavior',
       status,
       headline: `Very different fabric from ${anchorBrand}`,
-      detail: `${anchorBrand} has significant stretch. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+      detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
     }
   }
 
@@ -46,7 +49,7 @@ function getFabricBehaviorPillar(
         name: 'Fabric Behavior',
         status,
         headline: `Very different fabric from ${anchorBrand}`,
-        detail: `${anchorBrand} has significant stretch. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+        detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
       }
     }
     return {
@@ -105,10 +108,8 @@ function getWaistHipPillar(
   const { riseMismatchWarning, contractGate, contractGateReason, coldStart } = output
 
   const triggered = riseMismatchWarning || contractGate
-  const status: PillarStatus =
-    verdictState === 'estimate' ? 'estimate'
-    : triggered ? 'advisory'
-    : 'verified'
+  const resolvedStatus: PillarStatus = triggered ? 'advisory' : 'verified'
+  const status: PillarStatus = verdictState === 'estimate' ? 'estimate' : resolvedStatus
 
   // State 9 — range → precision HARD_STOP: sizing systems incompatible (purple)
   if (contractGateReason === 'CONTRACT_RANGE_TO_PRECISION') {
@@ -159,15 +160,27 @@ function getWaistHipPillar(
   }
 }
 
-function getShapeRetentionPillar(output: AuditOutput, anchorBrand: string): Pillar {
+function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState, anchorBrand: string): Pillar {
   const { recoveryWarning, targetRecoveryClass } = output
 
-  const status: PillarStatus =
+  const resolvedStatus: PillarStatus =
     (targetRecoveryClass === 'unknown' || (recoveryWarning && targetRecoveryClass === 'low'))
       ? 'advisory'
       : 'verified'
+  const status: PillarStatus = verdictState === 'estimate' ? 'estimate' : resolvedStatus
 
-  // State 1 — unknown recovery data (amber)
+  // State 1a — rigid target, no recovery data: 100% cotton specific behavior
+  if (targetRecoveryClass === 'unknown' && output.targetFabricClass === 'rigid') {
+    return {
+      id: 'shape',
+      name: 'Shape Retention',
+      status,
+      headline: 'Recovery data unavailable',
+      detail: '100% cotton denim has no elastic fiber to snap back into shape. Expect the waist to relax up to an inch after a full day of wear, with some bagging at the knees and seat. Washing resets the fit — many people intentionally size down on first wear knowing this.',
+    }
+  }
+
+  // State 1b — unknown recovery data, other fabric classes (amber)
   if (targetRecoveryClass === 'unknown') {
     return {
       id: 'shape',
@@ -274,16 +287,23 @@ export default function VerdictOpenPage() {
   }
   const verdictState: VerdictState = verdictStateMap[auditOutput.outputState] ?? 'estimate'
 
-  const anchorBrand = pageState?.anchorBrand ?? 'your item'
+  const rawAnchorBrand = pageState?.anchorBrand
+  const anchorBrand = rawAnchorBrand
+    ? rawAnchorBrand.replace(/\b\w/g, c => c.toUpperCase())
+    : 'your item'
 
   const pillars: Pillar[] = [
     getFabricBehaviorPillar(auditOutput, verdictState, anchorBrand),
     getWaistHipPillar(auditOutput, verdictState, anchorBrand),
-    getShapeRetentionPillar(auditOutput, anchorBrand),
+    getShapeRetentionPillar(auditOutput, verdictState, anchorBrand),
   ]
 
   const garmentName =
     [pageState?.targetBrand, pageState?.targetModel].filter(Boolean).join(' ') || 'Audited Item'
+
+  const recommendedSize = auditOutput.outputState === 'smart_estimate'
+    ? 'See brand size guide'
+    : auditOutput.recommendedSize
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
@@ -291,14 +311,18 @@ export default function VerdictOpenPage() {
         state={verdictState}
         garmentName={garmentName}
         anchorLabel={pageState?.anchorLabel ?? 'Your anchor'}
-        recommendedSize={auditOutput.recommendedSize}
+        recommendedSize={recommendedSize}
         sizeNote={
           !auditOutput.inseamAvailable
             ? 'Inseam not available — check brand size guide'
             : (auditOutput.inseamNote ?? undefined)
         }
         pillars={pillars}
-        advisoryBannerText={auditOutput.riseMismatchNote ?? undefined}
+        advisoryBannerText={
+          auditOutput.riseMismatchNote ??
+          auditOutput.fabricGateUserText ??
+          undefined
+        }
         onReset={() => navigate('/audit/new')}
         footerNote={
           auditOutput.coldStart

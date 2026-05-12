@@ -79,7 +79,7 @@ export function VerdictCard({
     bannerClasses = 'bg-[#FFFBEB] text-foreground border-y-2 border-[#FFBF00]'
     BannerIcon = AlertTriangle
   } else if (state === 'estimate') {
-    bannerText = 'Incomplete data — verify before buying'
+    bannerText = advisoryBannerText ?? 'Incomplete data — verify before buying'
     bannerClasses = 'bg-[#F3E8FF] text-[#5B21B6] border-y-2 border-[#7C3AED]'
     BannerIcon = Info
   } else if (state === 'reduced') {

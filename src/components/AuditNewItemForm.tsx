@@ -149,6 +149,7 @@ export function AuditNewItemForm() {
         targetBrand: formData.brand.trim(),
         targetModel: formData.styleName.trim() || undefined,
         anchorLabel: anchor ? buildAnchorLabel(anchor) : 'Your anchor',
+        anchorBrand: anchor?.brand_name ?? undefined,
       },
     })
   }
