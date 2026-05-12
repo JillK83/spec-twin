@@ -4,6 +4,92 @@ import type { VerdictState, Pillar, PillarStatus } from '@/components/VerdictCar
 import { Button } from '@/components/ui/magic/Button'
 import type { AuditOutput } from '@/lib/audit'
 
+function getFabricBehaviorPillar(
+  output: AuditOutput,
+  verdictState: VerdictState,
+  anchorBrand: string,
+): Pillar {
+  const { fabricGate, fabricGateReason, targetFabricClass } = output
+
+  const status: PillarStatus =
+    verdictState === 'estimate' ? 'estimate'
+    : (fabricGate || targetFabricClass === 'unknown') ? 'advisory'
+    : 'verified'
+
+  // State 7 — unknown fabric class: composition unparseable (amber)
+  if (targetFabricClass === 'unknown') {
+    return {
+      id: 'fabric',
+      name: 'Fabric Behavior',
+      status,
+      headline: 'Fabric data unavailable',
+      detail: `We couldn't read the fabric composition for this item. Check the label before buying — the fit and feel may differ from your ${anchorBrand}.`,
+    }
+  }
+
+  // State 1 — Hard Stop: high_stretch → rigid (always smart_estimate)
+  if (fabricGateReason === 'FABRIC_HIGH_STRETCH_TO_RIGID') {
+    return {
+      id: 'fabric',
+      name: 'Fabric Behavior',
+      status,
+      headline: `Very different fabric from ${anchorBrand}`,
+      detail: `${anchorBrand} has significant stretch. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+    }
+  }
+
+  // State 2 — comfort_stretch → rigid: Hard Stop (escalated) or Soft Warning
+  if (fabricGateReason === 'FABRIC_COMFORT_TO_RIGID') {
+    if (verdictState === 'estimate') {
+      return {
+        id: 'fabric',
+        name: 'Fabric Behavior',
+        status,
+        headline: `Very different fabric from ${anchorBrand}`,
+        detail: `${anchorBrand} has significant stretch. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+      }
+    }
+    return {
+      id: 'fabric',
+      name: 'Fabric Behavior',
+      status,
+      headline: `Less stretch than ${anchorBrand}`,
+      detail: `This item has no elastane — it will feel more structured than ${anchorBrand}. The waist and hip fit may feel tighter, especially after a few hours of wear.`,
+    }
+  }
+
+  // State 3 — high_stretch → comfort_stretch: Soft Warning (amber)
+  if (fabricGateReason === 'FABRIC_HIGH_STRETCH_TO_COMFORT') {
+    return {
+      id: 'fabric',
+      name: 'Fabric Behavior',
+      status,
+      headline: `Less stretch than your ${anchorBrand}`,
+      detail: `This item has less give than your ${anchorBrand} and may feel slightly firmer through the hip and thigh. The difference is moderate — your usual size should still work.`,
+    }
+  }
+
+  // State 4 — rigid → high_stretch: Soft Warning (amber)
+  if (fabricGateReason === 'FABRIC_RIGID_TO_HIGH_STRETCH') {
+    return {
+      id: 'fabric',
+      name: 'Fabric Behavior',
+      status,
+      headline: `More stretch than your ${anchorBrand}`,
+      detail: `This item is softer and more forgiving than your ${anchorBrand}. You may want to size down if you prefer a snug fit.`,
+    }
+  }
+
+  // States 5–6 — no gate: same class or compatible upgrade (lime)
+  return {
+    id: 'fabric',
+    name: 'Fabric Behavior',
+    status,
+    headline: `Fabric matches ${anchorBrand}`,
+    detail: `Both items have the same amount of stretch. The fabric won't be a factor in how this fits compared to ${anchorBrand}.`,
+  }
+}
+
 // Waist and Hip Fit copy map — 9 states per locked voice spec.
 // Pending wiring (requires AuditOutput extension):
 //   - riseDirection (higher/lower): needs userPrimaryRise + targetRise comparison
@@ -54,8 +140,8 @@ function getWaistHipPillar(
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
       status,
-      headline: `Different rise than your ${anchorBrand}`,
-      detail: `This style sits differently than your ${anchorBrand}. The waist and hips will feel different as a result — factor that in before ordering.`,
+      headline: `Different rise than ${anchorBrand}`,
+      detail: `This style sits differently than ${anchorBrand}. The waist and hips will feel different as a result — factor that in before ordering.`,
     }
   }
 
@@ -68,8 +154,8 @@ function getWaistHipPillar(
     id: 'waist-hip',
     name: 'Waist and Hip Fit',
     status,
-    headline: `Fits like your ${anchorBrand}`,
-    detail: `This sits and fits the same way as your ${anchorBrand}. You should be able to order your usual size with confidence.`,
+    headline: `Fits like ${anchorBrand}`,
+    detail: `This sits and fits the same way as ${anchorBrand}. You should be able to order your usual size with confidence.`,
   }
 }
 
@@ -88,7 +174,7 @@ function getShapeRetentionPillar(output: AuditOutput, anchorBrand: string): Pill
       name: 'Shape Retention',
       status,
       headline: 'Recovery data unavailable',
-      detail: "We don't have polyester data for this item, so we can't predict how well it holds its shape through wear. Expect standard denim behavior.",
+      detail: "Most denim relaxes a little with wear. We don't have recovery data for this item, so we can't say how much — if fit staying snug through the day matters to you, check the fabric label before buying.",
     }
   }
 
@@ -98,8 +184,8 @@ function getShapeRetentionPillar(output: AuditOutput, anchorBrand: string): Pill
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `May loosen more than your ${anchorBrand}`,
-      detail: `Your ${anchorBrand} has recovery fiber that helps it bounce back. This item doesn't — it may relax and loosen slightly over time.`,
+      headline: `May loosen more than ${anchorBrand}`,
+      detail: `${anchorBrand} has recovery fiber that helps it bounce back. This item doesn't — it may relax and loosen slightly over time.`,
     }
   }
 
@@ -109,8 +195,8 @@ function getShapeRetentionPillar(output: AuditOutput, anchorBrand: string): Pill
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `Holds shape better than your ${anchorBrand}`,
-      detail: `This item has more recovery fiber than your ${anchorBrand}. It should bounce back more reliably and hold its shape through wear.`,
+      headline: `Holds shape better than ${anchorBrand}`,
+      detail: `This item has more recovery fiber than ${anchorBrand}. It should bounce back more reliably and hold its shape through wear.`,
     }
   }
 
@@ -120,7 +206,7 @@ function getShapeRetentionPillar(output: AuditOutput, anchorBrand: string): Pill
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `Matches your ${anchorBrand}`,
+      headline: `Matches ${anchorBrand}`,
       detail: `Both items have no recovery fiber. Expect a similar break-in pattern — the fabric may relax slightly with wear over time.`,
     }
   }
@@ -131,7 +217,7 @@ function getShapeRetentionPillar(output: AuditOutput, anchorBrand: string): Pill
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `Matches your ${anchorBrand}`,
+      headline: `Matches ${anchorBrand}`,
       detail: `Both items have a similar fiber profile. Shape retention should be consistent — expect the fit to hold through the day.`,
     }
   }
@@ -188,25 +274,10 @@ export default function VerdictOpenPage() {
   }
   const verdictState: VerdictState = verdictStateMap[auditOutput.outputState] ?? 'estimate'
 
-  function pillarStatus(triggered: boolean): PillarStatus {
-    if (verdictState === 'estimate') return 'estimate'
-    return triggered ? 'advisory' : 'verified'
-  }
-
-  const anchorBrand = pageState?.anchorBrand ?? 'your anchor'
+  const anchorBrand = pageState?.anchorBrand ?? 'your item'
 
   const pillars: Pillar[] = [
-    {
-      id: 'fabric',
-      name: 'Fabric Behavior',
-      headline: auditOutput.fabricGate
-        ? (auditOutput.fabricGateUserText ?? 'Fabric class differs from your anchor.')
-        : 'Fabric class matches your anchor.',
-      status: pillarStatus(auditOutput.fabricGate),
-      detail: auditOutput.fabricGate
-        ? (auditOutput.fabricGateUserText ?? 'Fabric class differs from your anchor.')
-        : 'The fabric composition is comparable to your anchor item.',
-    },
+    getFabricBehaviorPillar(auditOutput, verdictState, anchorBrand),
     getWaistHipPillar(auditOutput, verdictState, anchorBrand),
     getShapeRetentionPillar(auditOutput, anchorBrand),
   ]

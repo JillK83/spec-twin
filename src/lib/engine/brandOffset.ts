@@ -15,13 +15,14 @@ export function getBrandOffset(
   gender: Gender,
   rows: BrandOffset[]
 ): BrandOffsetResult {
-  const brandLower    = brand.toLowerCase()
+  const normalize = (s: string) => s.toLowerCase().replace(/['‘’`]/g, '')
+  const brandNorm     = normalize(brand)
   const categoryLower = category.toLowerCase()
 
   const find = (cat: string): BrandOffset | undefined =>
     rows.find(
       r =>
-        r.brand_name.toLowerCase() === brandLower &&
+        normalize(r.brand_name)    === brandNorm &&
         r.category.toLowerCase()   === cat &&
         r.gender                   === gender
     )

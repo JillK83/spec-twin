@@ -21,7 +21,7 @@ const SYSTEM_PROMPT = `You are a garment fabric parser. Extract structured data 
 Return ONLY valid JSON with no preamble, no markdown, no backticks.
 
 Rules:
-- elastane_pct: extract as a number if any stretch fiber is present. If NO stretch fiber is mentioned, return null — never return 0 or empty string for an absent field. null means data unavailable, not zero percent. Normalize ALL stretch fiber synonyms to this field: elastane, spandex, lycra, elaspan, creora, ROICA, dorlastan, linel, ESPA.
+- elastane_pct: extract as a number representing the stretch fiber percentage. If the composition string is readable and NO stretch fiber is listed, return 0 — confirmed absent means zero percent. Return null ONLY if the entire composition string is unreadable or unparseable. Normalize ALL stretch fiber synonyms to this field: elastane, spandex, lycra, elaspan, creora, ROICA, dorlastan, linel, ESPA.
 - poly_pct: extract as a number if polyester is present. If polyester is NOT mentioned, return null — never return 0 or empty string for an absent field. null means data unavailable, not zero percent.
 - rayon_pct: extract as a number if any rayon-family fiber is present. Normalize ALL rayon synonyms to this field: rayon, viscose, lyocell, modal, tencel. If none are present, return null — never return 0 or empty string. null means data unavailable, not zero percent.
 - closure_type: one of "zipper", "button_fly", "elastic", "drawstring", "none". Infer from context if not explicit. Default to "zipper" for denim if no closure mentioned.
