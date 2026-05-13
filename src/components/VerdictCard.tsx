@@ -111,14 +111,14 @@ export function VerdictCard({
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-lg">
-      <Card className="w-full max-w-lg mx-auto border-4 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden relative">
+      <Card className="w-full max-w-lg mx-auto border-2 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden relative">
       {/* Purple left accent for estimate/reduced */}
       {isEstimateOrReduced && (
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#7C3AED] z-20" />
       )}
 
       {/* Header */}
-      <div className="border-b-4 border-border p-6 relative">
+      <div className="border-b-2 border-border p-6 relative">
         <h2 className="font-heading font-black text-3xl text-foreground pr-36 leading-tight">
           {garmentName}
         </h2>
@@ -150,7 +150,7 @@ export function VerdictCard({
         <span className="font-mono text-xs uppercase tracking-[0.13em] text-muted-foreground mb-2">
           {sizeLabel}
         </span>
-        <span className={`font-heading font-black text-7xl leading-none ${sizeValueClass}`}>
+        <span className={`font-heading font-black text-5xl leading-none ${sizeValueClass}`}>
           {recommendedSize}
         </span>
         {sizeNote ? (
@@ -197,7 +197,7 @@ export function VerdictCard({
       </div>
 
       {/* Footer */}
-      <div className="bg-muted border-t-4 border-border">
+      <div className="bg-muted border-t-2 border-border">
         {footerNote && (
           <div className="px-6 py-3 border-b-2 border-border">
             <p className="font-mono text-xs text-muted-foreground">{footerNote}</p>

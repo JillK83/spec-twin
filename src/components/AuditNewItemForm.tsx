@@ -92,9 +92,9 @@ export function AuditNewItemForm() {
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-lg">
-      <Card className="w-full max-w-lg mx-auto border-4 border-border shadow-hard bg-card rounded-2xl overflow-hidden">
+      <Card className="w-full max-w-lg mx-auto border-2 border-border shadow-hard bg-card rounded-2xl overflow-hidden">
       {/* Amber Header */}
-      <div className="bg-primary border-b-4 border-border p-6 relative overflow-hidden">
+      <div className="bg-primary border-b-2 border-border p-4 relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(var(--foreground) 2px, transparent 2px)', backgroundSize: '16px 16px' }}
@@ -102,7 +102,7 @@ export function AuditNewItemForm() {
         <CardHeader className="relative z-10 p-0">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-4xl font-black tracking-tight uppercase flex items-center gap-3">
+              <CardTitle className="text-2xl font-black tracking-tight uppercase flex items-center gap-3">
                 Audit New Item
               </CardTitle>
               <CardDescription className="text-primary-foreground/80 font-bold mt-2 text-lg">
@@ -116,22 +116,22 @@ export function AuditNewItemForm() {
         </CardHeader>
       </div>
 
-      <CardContent className="p-6 sm:p-8 space-y-8">
+      <CardContent className="p-4 sm:p-6 space-y-5">
         {/* Anchor Reference Bar */}
         <div className="space-y-2">
-          <Label className="text-lg font-bold block">Your reference item</Label>
+          <Label className="text-base font-bold block">Your reference item</Label>
           <AnchorReferenceBar anchorLabel="Madewell Perfect Vintage Straight, Size 27x29" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Brand */}
           <div className="space-y-2">
-            <Label htmlFor="brand" className="text-lg font-bold">Brand</Label>
+            <Label htmlFor="brand" className="text-base font-bold">Brand</Label>
             <Input
               id="brand"
               placeholder="e.g. AGOLDE"
               autoComplete="off"
-              className={`input-retro text-lg py-6 ${errors.brand ? errorClass : ''}`}
+              className={`input-retro text-base py-3 ${errors.brand ? errorClass : ''}`}
               value={formData.brand}
               onChange={(e) => handleChange('brand', e.target.value)}
             />
@@ -140,7 +140,7 @@ export function AuditNewItemForm() {
 
           {/* Style / Model Name */}
           <div className="space-y-2">
-            <Label htmlFor="styleName" className="text-lg font-bold">
+            <Label htmlFor="styleName" className="text-base font-bold">
               Style / Model Name{' '}
               <span className="text-muted-foreground font-normal text-sm ml-1">(Optional)</span>
             </Label>
@@ -148,7 +148,7 @@ export function AuditNewItemForm() {
               id="styleName"
               placeholder="e.g. 90s Cheeky, 501 Original"
               autoComplete="off"
-              className="input-retro text-lg py-6"
+              className="input-retro text-base py-3"
               value={formData.styleName}
               onChange={(e) => handleChange('styleName', e.target.value)}
             />
@@ -156,12 +156,12 @@ export function AuditNewItemForm() {
 
           {/* Size */}
           <div className="space-y-2">
-            <Label htmlFor="size" className="text-lg font-bold">Size</Label>
+            <Label htmlFor="size" className="text-base font-bold">Size</Label>
             <Input
               id="size"
               placeholder="e.g. 27 or M, L — waist size or numeric size"
               autoComplete="off"
-              className={`input-retro text-lg py-6 ${errors.size ? errorClass : ''}`}
+              className={`input-retro text-base py-3 ${errors.size ? errorClass : ''}`}
               value={formData.size}
               onChange={(e) => handleChange('size', e.target.value)}
             />
@@ -170,7 +170,7 @@ export function AuditNewItemForm() {
 
           {/* Rise */}
           <div className="space-y-3">
-            <Label className="text-lg font-bold block">Rise</Label>
+            <Label className="text-base font-bold block">Rise</Label>
             <ToggleGroup
               type="single"
               value={formData.rise}
@@ -186,7 +186,7 @@ export function AuditNewItemForm() {
 
           {/* Fabric & Care Details */}
           <div className="space-y-2">
-            <Label htmlFor="details" className="text-lg font-bold">
+            <Label htmlFor="details" className="text-base font-bold">
               Paste or enter fabric and care details
             </Label>
             <Textarea
@@ -209,7 +209,7 @@ export function AuditNewItemForm() {
 
           {/* Product URL */}
           <div className="space-y-2">
-            <Label htmlFor="url" className="text-lg font-bold">
+            <Label htmlFor="url" className="text-base font-bold">
               Product URL{' '}
               <span className="text-muted-foreground font-normal text-sm ml-1">(Optional)</span>
             </Label>
@@ -218,7 +218,7 @@ export function AuditNewItemForm() {
               type="url"
               placeholder="e.g. https://www.everlane.com/products/..."
               autoComplete="off"
-              className="input-retro py-6 text-base font-mono placeholder:font-mono"
+              className="input-retro py-3 text-base font-mono placeholder:font-mono"
               value={formData.url}
               onChange={(e) => handleChange('url', e.target.value)}
             />
@@ -229,10 +229,10 @@ export function AuditNewItemForm() {
         </form>
       </CardContent>
 
-      <CardFooter className="bg-muted p-6 sm:p-8 border-t-4 border-border flex flex-col sm:flex-row justify-end gap-4">
+      <CardFooter className="bg-muted p-4 sm:p-6 border-t-2 border-border flex flex-col sm:flex-row justify-end gap-4">
         <Button
           variant="outline"
-          className="w-full sm:w-auto border-2 border-border font-bold text-base py-6 px-8 hover:bg-background shadow-[2px_2px_0px_0px_var(--border)] hover:shadow-[4px_4px_0px_0px_var(--border)] hover:-translate-y-0.5 transition-all"
+          className="w-full sm:w-auto border-2 border-border font-bold text-base py-3 px-6 hover:bg-background shadow-[2px_2px_0px_0px_var(--border)] hover:shadow-[4px_4px_0px_0px_var(--border)] hover:-translate-y-0.5 transition-all"
           onClick={() => {
             setFormData({ brand: '', styleName: '', size: '', rise: '', details: '', url: '' })
             setErrors({})
@@ -241,7 +241,7 @@ export function AuditNewItemForm() {
           Cancel
         </Button>
         <Button
-          className="w-full sm:w-auto bg-primary text-primary-foreground border-2 border-border font-black text-base py-6 px-8 uppercase tracking-wide shadow-hard shadow-hard-hover shadow-hard-active transition-all"
+          className="w-full sm:w-auto bg-primary text-primary-foreground border-2 border-border font-black text-base py-3 px-6 uppercase tracking-wide shadow-hard shadow-hard-hover shadow-hard-active transition-all"
           onClick={handleSubmit}
         >
           Run Audit

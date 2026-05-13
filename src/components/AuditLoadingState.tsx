@@ -28,7 +28,7 @@ export function AuditLoadingState({ onComplete }: AuditLoadingStateProps) {
     <Card
       role="status"
       aria-live="polite"
-      className="w-full max-w-lg mx-auto border-4 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden"
+      className="w-full max-w-lg mx-auto border-2 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden"
     >
       <div className="py-20 px-6 flex flex-col items-center justify-center">
         {/* Segmented progress bar */}

@@ -12,7 +12,7 @@ export function OnboardingLayout({ currentStep, headerContent, children }: Onboa
       <div className="w-full max-w-lg">
     <Card className="onboarding-container">
       {/* Header with Progress */}
-      <div className="bg-background border-b-4 border-border p-6 sm:p-8">
+      <div className="bg-background border-b-2 border-border p-4 sm:p-6">
         {/* Progress Indicator */}
         <div className="flex items-center gap-2 mb-8">
           {[1, 2, 3, 4, 5].map((step) => (

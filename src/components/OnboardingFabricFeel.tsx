@@ -25,7 +25,7 @@ export function OnboardingFabricFeel({ onContinue, onSkip }: OnboardingFabricFee
 
   return (
     <>
-      <CardContent className="p-6 sm:p-8 flex-1">
+      <CardContent className="p-4 sm:p-6 flex-1">
         <div className="space-y-4">
           {OPTIONS.map((option) => {
             const isSelected = selectedIds.includes(option.id)
@@ -67,9 +67,9 @@ export function OnboardingFabricFeel({ onContinue, onSkip }: OnboardingFabricFee
         </button>
       </CardContent>
 
-      <CardFooter className="bg-card p-6 sm:p-8 border-t-4 border-border">
+      <CardFooter className="bg-card p-4 sm:p-6 border-t-2 border-border">
         <Button
-          className="w-full border-2 font-black text-xl py-8 transition-all bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer"
+          className="w-full border-2 font-black text-base py-4 transition-all bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer"
           onClick={() => onContinue?.()}
         >
           Continue
@@ -82,7 +82,7 @@ export function OnboardingFabricFeel({ onContinue, onSkip }: OnboardingFabricFee
 export function OnboardingFabricFeelHeader() {
   return (
     <>
-      <CardTitle className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+      <CardTitle className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
         How do you like your denim to feel?
       </CardTitle>
       <p className="text-sm font-heading font-normal text-muted-foreground mt-3">
