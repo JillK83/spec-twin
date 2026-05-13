@@ -143,6 +143,22 @@ export function AuditNewItemForm() {
       return
     }
 
+    if (result.parserError?.includes('503')) {
+      setIsLoading(false)
+      toast.error('Fabric lookup unavailable — try again in a moment.', {
+        style: {
+          backgroundColor: 'var(--primary)',
+          color: 'var(--primary-foreground)',
+          border: '2px solid var(--border)',
+          boxShadow: '4px 4px 0px 0px var(--border)',
+          fontWeight: 'bold',
+          borderRadius: '0.75rem',
+        },
+        icon: <AlertTriangle className="w-5 h-5" />,
+      })
+      return
+    }
+
     navigate('/verdict/open', {
       state: {
         auditOutput: result,

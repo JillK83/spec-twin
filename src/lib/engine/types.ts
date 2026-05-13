@@ -34,6 +34,7 @@ export type BrandOffsetResult = {
   driftAdjustment: number
   effectiveOffset: number
   coldStart: boolean
+  offsetId: string | null
 }
 
 export type GateInputs = {

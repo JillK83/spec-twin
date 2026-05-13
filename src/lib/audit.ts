@@ -107,6 +107,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     gender,
     offsetRows ?? []
   )
+  console.log('brandOffsetResult:', JSON.stringify(brandOffsetResult))
 
   // BrandOffsetResult uses camelCase; effectiveOffset = weightedOffset + driftAdjustment
   const anchorEffectiveOffset = anchorBrandOffsetResult.effectiveOffset
@@ -218,13 +219,14 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
       target_silhouette: input.targetSilhouette,
       target_inseam_suggested: targetInseam,
       brand_offset_used: brandOffsetResult.weightedOffset,
+      brand_offset_id: brandOffsetResult.offsetId,
       drift_adjustment_used: brandOffsetResult.driftAdjustment,
       effective_offset: targetEffectiveOffset,
       fit_delta: fitDelta,
       size_adjustment: sizeAdjustment.adjustment,
       output_state: resolved.outputState,
       recommended_size: recommendedSize,
-      confidence_score: null,
+      confidence_score: parserConfidence,
       confidence_level: resolved.confidenceLevel,
       fabric_gate: fabricGateResult.type !== 'NO_GATE',
       fabric_gate_reason: fabricGateResult.reasonCode ?? null,
