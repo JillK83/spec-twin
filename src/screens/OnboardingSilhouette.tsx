@@ -5,7 +5,7 @@ import { OnboardingSilhouette as OnboardingSilhouetteForm, OnboardingSilhouetteH
 export default function OnboardingSilhouette() {
   const navigate = useNavigate()
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 max-w-lg mx-auto w-full">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <OnboardingLayout currentStep={2} headerContent={<OnboardingSilhouetteHeader />}>
         <OnboardingSilhouetteForm onContinue={() => navigate('/onboarding/3')} />
       </OnboardingLayout>

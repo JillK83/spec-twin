@@ -5,7 +5,7 @@ import { OnboardingBodyFrame, OnboardingBodyFrameHeader } from '@/components/Onb
 export default function OnboardingBodyShape() {
   const navigate = useNavigate()
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 max-w-lg mx-auto w-full">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <OnboardingLayout currentStep={4} headerContent={<OnboardingBodyFrameHeader />}>
         <OnboardingBodyFrame
           onContinue={() => navigate('/onboarding/5')}

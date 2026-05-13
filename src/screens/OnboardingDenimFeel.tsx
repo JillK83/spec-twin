@@ -5,7 +5,7 @@ import { OnboardingFabricFeel, OnboardingFabricFeelHeader } from '@/components/O
 export default function OnboardingDenimFeel() {
   const navigate = useNavigate()
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 max-w-lg mx-auto w-full">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <OnboardingLayout currentStep={5} headerContent={<OnboardingFabricFeelHeader />}>
         <OnboardingFabricFeel
           onContinue={() => navigate('/bridge')}
