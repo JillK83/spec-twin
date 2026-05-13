@@ -76,8 +76,8 @@ export function FitVault() {
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-2xl">
-    <div className="w-full max-w-2xl mx-auto flex flex-col gap-8">
+      <div className="w-full max-w-xl">
+    <div className="w-full max-w-xl mx-auto flex flex-col gap-8">
       {/* Header */}
       <div className="space-y-2">
         <h1 className="font-heading font-black text-4xl sm:text-5xl tracking-tight text-foreground">

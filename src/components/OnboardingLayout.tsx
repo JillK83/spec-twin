@@ -9,7 +9,7 @@ interface OnboardingLayoutProps {
 export function OnboardingLayout({ currentStep, headerContent, children }: OnboardingLayoutProps) {
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-lg">
     <Card className="onboarding-container">
       {/* Header with Progress */}
       <div className="bg-background border-b-4 border-border p-6 sm:p-8">

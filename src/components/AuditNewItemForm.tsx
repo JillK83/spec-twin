@@ -91,8 +91,8 @@ export function AuditNewItemForm() {
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-2xl">
-      <Card className="w-full max-w-2xl mx-auto border-4 border-border shadow-hard bg-card rounded-2xl overflow-hidden">
+      <div className="w-full max-w-lg">
+      <Card className="w-full max-w-lg mx-auto border-4 border-border shadow-hard bg-card rounded-2xl overflow-hidden">
       {/* Amber Header */}
       <div className="bg-primary border-b-4 border-border p-6 relative overflow-hidden">
         <div

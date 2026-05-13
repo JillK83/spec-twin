@@ -8,8 +8,8 @@ export function BridgeSplash() {
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-2xl">
-      <Card className="w-full max-w-2xl mx-auto border-4 border-border shadow-hard bg-card rounded-2xl overflow-hidden flex flex-col">
+      <div className="w-full max-w-lg">
+      <Card className="w-full max-w-lg mx-auto border-4 border-border shadow-hard bg-card rounded-2xl overflow-hidden flex flex-col">
       {/* Amber Header */}
       <div className="w-full bg-primary border-b-4 border-border px-6 py-5">
         <p className="text-center font-black text-sm tracking-[0.2em] uppercase text-primary-foreground">
