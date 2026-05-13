@@ -37,7 +37,7 @@ export const verifiedPillars: Pillar[] = [
 export const SCENARIO_2 = {
   garmentName: 'AG Jeans Farrah Boot Jean',
   anchorLabel: ANCHOR_LABEL,
-  recommendedSize: '28 x 32',
+  recommendedSize: '28 x 30',
   sizeNote: 'INSEAM ADJUSTED FOR SILHOUETTE',
   footerNote: 'New to our system — treat this as a starting point',
 }
@@ -73,7 +73,6 @@ export const advisoryPillars: Pillar[] = [
 export const SCENARIO_3 = {
   garmentName: "Levi's 501 Original Jean",
   anchorLabel: ANCHOR_LABEL,
-  recommendedSize: '29 x 30',
   footerNote: 'VERIFY BEFORE BUYING',
   bannerText: 'This item will likely feel much firmer and less stretchy than your reference item.',
 }
@@ -82,9 +81,9 @@ export const estimatePillars: Pillar[] = [
   {
     id: 'fabric',
     name: 'Fabric Behavior',
-    headline: 'Very different fabric from your anchor.',
     status: 'estimate',
-    detail: "Your anchor has stretch. The Levi's 501 is 100% cotton — rigid, no give. The fit and feel will be noticeably different.",
+    headline: 'Very different fabric from your Madewell',
+    detail: "Your Madewell has a little stretch. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.",
   },
   {
     id: 'waist-hip',
@@ -96,8 +95,8 @@ export const estimatePillars: Pillar[] = [
   {
     id: 'shape',
     name: 'Shape Retention',
-    headline: 'May soften slightly with wear.',
     status: 'estimate',
-    detail: '100% cotton with no recovery fiber — expect the fabric to relax and loosen slightly over time.',
+    headline: 'May loosen more than your Madewell',
+    detail: "Your Madewell has a small amount of recovery fiber that helps it hold its shape. This item has none — expect it to relax and feel looser through the day, especially at the knees and seat.",
   },
 ]
