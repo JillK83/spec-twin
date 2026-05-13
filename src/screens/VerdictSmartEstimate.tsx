@@ -8,7 +8,7 @@ export default function VerdictSmartEstimate() {
         state="estimate"
         garmentName={SCENARIO_3.garmentName}
         anchorLabel={SCENARIO_3.anchorLabel}
-        recommendedSize={SCENARIO_3.recommendedSize}
+        recommendedSize="See brand size guide"
         pillars={estimatePillars}
         bannerText={SCENARIO_3.bannerText}
         footerNote={SCENARIO_3.footerNote}
