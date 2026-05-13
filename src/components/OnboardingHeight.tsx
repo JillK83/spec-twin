@@ -38,9 +38,9 @@ export function OnboardingHeight({ onContinue }: OnboardingHeightProps) {
 
   return (
     <>
-      <CardContent className="p-4 sm:p-6 space-y-10 flex-1">
+      <CardContent className="p-4 sm:p-6 space-y-6 flex-1">
         {/* Height Input Section */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div className="flex justify-center">
             <ToggleGroup
               type="single"
@@ -70,7 +70,7 @@ export function OnboardingHeight({ onContinue }: OnboardingHeightProps) {
                     placeholder="5"
                     value={feet}
                     onChange={(e) => setFeet(e.target.value.replace(/\D/g, '').slice(0, 1))}
-                    className="w-full text-3xl py-8 text-center font-medium bg-card border-2 border-border/40 rounded-xl shadow-[2px_2px_0px_0px_var(--border)] transition-all focus:border-border focus:outline-none focus:shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/40"
+                    className="w-full text-2xl py-4 text-center font-medium bg-card border-2 border-border rounded-xl shadow-[2px_2px_0px_0px_var(--border)] transition-all focus:border-border focus:outline-none focus:shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/40"
                   />
                 </div>
                 <div className="w-[120px] shrink-0 space-y-2">
@@ -83,7 +83,7 @@ export function OnboardingHeight({ onContinue }: OnboardingHeightProps) {
                     placeholder="8"
                     value={inches}
                     onChange={(e) => setInches(e.target.value.replace(/\D/g, '').slice(0, 2))}
-                    className="w-full text-3xl py-8 text-center font-medium bg-card border-2 border-border/40 rounded-xl shadow-[2px_2px_0px_0px_var(--border)] transition-all focus:border-border focus:outline-none focus:shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/40"
+                    className="w-full text-2xl py-4 text-center font-medium bg-card border-2 border-border rounded-xl shadow-[2px_2px_0px_0px_var(--border)] transition-all focus:border-border focus:outline-none focus:shadow-[4px_4px_0px_0px_var(--border)] placeholder:text-muted-foreground/40"
                   />
                 </div>
               </>
@@ -99,7 +99,7 @@ export function OnboardingHeight({ onContinue }: OnboardingHeightProps) {
                     placeholder="170"
                     value={cm}
                     onChange={(e) => setCm(e.target.value.replace(/\D/g, '').slice(0, 3))}
-                    className="w-full text-3xl py-8 text-center font-medium bg-card border-2 border-border/40 rounded-xl shadow-[2px_2px_0px_0px_var(--border)] transition-all focus:border-border focus:outline-none focus:shadow-[4px_4px_0px_0px_var(--border)] pr-14 placeholder:text-muted-foreground/40"
+                    className="w-full text-2xl py-4 text-center font-medium bg-card border-2 border-border rounded-xl shadow-[2px_2px_0px_0px_var(--border)] transition-all focus:border-border focus:outline-none focus:shadow-[4px_4px_0px_0px_var(--border)] pr-14 placeholder:text-muted-foreground/40"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground text-xl">cm</span>
                 </div>
@@ -116,13 +116,13 @@ export function OnboardingHeight({ onContinue }: OnboardingHeightProps) {
                 Your estimated inseam is{' '}
                 <span className="text-primary font-black">{estimatedInseam}"</span>
               </h3>
-              <p className="text-muted-foreground font-bold text-lg">— does that sound right?</p>
+              <p className="text-muted-foreground font-bold text-base">— does that sound right?</p>
             </div>
 
             <div className="space-y-4">
               {ADJUSTMENT_OPTIONS.map((option) => {
                 const isSelected = selectedAdjustment === option.id
-                let cardClasses = 'w-full text-left p-5 rounded-xl transition-all relative overflow-hidden group '
+                let cardClasses = 'w-full text-left p-3 rounded-xl transition-all relative overflow-hidden group '
                 if (isSelected) {
                   cardClasses += 'bg-secondary border-2 border-border shadow-hard translate-x-[-2px] translate-y-[-2px]'
                 } else {
