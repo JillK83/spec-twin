@@ -46,9 +46,6 @@ export function OnboardingRisePreference({ onContinue }: OnboardingRisePreferenc
                     <h3 className={`text-xl font-bold ${isPrimary ? 'text-secondary-foreground' : 'text-foreground'}`}>
                       {option.title}
                     </h3>
-                    <p className={`text-base font-medium mt-1 ${isPrimary ? 'text-secondary-foreground/80' : 'text-muted-foreground'}`}>
-                      — {option.desc}
-                    </p>
                   </div>
                   <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 ml-4 transition-colors ${isPrimary ? 'border-border bg-background text-foreground shadow-[2px_2px_0px_0px_var(--border)]' : isSecondary ? 'border-secondary bg-secondary text-secondary-foreground' : 'border-border/30 bg-transparent text-transparent group-hover:border-border/50'}`}>
                     <Check strokeWidth={3} className="w-5 h-5" />
