@@ -271,7 +271,7 @@ When `output_state = smart_estimate` all three pillar dots must return `estimate
 - Rise: high (matches anchor → no rise gate)
 - Silhouette: straight (matches anchor → inseam carries forward)
 - `weighted_offset`: +0.5
-- Expected gates: `FABRIC_COMFORT_TO_RIGID` Hard Stop
+- Expected gates: `FABRIC_COMFORT_TO_RIGID` Soft Warning — escalated to `smart_estimate` via §10 compounding (Soft Warning + size_adjustment ≥ 2)
 - Expected `output_state`: `smart_estimate`
 - All pillar dots: Purple
 - Badge: SMART ESTIMATE (Purple)

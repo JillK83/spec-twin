@@ -107,8 +107,6 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     gender,
     offsetRows ?? []
   )
-  console.log('brandOffsetResult:', JSON.stringify(brandOffsetResult))
-
   // BrandOffsetResult uses camelCase; effectiveOffset = weightedOffset + driftAdjustment
   const anchorEffectiveOffset = anchorBrandOffsetResult.effectiveOffset
   const targetEffectiveOffset = brandOffsetResult.effectiveOffset

@@ -36,7 +36,7 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Very different fabric from ${anchorBrand}`,
+      headline: `Very different fabric from your ${anchorBrand}`,
       detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
     }
   }
@@ -48,8 +48,8 @@ function getFabricBehaviorPillar(
         id: 'fabric',
         name: 'Fabric Behavior',
         status,
-        headline: `Very different fabric from ${anchorBrand}`,
-        detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+        headline: `Very different fabric from your ${anchorBrand}`,
+        detail: `Your ${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
       }
     }
     return {
@@ -119,6 +119,17 @@ function getWaistHipPillar(
       status,
       headline: "Can't confirm waist fit",
       detail: "This item's sizing system doesn't translate cleanly to your numeric anchor size. We can't confidently resolve the waist and hip fit. Check the brand's measurement guide before buying.",
+    }
+  }
+
+  // estimate override — no contract gate: sizing consistent but fabric diverges
+  if (verdictState === 'estimate' && !contractGate) {
+    return {
+      id: 'waist-hip',
+      name: 'Waist and Hip Fit',
+      status,
+      headline: `Sizing aligns with your ${anchorBrand}`,
+      detail: `The waist and hip sizing is consistent with your ${anchorBrand} — but because the fabric behaves very differently, check the brand's size guide before ordering.`,
     }
   }
 
@@ -290,7 +301,7 @@ export default function VerdictOpenPage() {
   const rawAnchorBrand = pageState?.anchorBrand
   const anchorBrand = rawAnchorBrand
     ? rawAnchorBrand.replace(/\b\w/g, c => c.toUpperCase())
-    : 'your item'
+    : 'item'
 
   const pillars: Pillar[] = [
     getFabricBehaviorPillar(auditOutput, verdictState, anchorBrand),
@@ -299,7 +310,8 @@ export default function VerdictOpenPage() {
   ]
 
   const garmentName =
-    [pageState?.targetBrand, pageState?.targetModel].filter(Boolean).join(' ') || 'Audited Item'
+    ([pageState?.targetBrand, pageState?.targetModel].filter(Boolean).join(' ') || 'Audited Item')
+      .replace(/\b\w/g, c => c.toUpperCase())
 
   const recommendedSize = auditOutput.outputState === 'smart_estimate'
     ? 'See brand size guide'
