@@ -69,7 +69,7 @@ export function OnboardingFabricFeel({ onContinue, onSkip }: OnboardingFabricFee
 
       <CardFooter className="bg-card p-4 sm:p-6 border-t-2 border-border">
         <Button
-          className="w-full border-2 font-black text-base py-4 transition-all bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer"
+          className="w-full border-2 font-black text-base py-5 transition-all bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer"
           onClick={() => onContinue?.()}
         >
           Continue

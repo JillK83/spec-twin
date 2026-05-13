@@ -63,7 +63,7 @@ export function OnboardingSilhouette({ onContinue }: OnboardingSilhouetteProps) 
 
       <CardFooter className="bg-card p-4 sm:p-6 border-t-2 border-border">
         <Button
-          className={`w-full border-2 font-black text-base py-4 transition-all ${selectedIds.length > 0 ? 'bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer' : 'bg-muted text-muted-foreground border-border/40 shadow-[1px_1px_0px_0px_var(--border)] cursor-not-allowed'}`}
+          className={`w-full border-2 font-black text-base py-5 transition-all ${selectedIds.length > 0 ? 'bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer' : 'bg-muted text-muted-foreground border-border/40 shadow-[1px_1px_0px_0px_var(--border)] cursor-not-allowed'}`}
           disabled={selectedIds.length === 0}
           onClick={() => onContinue?.()}
         >
