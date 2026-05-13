@@ -5,7 +5,7 @@ import { OnboardingHeight as OnboardingHeightForm, OnboardingHeightHeader } from
 export default function OnboardingHeight() {
   const navigate = useNavigate()
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 max-w-lg mx-auto w-full">
       <OnboardingLayout currentStep={3} headerContent={<OnboardingHeightHeader />}>
         <OnboardingHeightForm onContinue={() => navigate('/onboarding/4')} />
       </OnboardingLayout>

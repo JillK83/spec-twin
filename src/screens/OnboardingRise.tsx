@@ -5,7 +5,7 @@ import { OnboardingRisePreference, OnboardingRisePreferenceHeader } from '@/comp
 export default function OnboardingRise() {
   const navigate = useNavigate()
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 max-w-lg mx-auto w-full">
       <OnboardingLayout currentStep={1} headerContent={<OnboardingRisePreferenceHeader />}>
         <OnboardingRisePreference onContinue={() => navigate('/onboarding/2')} />
       </OnboardingLayout>

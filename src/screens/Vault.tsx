@@ -2,7 +2,7 @@ import { FitVault } from '@/components/FitVault'
 
 export default function Vault() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 py-12 max-w-lg mx-auto w-full">
       <FitVault />
     </div>
   )

@@ -4,7 +4,7 @@ import { SCENARIO_3, estimatePillars } from '@/components/verdictSampleData'
 
 export default function VerdictSmartEstimate() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-16">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-16 max-w-xl mx-auto w-full">
       <DemoSelectorStrip />
       <VerdictCard
         state="estimate"
