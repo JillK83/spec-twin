@@ -189,7 +189,7 @@ export function FitVault() {
         {/* Add New Anchor */}
         <button
           onClick={() => navigate('/anchor/new')}
-          className="rounded-2xl bg-card border-2 border-dashed border-border/60 p-6 flex items-center justify-center gap-3 hover:border-border hover:bg-muted/40 transition-colors group"
+          className="rounded-2xl bg-card border-2 border-dashed border-border/60 p-3 flex items-center justify-center gap-3 hover:border-border hover:bg-muted/40 transition-colors group"
         >
           <div className="w-8 h-8 rounded-full border-2 border-border bg-card flex items-center justify-center shadow-[2px_2px_0px_0px_var(--border)] group-hover:shadow-[4px_4px_0px_0px_var(--border)] transition-all">
             <Plus strokeWidth={3} className="w-4 h-4 text-foreground" />

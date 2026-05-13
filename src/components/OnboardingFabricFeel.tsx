@@ -31,7 +31,7 @@ export function OnboardingFabricFeel({ onContinue, onSkip }: OnboardingFabricFee
             const isSelected = selectedIds.includes(option.id)
             const isPrimary = selectedIds[0] === option.id
             const isSecondary = isSelected && !isPrimary
-            let cardClasses = 'w-full text-left p-5 rounded-xl transition-all relative overflow-hidden group '
+            let cardClasses = 'w-full text-left p-3 rounded-xl transition-all relative overflow-hidden group '
             if (isPrimary) {
               cardClasses += 'bg-secondary border-2 border-border shadow-hard translate-x-[-2px] translate-y-[-2px]'
             } else if (isSecondary) {

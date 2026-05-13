@@ -47,7 +47,7 @@ export function BridgeSplash() {
         </div>
 
         {/* Primary CTA */}
-        <div className="mt-12 w-full max-w-xl">
+        <div className="mt-6 w-full max-w-xl">
           <Button
             className="w-full border-2 font-black text-xl py-8 transition-all bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer"
             onClick={() => navigate('/anchor/new?demo=true')}

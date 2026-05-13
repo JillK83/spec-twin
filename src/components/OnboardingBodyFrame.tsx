@@ -24,7 +24,7 @@ export function OnboardingBodyFrame({ onContinue, onSkip }: OnboardingBodyFrameP
         <div className="space-y-4">
           {OPTIONS.map((option) => {
             const isSelected = selected === option.id
-            let cardClasses = 'w-full text-left p-5 rounded-xl transition-all relative overflow-hidden group '
+            let cardClasses = 'w-full text-left p-3 rounded-xl transition-all relative overflow-hidden group '
             if (isSelected) {
               cardClasses += 'bg-secondary border-2 border-border shadow-hard translate-x-[-2px] translate-y-[-2px]'
             } else {

@@ -177,9 +177,9 @@ export function AuditNewItemForm() {
               onValueChange={(v) => v && handleChange('rise', String(v))}
               className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
             >
-              <ToggleGroupItem value="high" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
-              <ToggleGroupItem value="mid" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
-              <ToggleGroupItem value="low" className="rounded-lg font-bold data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Low</ToggleGroupItem>
+              <ToggleGroupItem value="high" className="rounded-lg font-bold px-4 data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
+              <ToggleGroupItem value="mid" className="rounded-lg font-bold px-4 data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
+              <ToggleGroupItem value="low" className="rounded-lg font-bold px-4 data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Low</ToggleGroupItem>
             </ToggleGroup>
             {errors.rise && <p className="text-[var(--primary)] font-bold text-sm">{errors.rise}</p>}
           </div>
@@ -191,7 +191,7 @@ export function AuditNewItemForm() {
             </Label>
             <Textarea
               id="details"
-              rows={6}
+              rows={2}
               placeholder="e.g. 98% Cotton, 2% Elastane — zipper fly"
               autoComplete="off"
               className={`input-retro py-3 font-mono placeholder:font-mono text-base resize-none ${errors.details ? errorClass : ''}`}
