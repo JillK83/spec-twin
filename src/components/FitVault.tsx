@@ -83,7 +83,7 @@ export function FitVault() {
         <h1 className="font-heading font-black text-3xl sm:text-4xl tracking-tight text-foreground">
           Your Fit Vault
         </h1>
-        <p className="font-mono text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Select a benchmark garment to start an audit.
         </p>
       </div>

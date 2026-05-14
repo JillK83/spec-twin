@@ -126,7 +126,7 @@ export function AddAnchorForm() {
                 <CardTitle className="text-2xl font-black tracking-tight uppercase flex items-center gap-3">
                   New Anchor
                 </CardTitle>
-                <CardDescription className="text-primary-foreground/80 font-bold mt-2 text-lg">
+                <CardDescription className="text-primary-foreground/80 font-normal mt-1 text-base">
                   Add a benchmark garment to your fit vault.
                 </CardDescription>
               </div>
@@ -148,7 +148,7 @@ export function AddAnchorForm() {
                     <Info className="w-4 h-4" />
                   </TooltipTrigger>
                   <TooltipContent className="bg-transparent border-none shadow-none p-0">
-                    <div className="sticker-teal text-sm max-w-[200px]">Be specific! e.g. 'Vintage 1990s Levi's 501'</div>
+                    <div className="sticker-teal text-xs leading-tight" style={{maxWidth: '140px'}}>Be specific! e.g. 'Vintage 1990s Levi's 501'</div>
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -156,7 +156,7 @@ export function AddAnchorForm() {
                 id="name"
                 placeholder="e.g. Levi's dark blue low rise denim."
                 autoComplete="off"
-                className={`input-retro text-base py-3 ${errors.name ? errorClass : ''}`}
+                className={`input-retro text-base py-3 placeholder:text-muted-foreground/50 ${errors.name ? errorClass : ''}`}
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
               />
@@ -171,7 +171,7 @@ export function AddAnchorForm() {
                   id="brand"
                   placeholder="e.g. Levi's"
                   autoComplete="off"
-                  className={`input-retro text-base py-3 ${errors.brand ? errorClass : ''}`}
+                  className={`input-retro text-base py-3 placeholder:text-muted-foreground/50 ${errors.brand ? errorClass : ''}`}
                   value={formData.brand}
                   onChange={(e) => handleChange('brand', e.target.value)}
                 />
@@ -181,7 +181,7 @@ export function AddAnchorForm() {
               <div className="space-y-2">
                 <Label htmlFor="category" className="text-base font-bold">Category</Label>
                 <Select value={formData.category} onValueChange={(v) => handleChange('category', v)}>
-                  <SelectTrigger className={`w-full input-retro py-3 text-base h-auto ${errors.category ? errorClass : ''}`}>
+                  <SelectTrigger className={`w-full input-retro py-3 text-base h-auto min-h-[46px] ${errors.category ? errorClass : ''}`}>
                     <SelectValue placeholder="Select category..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -206,7 +206,7 @@ export function AddAnchorForm() {
                 id="size"
                 placeholder="e.g. 27x30 or Size 4"
                 autoComplete="off"
-                className={`input-retro text-base py-3 ${errors.size ? errorClass : ''}`}
+                className={`input-retro text-base py-3 placeholder:text-muted-foreground/50 ${errors.size ? errorClass : ''}`}
                 value={formData.size}
                 onChange={(e) => handleChange('size', e.target.value)}
               />
@@ -245,9 +245,8 @@ export function AddAnchorForm() {
                       <Info className="w-4 h-4" />
                     </TooltipTrigger>
                     <TooltipContent className="bg-transparent border-none shadow-none p-0">
-                      <div className="sticker-teal text-sm max-w-[200px]">
-                        Strict: Snug, no-stretch feel.<br />
-                        Forgiving: Easy fit that moves with you.
+                      <div className="sticker-teal text-xs leading-tight" style={{maxWidth: '140px'}}>
+                        Strict: snug feel. Forgiving: moves with you.
                       </div>
                     </TooltipContent>
                   </Tooltip>
@@ -274,8 +273,8 @@ export function AddAnchorForm() {
                     <Info className="w-4 h-4" />
                   </TooltipTrigger>
                   <TooltipContent className="bg-transparent border-none shadow-none p-0">
-                    <div className="sticker-teal text-sm max-w-[200px]">
-                      Refer to care label for exact percentages and type what you see, we'll handle the formatting.
+                    <div className="sticker-teal text-xs leading-tight" style={{maxWidth: '140px'}}>
+                      Check care label — type what you see.
                     </div>
                   </TooltipContent>
                 </Tooltip>
@@ -286,7 +285,7 @@ export function AddAnchorForm() {
                 rows={2}
                 placeholder="e.g. 98% Cotton, 2% Elastane"
                 autoComplete="off"
-                className={`input-retro py-3 font-mono placeholder:font-mono text-base resize-none ${errors.material ? errorClass : ''}`}
+                className={`input-retro py-3 font-mono placeholder:font-mono placeholder:text-muted-foreground/50 text-base resize-none ${errors.material ? errorClass : ''}`}
                 value={formData.material}
                 onChange={(e) => handleChange('material', e.target.value)}
               />
@@ -310,7 +309,7 @@ export function AddAnchorForm() {
                 maxLength={68}
                 placeholder="e.g. Runs slightly tight at the waist"
                 autoComplete="off"
-                className="input-retro py-3 text-base"
+                className="input-retro py-3 text-base placeholder:text-muted-foreground/50"
                 value={formData.userNotes}
                 onChange={(e) => handleChange('userNotes', e.target.value)}
               />
@@ -321,7 +320,7 @@ export function AddAnchorForm() {
         <CardFooter className="bg-muted p-4 sm:p-6 border-t-2 border-border flex flex-col sm:flex-row justify-end gap-4">
           <Button
             variant="outline"
-            className="w-full sm:w-auto border-2 border-border font-bold text-base py-3 px-6 hover:bg-background shadow-[2px_2px_0px_0px_var(--border)] hover:shadow-[4px_4px_0px_0px_var(--border)] hover:-translate-y-0.5 transition-all"
+            className="w-full sm:w-auto border-2 border-border font-bold text-base py-5 px-8 hover:bg-background hover:-translate-y-0.5 transition-all"
             onClick={() => {
               setFormData({ name: '', brand: '', category: 'denim', size: '', gender: 'unisex', fitAllowance: 'moderate', material: '', userNotes: '' })
               setErrors({})
@@ -330,7 +329,7 @@ export function AddAnchorForm() {
             Cancel
           </Button>
           <Button
-            className="w-full sm:w-auto bg-primary text-primary-foreground border-2 border-border font-black text-base py-3 px-6 uppercase tracking-wide shadow-hard shadow-hard-hover shadow-hard-active transition-all"
+            className="w-full sm:w-auto bg-primary text-primary-foreground border-2 border-border font-black text-base py-5 px-8 uppercase tracking-wide shadow-hard shadow-hard-hover shadow-hard-active transition-all"
             onClick={handleSubmit}
           >
             Lock In First Anchor

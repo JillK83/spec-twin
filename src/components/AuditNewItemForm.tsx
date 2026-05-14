@@ -105,7 +105,7 @@ export function AuditNewItemForm() {
               <CardTitle className="text-2xl font-black tracking-tight uppercase flex items-center gap-3">
                 Audit New Item
               </CardTitle>
-              <CardDescription className="text-primary-foreground/80 font-bold mt-2 text-lg">
+              <CardDescription className="text-primary-foreground/80 font-normal mt-1 text-base">
                 Run a spec-twin fit audit before you buy.
               </CardDescription>
             </div>
@@ -119,8 +119,8 @@ export function AuditNewItemForm() {
       <CardContent className="p-4 sm:p-6 space-y-5">
         {/* Anchor Reference Bar */}
         <div className="space-y-2">
-          <Label className="text-base font-bold block">Your reference item</Label>
-          <AnchorReferenceBar anchorLabel="Madewell Perfect Vintage Straight, Size 27x29" />
+          <Label className="text-sm font-normal text-muted-foreground block mb-1">Comparing against</Label>
+          <AnchorReferenceBar anchorLabel="Madewell Perfect Vintage Straight · Size 27x29" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -131,7 +131,7 @@ export function AuditNewItemForm() {
               id="brand"
               placeholder="e.g. AGOLDE"
               autoComplete="off"
-              className={`input-retro text-base py-3 ${errors.brand ? errorClass : ''}`}
+              className={`input-retro text-base py-3 placeholder:text-muted-foreground/50 ${errors.brand ? errorClass : ''}`}
               value={formData.brand}
               onChange={(e) => handleChange('brand', e.target.value)}
             />
@@ -148,7 +148,7 @@ export function AuditNewItemForm() {
               id="styleName"
               placeholder="e.g. 90s Cheeky, 501 Original"
               autoComplete="off"
-              className="input-retro text-base py-3"
+              className="input-retro text-base py-3 placeholder:text-muted-foreground/50"
               value={formData.styleName}
               onChange={(e) => handleChange('styleName', e.target.value)}
             />
@@ -161,7 +161,7 @@ export function AuditNewItemForm() {
               id="size"
               placeholder="e.g. 27 or M, L — waist size or numeric size"
               autoComplete="off"
-              className={`input-retro text-base py-3 ${errors.size ? errorClass : ''}`}
+              className={`input-retro text-base py-3 placeholder:text-muted-foreground/50 ${errors.size ? errorClass : ''}`}
               value={formData.size}
               onChange={(e) => handleChange('size', e.target.value)}
             />
@@ -175,7 +175,7 @@ export function AuditNewItemForm() {
               type="single"
               value={formData.rise}
               onValueChange={(v) => v && handleChange('rise', String(v))}
-              className={`justify-start bg-muted p-1 rounded-xl border-2 ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
+              className={`justify-start bg-muted p-1 rounded-xl border-2 min-h-[46px] items-center ${errors.rise ? 'border-[var(--primary)] shadow-[2px_2px_0px_0px_var(--primary)]' : 'border-border'}`}
             >
               <ToggleGroupItem value="high" className="rounded-lg font-bold px-4 data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">High</ToggleGroupItem>
               <ToggleGroupItem value="mid" className="rounded-lg font-bold px-4 data-[state=on]:bg-background data-[state=on]:shadow-sm data-[state=on]:border-2 data-[state=on]:border-border">Mid</ToggleGroupItem>
@@ -187,14 +187,14 @@ export function AuditNewItemForm() {
           {/* Fabric & Care Details */}
           <div className="space-y-2">
             <Label htmlFor="details" className="text-base font-bold">
-              Paste or enter fabric and care details
+              Fabric Details
             </Label>
             <Textarea
               id="details"
               rows={2}
-              placeholder="e.g. 98% Cotton, 2% Elastane — zipper fly"
+              placeholder="e.g. 98% Cotton, 2% Elastane"
               autoComplete="off"
-              className={`input-retro py-3 font-mono placeholder:font-mono text-base resize-none ${errors.details ? errorClass : ''}`}
+              className={`input-retro py-3 font-mono placeholder:font-mono placeholder:text-muted-foreground/50 text-base resize-none ${errors.details ? errorClass : ''}`}
               value={formData.details}
               onChange={(e) => handleChange('details', e.target.value)}
             />
@@ -218,12 +218,12 @@ export function AuditNewItemForm() {
               type="url"
               placeholder="e.g. https://www.everlane.com/products/..."
               autoComplete="off"
-              className="input-retro py-3 text-base font-mono placeholder:font-mono"
+              className="input-retro py-3 text-base font-mono placeholder:font-mono placeholder:text-muted-foreground/50"
               value={formData.url}
               onChange={(e) => handleChange('url', e.target.value)}
             />
             <p className="text-muted-foreground font-normal text-base">
-              Stored for reference only — no scraping.
+              Saved for your personal reference.
             </p>
           </div>
         </form>
@@ -232,7 +232,7 @@ export function AuditNewItemForm() {
       <CardFooter className="bg-muted p-4 sm:p-6 border-t-2 border-border flex flex-col sm:flex-row justify-end gap-4">
         <Button
           variant="outline"
-          className="w-full sm:w-auto border-2 border-border font-bold text-base py-3 px-6 hover:bg-background shadow-[2px_2px_0px_0px_var(--border)] hover:shadow-[4px_4px_0px_0px_var(--border)] hover:-translate-y-0.5 transition-all"
+          className="w-full sm:w-auto border-2 border-border font-bold text-base py-5 px-8 hover:bg-background hover:-translate-y-0.5 transition-all"
           onClick={() => {
             setFormData({ brand: '', styleName: '', size: '', rise: '', details: '', url: '' })
             setErrors({})
@@ -241,7 +241,7 @@ export function AuditNewItemForm() {
           Cancel
         </Button>
         <Button
-          className="w-full sm:w-auto bg-primary text-primary-foreground border-2 border-border font-black text-base py-3 px-6 uppercase tracking-wide shadow-hard shadow-hard-hover shadow-hard-active transition-all"
+          className="w-full sm:w-auto bg-primary text-primary-foreground border-2 border-border font-black text-base py-5 px-8 uppercase tracking-wide shadow-hard shadow-hard-hover shadow-hard-active transition-all"
           onClick={handleSubmit}
         >
           Run Audit
