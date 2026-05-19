@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Card } from './ui/magic/Card'
 import { Button } from './ui/magic/Button'
 import { ChevronDown, AlertTriangle, Info } from 'lucide-react'
+import { useAppMode } from '@/contexts/AppModeContext'
 
 export type VerdictState = 'verified' | 'advisory' | 'estimate' | 'reduced'
 export type PillarStatus = 'verified' | 'advisory' | 'estimate'
@@ -54,8 +55,8 @@ export function VerdictCard({
   footerNote,
 }: VerdictCardProps) {
   const navigate = useNavigate()
-  const location = useLocation()
-  const isDemoMode = ['/verdict/1', '/verdict/2', '/verdict/3'].includes(location.pathname)
+  const { mode } = useAppMode()
+  const isDemoMode = mode === 'demo'
   const [expandedIds, setExpandedIds] = useState<string[]>([])
 
   const togglePillar = (id: string) => {

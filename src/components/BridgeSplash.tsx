@@ -2,9 +2,11 @@ import { useNavigate } from 'react-router-dom'
 import { Card } from './ui/magic/Card'
 import { Button } from './ui/magic/Button'
 import { Sparkles } from 'lucide-react'
+import { useAppMode } from '@/contexts/AppModeContext'
 
 export function BridgeSplash() {
   const navigate = useNavigate()
+  const { mode } = useAppMode()
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
@@ -50,7 +52,7 @@ export function BridgeSplash() {
         <div className="mt-12 w-full max-w-xl">
           <Button
             className="w-full border-2 font-black text-xl py-8 transition-all bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer"
-            onClick={() => navigate('/anchor/new?demo=true')}
+            onClick={() => navigate(mode === 'demo' ? '/anchor/new?demo=true' : '/anchor/new')}
           >
             + Drop Your First Anchor
           </Button>

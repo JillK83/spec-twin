@@ -1,6 +1,5 @@
 import { VerdictCard } from '@/components/VerdictCard'
 import { SCENARIO_1, verifiedPillars } from '@/components/verdictSampleData'
-
 export default function VerdictVerifiedFit() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-16">

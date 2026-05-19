@@ -1,7 +1,9 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from './components/ui/magic/Sonner'
+import { AppModeProvider } from './contexts/AppModeContext'
 import { DemoSelectorStrip } from './components/DemoSelectorStrip'
-import CoverScreen from './components/CoverScreen'
+import CoverDemo from './components/CoverDemo'
+import CoverOpen from './components/CoverOpen'
 import OnboardingRise from './screens/OnboardingRise'
 import OnboardingSilhouette from './screens/OnboardingSilhouette'
 import OnboardingHeight from './screens/OnboardingHeight'
@@ -25,11 +27,12 @@ export default function App() {
     pathname === '/verdict/open'
 
   return (
-    <>
+    <AppModeProvider>
     <Toaster position="bottom-center" />
     {!isOpenMode && <DemoSelectorStrip />}
     <Routes>
-      <Route path="/" element={<CoverScreen />} />
+      <Route path="/" element={<CoverDemo />} />
+      <Route path="/open" element={<CoverOpen />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
       <Route path="/onboarding/2" element={<OnboardingSilhouette />} />
       <Route path="/onboarding/3" element={<OnboardingHeight />} />
@@ -45,6 +48,6 @@ export default function App() {
       <Route path="/verdict/4" element={<VerdictSmartEstimate />} />
       <Route path="/verdict/open" element={<VerdictOpenPage />} />
     </Routes>
-    </>
+    </AppModeProvider>
   )
 }
