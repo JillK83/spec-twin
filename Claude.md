@@ -95,7 +95,7 @@ For multi-step tasks, state a brief plan:
 
 **Phase B — Live Implementation (Standalone App)**
 
-- Goal: Port validated Antigravity logic into the React/Vite build and connect the Anthropic API key.
+- Goal: Port validated Antigravity logic into the React/Vite build and connect the Gemini API key.
 - Success criteria: All three demo scenarios produce the correct output state (`verified_fit`, `fit_advisory`, `smart_estimate`), badge color, pillar dot states, and copy. Verdict Card renders in under 2 seconds on desktop.
 
 **Pre-Commit Review (All Phases)**
@@ -392,6 +392,10 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 | CSS / Components | Tailwind CSS + `shadcn/ui` |
 | Database | Supabase (MCP-connected) |
 | UI Generation | Magic Patterns (MCP-connected) |
+<<<<<<< HEAD
 | Parser / AI | Gemini API `gemini-3.1-flash-lite` |
+=======
+| Parser / AI | Gemini API|
+>>>>>>> 6f365c4 (sub agent code review added, api parser updated)
 | Typography | Geist, Geist Mono |
 | Deployment | Vercel |
