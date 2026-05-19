@@ -87,8 +87,15 @@ For multi-step tasks, state a brief plan:
 - Verification: All three scenarios resolve to the correct `output_state` before any code moves to the standalone app.
 
 **Phase B — Live Implementation (Standalone App)**
-- Goal: Port validated Antigravity logic into the React/Vite build and connect the Anthropic API key.
+- Goal: Port validated Antigravity logic into the React/Vite build and connect the Gemini API key.
 - Success criteria: All three demo scenarios produce the correct output state (`verified_fit`, `fit_advisory`, `smart_estimate`), badge color, pillar dot states, and copy. Verdict Card renders in under 2 seconds on desktop.
+
+**Pre-Commit Review (All Phases)**
+- Before any `git commit`, spawn a subagent to review all staged files with fresh context.
+- The subagent has no session history — it reads the code cold and reports findings without bias.
+- The subagent must check: logic errors, schema contract violations (see Key Contracts), output state naming, TypeScript correctness, and UI token compliance.
+- Address any HIGH severity findings before committing. LOW severity findings may be noted in the commit message.
+- The subagent report summary should be included in the commit message
 
 ---
 
@@ -330,6 +337,6 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 | CSS / Components | Tailwind CSS + shadcn/ui |
 | Database | Supabase (MCP-connected) |
 | UI Generation | Magic Patterns (MCP-connected) |
-| Parser / AI | Anthropic API `claude-sonnet-4-20250514` |
+| Parser / AI | Gemini API|
 | Typography | Geist, Geist Mono |
 | Deployment | Vercel |
