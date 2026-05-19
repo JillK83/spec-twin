@@ -18,7 +18,7 @@ Before implementing anything:
 
 **Project-specific rules:**
 - **Deterministic logic first.** The fit recommendation engine is measurement-free and photo-free. Never suggest body-scanning or manual measurement inputs.
-- **The three-layer audit is sequential and non-negotiable.** Every recommendation flows through: Fit Contract → Fabric Performance Gate → Recovery & Aging. Do not skip or reorder layers.
+- **The three-layer audit is sequential and non-negotiable.** Every recommendation flows through: Fit Contract → Fabric Performance Gate → Recovery & Aging. Do not skip or reorder layers. `size_up_2` (`fit_delta` ≥ +1.5) and `size_down_2` (`fit_delta` ≤ −1.5) are independent `smart_estimate` triggers. Neither requires a simultaneous Soft Warning gate to escalate. A Soft Warning that fires alongside a size delta still adds advisory copy to the fabric pillar on the verdict card.
 - **Ambiguity is a signal, not a default.** If data is missing (e.g. `poly_pct`), use the `unknown` state and surface an amber dot in the UI. Never silently default to a value.
 
 ---

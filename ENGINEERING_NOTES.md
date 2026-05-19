@@ -144,6 +144,8 @@ This applies regardless of gate logic or brand offset results.
 
 Note: Women's numeric size 16 maps to waist 33" via the conversion table in `parseWaistSize` and will trigger the size cap rule.
 
+Size delta escalation is a separate `smart_estimate` trigger from size cap. Both independently return `smart_estimate` with no size recommendation given. Size cap fires on anchor or target size input. Size delta fires on `fit_delta` calculation result. When both fire simultaneously, size cap takes priority per the Section 10 resolution order.
+
 ---
 
 ## Section 9: Brand Offset Lookup Pattern

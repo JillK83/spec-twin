@@ -25,8 +25,8 @@ User's primary rise preference from onboarding acts as a hard filter. If the tar
 **Size Cap**
 Waist ≥ 33" or women's numeric size ≥ 18 → always `smart_estimate` with disclaimer. Either condition alone triggers it.
 
-**Compounding Uncertainty Escalation**
-When a fabric gate Soft Warning fires (`COMFORT_TO_RIGID`) AND fit delta produces `size_up_2` (≥ +1.5) simultaneously → escalate from `fit_advisory` to `smart_estimate`. Two compounding uncertainties together reduce confidence below the threshold for a firm recommendation. Primary rule for Scenario 3.
+**Size Delta Escalation**
+A `fit_delta` of ≥ +1.5 (`size_up_2`) or ≤ −1.5 (`size_down_2`) independently triggers `smart_estimate` with no specific size recommendation. A size difference this large exceeds the confidence threshold for a firm recommendation regardless of other gate results. The user is directed to verify with the brand's size guide before buying.
 
 **Hardware warnings are inactive at MVP.** Closure type is not collected from the anchor form.
 
