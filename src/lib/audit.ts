@@ -6,7 +6,7 @@ import { parseProductDetails } from './parser'
 import { getSizeRangeFromLabel, checkSizeCap, getFabricClass, getRecoveryClass, parseWaistSize, parseInseam } from './engine/normalization'
 import { getBrandOffset } from './engine/brandOffset'
 import { calculateFitDelta, mapDeltaToSizeAdjustment } from './engine/fitDelta'
-import { evaluateFabricGate, evaluateContractGate, evaluateRiseGate, evaluateRecoveryWarning } from './engine/gates'
+import { evaluateFabricGate, evaluateContractGate, evaluateRiseGate, evaluateRecoveryWarning, getRecoveryNote } from './engine/gates'
 import { resolveOutputState } from './engine/resolver'
 import type { OutputState, ConfidenceLevel, FabricClass, RecoveryClass, ContractType, Rise, Gender, GateInputs, ResolverResult } from './engine/types'
 import type { UserAnchor } from './database.types'
@@ -124,12 +124,14 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const fabricGateResult = evaluateFabricGate(anchorFabricClass, targetFabricClass)
   const contractGateResult = evaluateContractGate(anchorContractType, targetContractType)
   const riseGateResult = evaluateRiseGate(input.userPrimaryRise, input.targetRise)
-  const recoveryResult = evaluateRecoveryWarning(
+  const recoveryWarning = evaluateRecoveryWarning(
     anchor.recovery_class as RecoveryClass,
     targetRecoveryClass
   )
-  const recoveryWarning = recoveryResult.warned
-  const recoveryNote = recoveryResult.note
+  const recoveryNote = getRecoveryNote(
+    anchor.recovery_class as RecoveryClass,
+    targetRecoveryClass
+  )
 
   // ── Step 8: Resolve output state ─────────────────────────────────────────────
   const gateInputs: GateInputs = {

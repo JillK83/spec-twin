@@ -141,23 +141,31 @@ export function evaluateRiseGate(anchor: Rise, target: Rise): GateResult {
 
 // ─── Recovery warning ─────────────────────────────────────────────────────────
 // Per SPEC_TWIN_LOGIC.md §7: does not block recommendation — surfaces as a note.
-// Returns warned: true for the four listed transitions only. All others return false.
+// Returns true for the four listed transitions only. All others return false.
 
 export function evaluateRecoveryWarning(
   anchor: RecoveryClass,
   target: RecoveryClass
-): { warned: boolean; note: string | null } {
-  if (anchor === 'high' && target === 'low') {
-    return { warned: true, note: 'This item may feel tighter at first and may loosen more through the day than your reference item.' }
-  }
-  if (anchor === 'low' && target === 'high') {
-    return { warned: true, note: 'This item will hold its shape significantly better than your reference item and may feel more structured throughout the day.' }
-  }
-  if (anchor === 'unknown' && target === 'high') {
-    return { warned: true, note: 'This item may hold its shape more firmly than your reference item.' }
-  }
-  if (anchor === 'high' && target === 'unknown') {
-    return { warned: true, note: 'Shape retention data is unavailable for this item — your reference item holds its shape well, so verify before buying.' }
-  }
-  return { warned: false, note: null }
+): boolean {
+  return (
+    (anchor === 'high'    && target === 'low')     ||
+    (anchor === 'low'     && target === 'high')    ||
+    (anchor === 'unknown' && target === 'high')    ||
+    (anchor === 'high'    && target === 'unknown')
+  )
+}
+
+export function getRecoveryNote(
+  anchor: RecoveryClass,
+  target: RecoveryClass
+): string | null {
+  if (anchor === 'high' && target === 'low')
+    return 'This item may feel tighter at first and may loosen more through the day than your reference item.'
+  if (anchor === 'low' && target === 'high')
+    return 'This item will hold its shape significantly better than your reference item and may feel more structured throughout the day.'
+  if (anchor === 'unknown' && target === 'high')
+    return 'This item may hold its shape more firmly than your reference item.'
+  if (anchor === 'high' && target === 'unknown')
+    return 'Shape retention data is unavailable for this item — your reference item holds its shape well, so verify before buying.'
+  return null
 }

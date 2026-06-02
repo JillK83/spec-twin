@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test": "npx tsx tests/engine.test.ts",
     "test:connection": "npx tsx --env-file=.env test-connection.ts",
     "test:engine": "npx tsx src/lib/engine/engine.test.ts"
   },
