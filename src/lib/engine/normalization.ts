@@ -118,8 +118,7 @@ export function parseInseam(sizeString: string): number | null {
 // Derived from normalized elastane_pct. Thresholds per SPEC_TWIN_LOGIC.md §2.
 
 export function getFabricClass(elastanePct: number | null): FabricClass {
-  if (elastanePct === null) return 'unknown'
-  if (elastanePct === 0) return 'rigid'
+  if (elastanePct === null || elastanePct === 0) return 'rigid'
   if (elastanePct < 3.0) return 'comfort_stretch'
   return 'high_stretch'
 }
