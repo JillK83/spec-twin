@@ -31,7 +31,8 @@ export default function App() {
     <Toaster position="bottom-center" />
     {!isOpenMode && <DemoSelectorStrip />}
     <Routes>
-      <Route path="/" element={<CoverDemo />} />
+      <Route path="/" element={<CoverOpen />} />
+      <Route path="/demo" element={<CoverDemo />} />
       <Route path="/open" element={<CoverOpen />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
       <Route path="/onboarding/2" element={<OnboardingSilhouette />} />

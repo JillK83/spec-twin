@@ -76,7 +76,7 @@ export function VerdictCard({
   let BannerIcon = AlertTriangle
 
   if (state === 'advisory') {
-    bannerText = advisoryBannerText ?? 'Fabric stretch differs from your anchor.'
+    bannerText = advisoryBannerText ?? null
     bannerClasses = 'bg-[#FFFBEB] text-foreground border-y-2 border-[#FFBF00]'
     BannerIcon = AlertTriangle
   } else if (state === 'estimate') {

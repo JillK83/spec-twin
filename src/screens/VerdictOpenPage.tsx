@@ -105,7 +105,7 @@ function getWaistHipPillar(
   verdictState: VerdictState,
   anchorBrand: string,
 ): Pillar {
-  const { riseMismatchWarning, contractGate, contractGateReason, coldStart } = output
+  const { riseMismatchWarning, contractGate, contractGateReason, coldStart, fitDeltaSign } = output
 
   const triggered = riseMismatchWarning || contractGate
   const resolvedStatus: PillarStatus = triggered ? 'advisory' : 'verified'
@@ -160,8 +160,29 @@ function getWaistHipPillar(
   // States 5–7 — brand offset reason codes (euro_slim, rigid_bias, vanity_high)
   // Not yet implementable — requires reason codes in AuditOutput
 
-  // State 1 — clean match (lime)
-  // State 2 (size adjustment, no gates) collapses here until fitDirection is wired
+  // State 2a — target brand runs smaller, size adjusted up (lime)
+  if (fitDeltaSign === 'up') {
+    return {
+      id: 'waist-hip',
+      name: 'Waist and Hip Fit',
+      status,
+      headline: `Runs smaller than your ${anchorBrand}`,
+      detail: `This brand cuts slightly smaller than your ${anchorBrand}. We've accounted for that in the recommended size.`,
+    }
+  }
+
+  // State 2b — target brand runs larger, size adjusted down (lime)
+  if (fitDeltaSign === 'down') {
+    return {
+      id: 'waist-hip',
+      name: 'Waist and Hip Fit',
+      status,
+      headline: `Runs larger than your ${anchorBrand}`,
+      detail: `This brand cuts slightly larger than your ${anchorBrand}. We've accounted for that in the recommended size.`,
+    }
+  }
+
+  // State 1 — clean match, no size adjustment (lime)
   return {
     id: 'waist-hip',
     name: 'Waist and Hip Fit',

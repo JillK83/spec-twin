@@ -46,6 +46,10 @@ export type AuditOutput = {
   inseamNote: string | null
   inseamAvailable: boolean
   coldStart: boolean
+  fitDeltaSign: 'up' | 'down' | 'neutral'
+  targetRise: Rise
+  targetSizeOriginal: string
+  fitTag: string | null
 }
 
 const ENGINE_VERSION = 'open-mode-v1'
@@ -83,7 +87,8 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
 
   // ── Step 4: Normalize target size ───────────────────────────────────────────
   const targetSizeRange = getSizeRangeFromLabel(input.targetSize)
-  const sizeCapped = checkSizeCap(input.targetSize)
+  const targetSizeWaistOnly = input.targetSize.trim().split(/x/i)[0].trim()
+  const sizeCapped = checkSizeCap(targetSizeWaistOnly)
 
   // ── Step 5: Brand offset lookup ──────────────────────────────────────────────
   const anchorGender = anchor.gender as string | null
@@ -114,6 +119,9 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   // ── Step 6: Fit delta + size adjustment ─────────────────────────────────────
   const fitDelta = calculateFitDelta(anchorEffectiveOffset, targetEffectiveOffset)
   const sizeAdjustment = mapDeltaToSizeAdjustment(fitDelta)
+  const fitDeltaSign: 'up' | 'down' | 'neutral' =
+    sizeAdjustment.adjustment > 0 ? 'up' :
+    sizeAdjustment.adjustment < 0 ? 'down' : 'neutral'
 
   // ── Step 7: Gate evaluation ──────────────────────────────────────────────────
   const anchorFabricClass: FabricClass = (anchor.fabric_class as FabricClass) ?? 'unknown'
@@ -275,5 +283,9 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     inseamNote,
     inseamAvailable,
     coldStart: resolved.coldStart,
+    fitDeltaSign,
+    targetRise: input.targetRise,
+    targetSizeOriginal: input.targetSize,
+    fitTag: brandOffsetResult.fitTag,
   }
 }

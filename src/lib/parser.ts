@@ -38,14 +38,14 @@ Output format:
 
 export async function parseProductDetails(rawText: string): Promise<ParseResult> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
-  console.log('API KEY:', apiKey?.slice(0, 8))
   if (!apiKey) {
     return { success: false, parser_error: 'VITE_GEMINI_API_KEY not set' }
   }
 
   const body = {
     system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-    contents: [{ parts: [{ text: rawText }] }]
+    contents: [{ parts: [{ text: rawText }] }],
+    generationConfig: { temperature: 0 }
   }
 
   try {

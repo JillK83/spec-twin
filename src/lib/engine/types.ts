@@ -35,6 +35,7 @@ export type BrandOffsetResult = {
   effectiveOffset: number
   coldStart: boolean
   offsetId: string | null
+  fitTag: string | null
 }
 
 export type GateInputs = {

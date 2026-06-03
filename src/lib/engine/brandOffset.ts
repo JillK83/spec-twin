@@ -30,11 +30,12 @@ export function getBrandOffset(
   const row = find(categoryLower) ?? find('all') ?? null
 
   if (!row) {
-    return { weightedOffset: 0, driftAdjustment: 0, effectiveOffset: 0, coldStart: true, offsetId: null }
+    return { weightedOffset: 0, driftAdjustment: 0, effectiveOffset: 0, coldStart: true, offsetId: null, fitTag: null }
   }
 
   const weightedOffset   = row.weighted_offset ?? 0
   const driftAdjustment  = row.drift_adjustment ?? 0
   const effectiveOffset  = weightedOffset + driftAdjustment
-  return { weightedOffset, driftAdjustment, effectiveOffset, coldStart: false, offsetId: row.id }
+  const fitTag           = row.fit_tag ?? null
+  return { weightedOffset, driftAdjustment, effectiveOffset, coldStart: false, offsetId: row.id, fitTag }
 }
