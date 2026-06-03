@@ -186,7 +186,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     const userHeight = input.userHeightInches ?? null
     if (userHeight !== null && INSEAM_SUBTRACTION[input.targetSilhouette] !== undefined) {
       targetInseam = Math.round(userHeight - INSEAM_SUBTRACTION[input.targetSilhouette])
-      inseamNote = 'INSEAM ADJUSTED FOR SILHOUETTE'
+      inseamNote = 'Inseam adjusted for silhouette'
     } else {
       targetInseam = anchorInseam
     }
