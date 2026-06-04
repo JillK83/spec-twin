@@ -134,8 +134,8 @@ Fallback `"your item"` must never combine with a "your" already in the template 
 
 **Purple — clean pass, smart_estimate override (fabric Hard Stop)**
 - Status: `estimate` (overridden by `output_state = smart_estimate`)
-- Headline: `"Sizing aligns with your ${anchorBrand}"`
-- Detail: `"The waist and hip sizing is consistent with your ${anchorBrand} — but because the fabric behaves very differently, check the brand's size guide before ordering."`
+- Headline: `"Waist fit uncertain"`
+- Detail: `"Because the fabric is very different from your ${anchorBrand}, we can't predict how the waist and hips will actually feel. Check the brand's size guide before ordering."`
 
 ---
 

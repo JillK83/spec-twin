@@ -122,14 +122,14 @@ function getWaistHipPillar(
     }
   }
 
-  // estimate override — no contract gate: sizing consistent but fabric diverges
+  // estimate override — no contract gate: fabric diverges, waist fit unconfirmable
   if (verdictState === 'estimate' && !contractGate) {
     return {
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
       status,
-      headline: `Sizing aligns with your ${anchorBrand}`,
-      detail: `The waist and hip sizing is consistent with your ${anchorBrand} — but because the fabric behaves very differently, check the brand's size guide before ordering.`,
+      headline: 'Waist fit uncertain',
+      detail: `Because the fabric is very different from your ${anchorBrand}, we can't predict how the waist and hips will actually feel. Check the brand's size guide before ordering.`,
     }
   }
 
