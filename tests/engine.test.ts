@@ -103,12 +103,16 @@ test('checkSizeCap("18") → true (women\'s numeric ≥ 18)', () => {
   assert.equal(checkSizeCap('18'), true)
 })
 
-test('checkSizeCap("16") → false (women\'s numeric < 18)', () => {
-  assert.equal(checkSizeCap('16'), false)
+test('checkSizeCap("16") → true (women\'s numeric ≥ 16)', () => {
+  assert.equal(checkSizeCap('16'), true)
 })
 
-test('checkSizeCap("33") → true (waist ≥ 33")', () => {
-  assert.equal(checkSizeCap('33'), true)
+test('checkSizeCap("33") → false (waist < 36")', () => {
+  assert.equal(checkSizeCap('33'), false)
+})
+
+test('checkSizeCap("36") → true (waist ≥ 36")', () => {
+  assert.equal(checkSizeCap('36'), true)
 })
 
 test('checkSizeCap("32") → false (waist < 33")', () => {
