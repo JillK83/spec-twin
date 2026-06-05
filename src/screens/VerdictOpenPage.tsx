@@ -153,7 +153,7 @@ function getWaistHipPillar(
       name: 'Waist and Hip Fit',
       status,
       headline: `Different rise than ${anchorBrand}`,
-      detail: `This style sits differently than ${anchorBrand}. The waist and hips will feel different as a result — factor that in before ordering.`,
+      detail: `The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than your ${anchorBrand}, so the rise and hip feel may vary. Check the return policy before ordering.`,
     }
   }
 

@@ -3,7 +3,7 @@
 
 import { supabase } from './supabase'
 import { parseProductDetails } from './parser'
-import { getSizeRangeFromLabel, checkSizeCap, getFabricClass, getRecoveryClass, parseWaistSize, parseInseam, isWomensNumericSize, getWomensNumericFromWaist } from './engine/normalization'
+import { getSizeRangeFromLabel, checkSizeCap, getFabricClass, getRecoveryClass, parseWaistSize, parseInseam, isWomensNumericSize, getWomensNumericFromWaist, inseamToDescriptor } from './engine/normalization'
 import { getBrandOffset } from './engine/brandOffset'
 import { calculateFitDelta, mapDeltaToSizeAdjustment } from './engine/fitDelta'
 import { evaluateFabricGate, evaluateContractGate, evaluateRiseGate, evaluateRecoveryWarning, getRecoveryNote } from './engine/gates'
@@ -196,11 +196,22 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   const inseamAvailable = targetInseam !== null
 
   const computedWaist = anchorWaist !== null ? anchorWaist + sizeAdjustment.adjustment : null
+  // True when the input used "NxN" format (e.g. "4x28") — drives "6 x 28" output vs "6 short".
+  const hasXInseam = /\d+\s*x\s*\d+/i.test(input.targetSize)
+  const numericSizeLabel = isNumericFormat && computedWaist !== null
+    ? getWomensNumericFromWaist(computedWaist)
+    : null
   const recommendedSize =
     anchorWaist === null || targetWaist === null
       ? 'See brand size guide'
       : isNumericFormat
-        ? (getWomensNumericFromWaist(computedWaist as number) ?? 'See brand size guide')
+        ? numericSizeLabel === null
+          ? 'See brand size guide'
+          : targetSizeInseam !== null && hasXInseam
+            ? `${numericSizeLabel} x ${targetInseam as number}`
+            : targetSizeInseam !== null
+              ? `${numericSizeLabel} ${inseamToDescriptor(targetInseam as number)}`
+              : numericSizeLabel
         : inseamAvailable
           ? `${computedWaist} x ${targetInseam as number}`
           : `${computedWaist}`

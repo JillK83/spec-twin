@@ -8,6 +8,7 @@ import {
   checkSizeCap,
   getFabricClass,
   getRecoveryClass,
+  inseamToDescriptor,
 } from '../src/lib/engine/normalization'
 import { getBrandOffset } from '../src/lib/engine/brandOffset'
 import { calculateFitDelta, mapDeltaToSizeAdjustment } from '../src/lib/engine/fitDelta'
@@ -139,6 +140,30 @@ test('checkSizeCap("36") → true (waist ≥ 36")', () => {
 
 test('checkSizeCap("32") → false (waist < 33")', () => {
   assert.equal(checkSizeCap('32'), false)
+})
+
+test('inseamToDescriptor(28) → short (boundary ≤28)', () => {
+  assert.equal(inseamToDescriptor(28), 'short')
+})
+
+test('inseamToDescriptor(26) → short', () => {
+  assert.equal(inseamToDescriptor(26), 'short')
+})
+
+test('inseamToDescriptor(30) → regular', () => {
+  assert.equal(inseamToDescriptor(30), 'regular')
+})
+
+test('inseamToDescriptor(29) → regular (boundary 29)', () => {
+  assert.equal(inseamToDescriptor(29), 'regular')
+})
+
+test('inseamToDescriptor(32) → long (boundary ≥32)', () => {
+  assert.equal(inseamToDescriptor(32), 'long')
+})
+
+test('inseamToDescriptor(34) → long', () => {
+  assert.equal(inseamToDescriptor(34), 'long')
 })
 
 test('getFabricClass(0) → rigid', () => {

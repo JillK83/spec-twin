@@ -134,6 +134,16 @@ export function parseInseam(sizeString: string): number | null {
   return null
 }
 
+// Maps a resolved inseam value to a display descriptor for numeric-format recommended sizes.
+// Boundaries: ≤28 → short, 29–31 → regular, ≥32 → long.
+// These are single representative values — real brand inseams vary within these ranges.
+// Known simplification at MVP.
+export function inseamToDescriptor(inseam: number): 'short' | 'regular' | 'long' {
+  if (inseam <= 28) return 'short'
+  if (inseam <= 31) return 'regular'
+  return 'long'
+}
+
 // ─── Fabric classification ────────────────────────────────────────────────────
 // Derived from normalized elastane_pct. Thresholds per SPEC_TWIN_LOGIC.md §2.
 

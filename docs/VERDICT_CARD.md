@@ -100,7 +100,7 @@ Fallback `"your item"` must never combine with a "your" already in the template 
 **Amber — rise mismatch only**
 - Status: `advisory`
 - Headline: `"Different rise than your ${anchorBrand}"`
-- Detail: `"This style sits ${higher/lower} than your ${anchorBrand}. The waist and hips will feel different as a result — factor that in before ordering."`
+- Detail: `"The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than your ${anchorBrand}, so the rise and hip feel may vary. Check the return policy before ordering."` (note: `"differently"` is a placeholder — `${higher/lower}` pending riseDirection wiring)
 
 **Amber — rise mismatch + brand offset combined**
 - Status: `advisory`
