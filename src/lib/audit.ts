@@ -3,7 +3,7 @@
 
 import { supabase } from './supabase'
 import { parseProductDetails } from './parser'
-import { getSizeRangeFromLabel, checkSizeCap, getFabricClass, getRecoveryClass, parseWaistSize, parseInseam } from './engine/normalization'
+import { getSizeRangeFromLabel, checkSizeCap, getFabricClass, getRecoveryClass, parseWaistSize, parseInseam, isWomensNumericSize, getWomensNumericFromWaist } from './engine/normalization'
 import { getBrandOffset } from './engine/brandOffset'
 import { calculateFitDelta, mapDeltaToSizeAdjustment } from './engine/fitDelta'
 import { evaluateFabricGate, evaluateContractGate, evaluateRiseGate, evaluateRecoveryWarning, getRecoveryNote } from './engine/gates'
@@ -126,8 +126,9 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
   // ── Step 7: Gate evaluation ──────────────────────────────────────────────────
   const anchorFabricClass: FabricClass = (anchor.fabric_class as FabricClass) ?? 'unknown'
   const anchorContractType = anchor.contract_type as ContractType
-  const targetSizeFirstSegment = input.targetSize.trim().split(/x/i)[0]
-  const targetContractType: ContractType = /\d/.test(targetSizeFirstSegment) ? 'precision' : 'range'
+  const targetSizeFirstSegment = input.targetSize.trim().split(/x/i)[0].trim()
+  const isNumericFormat = isWomensNumericSize(targetSizeFirstSegment)
+  const targetContractType: ContractType = isNumericFormat ? 'range' : /\d/.test(targetSizeFirstSegment) ? 'precision' : 'range'
 
   const fabricGateResult = evaluateFabricGate(anchorFabricClass, targetFabricClass)
   const contractGateResult = evaluateContractGate(anchorContractType, targetContractType)
@@ -194,12 +195,15 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
 
   const inseamAvailable = targetInseam !== null
 
+  const computedWaist = anchorWaist !== null ? anchorWaist + sizeAdjustment.adjustment : null
   const recommendedSize =
     anchorWaist === null || targetWaist === null
       ? 'See brand size guide'
-      : inseamAvailable
-        ? `${anchorWaist + sizeAdjustment.adjustment} x ${targetInseam as number}`
-        : `${anchorWaist + sizeAdjustment.adjustment}`
+      : isNumericFormat
+        ? (getWomensNumericFromWaist(computedWaist as number) ?? 'See brand size guide')
+        : inseamAvailable
+          ? `${computedWaist} x ${targetInseam as number}`
+          : `${computedWaist}`
 
   // ── Step 10: Save to product_audits ─────────────────────────────────────────
   const { data: savedAuditRaw, error: saveError } = await supabase

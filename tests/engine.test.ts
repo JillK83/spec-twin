@@ -99,12 +99,34 @@ test('getSizeRangeFromLabel("XS") → null (unrecognized)', () => {
   assert.equal(getSizeRangeFromLabel('XS'), null)
 })
 
+test('getSizeRangeFromLabel("4 regular") → {low:25.5, high:26.5} (strips descriptor)', () => {
+  const r = getSizeRangeFromLabel('4 regular')
+  assert.ok(r)
+  assert.equal(r.low,  25.5)
+  assert.equal(r.high, 26.5)
+})
+
+test('getSizeRangeFromLabel("10 tall") → {low:29, high:30.5} (strips descriptor)', () => {
+  const r = getSizeRangeFromLabel('10 tall')
+  assert.ok(r)
+  assert.equal(r.low,  29)
+  assert.equal(r.high, 30.5)
+})
+
 test('checkSizeCap("18") → true (women\'s numeric ≥ 18)', () => {
   assert.equal(checkSizeCap('18'), true)
 })
 
 test('checkSizeCap("16") → true (women\'s numeric ≥ 16)', () => {
   assert.equal(checkSizeCap('16'), true)
+})
+
+test('checkSizeCap("16 regular") → true (strips descriptor, numeric ≥ 16)', () => {
+  assert.equal(checkSizeCap('16 regular'), true)
+})
+
+test('checkSizeCap("4 short") → false (strips descriptor, numeric < 16)', () => {
+  assert.equal(checkSizeCap('4 short'), false)
 })
 
 test('checkSizeCap("33") → false (waist < 36")', () => {

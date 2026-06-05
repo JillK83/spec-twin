@@ -39,14 +39,34 @@ const SIZE_RANGE_LOOKUP: Record<string, SizeRange> = {
 
 const WOMENS_NUMERIC_KEYS = new Set(Object.keys(WOMENS_NUMERIC))
 
+export function isWomensNumericSize(sizeFirstSegment: string): boolean {
+  return WOMENS_NUMERIC_KEYS.has(stripLengthDescriptor(sizeFirstSegment.trim()))
+}
+
+export function getWomensNumericFromWaist(waist: number): string | null {
+  for (const [key, range] of Object.entries(WOMENS_NUMERIC)) {
+    if (waist >= range.low && waist <= range.high) return key
+  }
+  return null
+}
+
+// Strips inseam/length descriptors so "4 regular" and "16 short" resolve as numeric sizes.
+// Applied before key lookups in getSizeRangeFromLabel and checkSizeCap.
+// parseWaistSize is unaffected — its regex already ignores non-numeric tokens.
+// Longer tokens (extra short, x-short) must appear before shorter ones (short, xs) to match greedily.
+const LENGTH_DESCRIPTOR_RE = /\b(extra\s+short|x-short|petite|regular|short|long|tall|xs)\b/gi
+function stripLengthDescriptor(size: string): string {
+  return size.replace(LENGTH_DESCRIPTOR_RE, '').trim()
+}
+
 export function getSizeRangeFromLabel(size: string): SizeRange | null {
-  return SIZE_RANGE_LOOKUP[size.trim()] ?? null
+  return SIZE_RANGE_LOOKUP[stripLengthDescriptor(size)] ?? null
 }
 
 // Returns true when either size-cap condition is met:
 //   waist ≥ 36"  OR  women's numeric size ≥ 16
 export function checkSizeCap(size: string): boolean {
-  const cleaned = size.trim()
+  const cleaned = stripLengthDescriptor(size)
   if (WOMENS_NUMERIC_KEYS.has(cleaned)) {
     const n = cleaned === '00' ? 0 : parseInt(cleaned, 10)
     return n >= 16
