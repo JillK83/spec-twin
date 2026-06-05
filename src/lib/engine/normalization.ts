@@ -9,17 +9,17 @@ import type { FabricClass, RecoveryClass } from './types'
 type SizeRange = { low: number; high: number }
 
 const WOMENS_NUMERIC: Record<string, SizeRange> = {
-  '00': { low: 22.5, high: 23.5 },
-  '0':  { low: 23.5, high: 24.5 },
-  '2':  { low: 24.5, high: 25.5 },
-  '4':  { low: 25.5, high: 26.5 },
-  '6':  { low: 26.5, high: 27.5 },
-  '8':  { low: 27.5, high: 29.0 },
-  '10': { low: 29.0, high: 30.5 },
-  '12': { low: 30.5, high: 32.0 },
-  '14': { low: 32.0, high: 33.5 },
-  '16': { low: 33.5, high: 35.0 },
-  '18': { low: 35.0, high: 36.5 },
+  '00': { low: 22.5, high: 24.0 },   // kept — no brand data point
+  '0':  { low: 24.0, high: 26.0 },   // mid: 25
+  '2':  { low: 26.0, high: 27.5 },   // mid: 27
+  '4':  { low: 27.5, high: 28.5 },   // mid: 28
+  '6':  { low: 28.5, high: 29.5 },   // mid: 29
+  '8':  { low: 29.5, high: 30.5 },   // mid: 30
+  '10': { low: 30.5, high: 32.0 },   // mid: 31
+  '12': { low: 32.0, high: 33.5 },   // mid: 33
+  '14': { low: 33.5, high: 35.0 },   // mid: 34
+  '16': { low: 35.0, high: 37.0 },   // mid: 36
+  '18': { low: 37.0, high: 39.0 },   // extrapolated (above size cap)
 }
 
 // Build waist precision entries 22–42 (and W-prefixed variants) programmatically.
