@@ -15,25 +15,27 @@ export function getBrandOffset(
   gender: Gender,
   rows: BrandOffset[]
 ): BrandOffsetResult {
-  const brandLower    = brand.toLowerCase()
+  const normalize = (s: string) => s.toLowerCase().replace(/['\u2018\u2019`]/g, '')
+  const brandNorm     = normalize(brand)
   const categoryLower = category.toLowerCase()
 
   const find = (cat: string): BrandOffset | undefined =>
     rows.find(
       r =>
-        r.brand_name.toLowerCase() === brandLower &&
-        r.category.toLowerCase()   === cat &&
-        r.gender                   === gender
+        normalize(r.brand_name)  === brandNorm &&
+        r.category.toLowerCase() === cat &&
+        r.gender                 === gender
     )
 
   const row = find(categoryLower) ?? find('all') ?? null
 
   if (!row) {
-    return { weightedOffset: 0, driftAdjustment: 0, effectiveOffset: 0, coldStart: true }
+    return { weightedOffset: 0, driftAdjustment: 0, effectiveOffset: 0, coldStart: true, offsetId: null, fitTag: null }
   }
 
-  const weightedOffset   = row.weighted_offset
-  const driftAdjustment  = row.drift_adjustment
+  const weightedOffset   = row.weighted_offset ?? 0
+  const driftAdjustment  = row.drift_adjustment ?? 0
   const effectiveOffset  = weightedOffset + driftAdjustment
-  return { weightedOffset, driftAdjustment, effectiveOffset, coldStart: false }
+  const fitTag           = row.fit_tag ?? null
+  return { weightedOffset, driftAdjustment, effectiveOffset, coldStart: false, offsetId: row.id, fitTag }
 }

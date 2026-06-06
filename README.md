@@ -25,8 +25,8 @@ User's primary rise preference from onboarding acts as a hard filter. If the tar
 **Size Cap**
 Waist ≥ 33" or women's numeric size ≥ 18 → always `smart_estimate` with disclaimer. Either condition alone triggers it.
 
-**Compounding Uncertainty Escalation**
-When a fabric gate Soft Warning fires (`COMFORT_TO_RIGID`) AND fit delta produces `size_up_2` (≥ +1.5) simultaneously → escalate from `fit_advisory` to `smart_estimate`. Two compounding uncertainties together reduce confidence below the threshold for a firm recommendation. Primary rule for Scenario 3.
+**Size Delta Escalation**
+A `fit_delta` of ≥ +1.5 (`size_up_2`) or ≤ −1.5 (`size_down_2`) independently triggers `smart_estimate` with no specific size recommendation. A size difference this large exceeds the confidence threshold for a firm recommendation regardless of other gate results. The user is directed to verify with the brand's size guide before buying.
 
 **Hardware warnings are inactive at MVP.** Closure type is not collected from the anchor form.
 
@@ -47,7 +47,7 @@ When a fabric gate Soft Warning fires (`COMFORT_TO_RIGID`) AND fit delta produce
 
 ## Demo Scenarios (Confirmed)
 
-All three use **Madewell Perfect Vintage Straight, Size 27x29** as the anchor.
+All three use **Madewell Perfect Vintage Straight · High rise Straight · Size 27x29** as the anchor.
 
 | # | Target | Expected output | Primary gate |
 |---|---|---|---|
@@ -95,7 +95,7 @@ Validation target to confirm before moving on:
 ### Phase B — Live App Build
 
 1. Port validated gate logic from Phase A into `/build/src/engine`.
-2. Connect Anthropic API key for the parser (`claude-sonnet-4-20250514`).
+2. Connect Gemini API key for the parser (`gemini-3.1-flash-lite`).
 3. Wire Supabase for `user_anchors`, `product_audits`, `brand_offsets`.
 4. Build onboarding flow (5 screens), anchor form, target form, verdict card.
 5. QA all three demo scenarios end-to-end in Scripted Mode.

@@ -181,22 +181,20 @@ Apply gates in this order. The most severe gate wins:
 
 1. Size cap triggered → `smart_estimate`
 2. Hard Stop gate triggered (contract or fabric) → `smart_estimate`
-3. Compounding uncertainty triggered (see rule below) → `smart_estimate`
+3. Size delta escalation (`size_up_2` or `size_down_2`) → `smart_estimate`
 4. Soft Warning gate triggered (fabric, contract, rise, recovery) → `fit_advisory`
 5. No gates, clean match → `verified_fit`
 
-### Compounding Uncertainty Escalation Rule [MVP]
+### Size Delta Escalation Rule [MVP]
 
-When **both** of the following are true simultaneously, escalate output state from `fit_advisory` to `smart_estimate`:
+Either condition alone triggers `smart_estimate`:
 
-- A fabric gate Soft Warning fires (`COMFORT_TO_RIGID` or equivalent one-class delta)
-- Fit delta produces `size_up_2` (fit_delta ≥ +1.5)
+- `fit_delta` ≥ +1.5 → `size_up_2`
+- `fit_delta` ≤ −1.5 → `size_down_2`
 
-**Rationale:** Two compounding uncertainties — fabric behavior difference AND a large brand offset gap — reduce confidence below the threshold for a firm recommendation. Neither condition alone triggers `smart_estimate`, but together they do.
+User-facing message: "A size difference this large is worth verifying — check the brand's size guide before buying."
 
-**Demo case (Scenario 3):** Madewell (`comfort_stretch`, offset −1.5) → Levi's 501 (`rigid`, offset +0.5). Fabric gate fires Soft Warning (`COMFORT_TO_RIGID`). Fit delta = +2.0 → `size_up_2`. Both conditions true → escalates to `smart_estimate`.
-
-**Applies to:** `COMFORT_TO_RIGID` + `size_up_2` confirmed at MVP. Extend to other Soft Warning gate combinations as additional category data confirms the pattern.
+The fabric Soft Warning (`COMFORT_TO_RIGID` etc.) still fires independently and adds advisory copy to the fabric pillar but is no longer required to trigger `smart_estimate`.
 
 ---
 
@@ -279,7 +277,7 @@ Each gate reason has a `reason_code`, `internal_text` (for debugging), and `user
 - Multiple gates triggered simultaneously
 - Size cap triggered (waist ≥ 33" or size ≥ 18)
 - `poly_pct = null` on both anchor and target
-- Compounding uncertainty escalation triggered (Soft Warning + `size_up_2`)
+- Size delta escalation triggered (`size_up_2` or `size_down_2`)
 
 ---
 

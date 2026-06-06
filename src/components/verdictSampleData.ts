@@ -13,9 +13,9 @@ export const verifiedPillars: Pillar[] = [
   {
     id: 'fabric',
     name: 'Fabric Behavior',
-    headline: 'Stretch and recovery match your anchor.',
     status: 'verified',
-    detail: 'Both items are cotton-elastane comfort stretch — the fit and feel should be consistent.',
+    headline: 'Fabric matches your Madewell',
+    detail: 'Both items have the same amount of stretch. The fabric won\'t be a factor in how this fits compared to your Madewell.',
   },
   {
     id: 'waist-hip',
@@ -49,9 +49,9 @@ export const advisoryPillars: Pillar[] = [
   {
     id: 'fabric',
     name: 'Fabric Behavior',
-    headline: 'Similar stretch to your anchor.',
     status: 'verified',
-    detail: 'Both items are comfort stretch — fabric feel should be close.',
+    headline: 'Fabric matches your Madewell',
+    detail: 'Both items have the same amount of stretch. The fabric won\'t be a factor in how this fits compared to your Madewell.',
   },
   {
     id: 'waist-hip',
@@ -83,7 +83,7 @@ export const estimatePillars: Pillar[] = [
     name: 'Fabric Behavior',
     status: 'estimate',
     headline: 'Very different fabric from your Madewell',
-    detail: "Your Madewell has a little stretch. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.",
+    detail: 'Your Madewell has a little stretch. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand\'s size guide before buying.',
   },
   {
     id: 'waist-hip',

@@ -1,6 +1,9 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from './components/ui/magic/Sonner'
-import CoverScreen from './components/CoverScreen'
+import { AppModeProvider } from './contexts/AppModeContext'
+import { DemoSelectorStrip } from './components/DemoSelectorStrip'
+import CoverDemo from './components/CoverDemo'
+import CoverOpen from './components/CoverOpen'
 import OnboardingRise from './screens/OnboardingRise'
 import OnboardingSilhouette from './screens/OnboardingSilhouette'
 import OnboardingHeight from './screens/OnboardingHeight'
@@ -13,13 +16,24 @@ import AuditNew from './screens/AuditNew'
 import VerdictVerifiedFit from './screens/VerdictVerifiedFit'
 import VerdictFitAdvisory from './screens/VerdictFitAdvisory'
 import VerdictSmartEstimate from './screens/VerdictSmartEstimate'
+import VerdictOpenPage from './screens/VerdictOpenPage'
 
 export default function App() {
+  const { pathname } = useLocation()
+  const isOpenMode = pathname.startsWith('/onboarding') ||
+    pathname === '/bridge' ||
+    pathname === '/anchor/new' ||
+    pathname === '/audit/new' ||
+    pathname === '/verdict/open'
+
   return (
-    <>
+    <AppModeProvider>
     <Toaster position="bottom-center" />
+    {!isOpenMode && <DemoSelectorStrip />}
     <Routes>
-      <Route path="/" element={<CoverScreen />} />
+      <Route path="/" element={<CoverOpen />} />
+      <Route path="/demo" element={<CoverDemo />} />
+      <Route path="/open" element={<CoverOpen />} />
       <Route path="/onboarding/1" element={<OnboardingRise />} />
       <Route path="/onboarding/2" element={<OnboardingSilhouette />} />
       <Route path="/onboarding/3" element={<OnboardingHeight />} />
@@ -33,7 +47,8 @@ export default function App() {
       <Route path="/verdict/2" element={<VerdictFitAdvisory />} />
       <Route path="/verdict/3" element={<VerdictSmartEstimate />} />
       <Route path="/verdict/4" element={<VerdictSmartEstimate />} />
+      <Route path="/verdict/open" element={<VerdictOpenPage />} />
     </Routes>
-    </>
+    </AppModeProvider>
   )
 }

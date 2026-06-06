@@ -120,6 +120,21 @@ Future category sections are templated at the bottom — populate before each ca
 
 ---
 
+### Pillar Copy Rules
+
+See `/docs/VERDICT_CARD.md` for the full copy reference.
+
+| Rule | Definition |
+|---|---|
+| Accordion hierarchy | Headline = what. Detail = why or when. Never restate. |
+| Sizing redirect rule | Only in `verified_fit` and `fit_advisory`. Never in `smart_estimate`. |
+| Pillar status override | `smart_estimate` forces all dots to purple regardless of gate. |
+| Voice map — Fabric Behavior | Use "stretch" — material fact |
+| Voice map — Waist and Hip Fit | Use "give" — body interaction |
+| Voice map — Shape Retention | Use "recovery" — time-based behavior |
+
+---
+
 ## Future Category Templates
 
 When a new category is ready to ship, copy this template and complete it before any code is written for that category.

@@ -6,9 +6,13 @@ const scenarios = [
   { label: 'Scenario 3', n: 3 },
 ]
 
+const VERDICT_ROUTES = ['/verdict/1', '/verdict/2', '/verdict/3']
+
 export function DemoSelectorStrip() {
   const navigate = useNavigate()
   const location = useLocation()
+
+  if (!VERDICT_ROUTES.includes(location.pathname)) return null
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[100] bg-background border-b-2 border-border px-6 py-3">

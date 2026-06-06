@@ -3,7 +3,7 @@ import type { GateInputs, ResolverResult, ConfidenceLevel } from './types'
 // Output state resolution — priority order per SPEC_TWIN_LOGIC.md §10:
 //   1. Size cap triggered                                  → smart_estimate
 //   2. Any HARD_STOP gate                                  → smart_estimate
-//   3. Fabric SOFT_WARNING + sizeAdjustment ≥ 2 (§10)    → smart_estimate
+//   3. size_up_2 (delta > 1.5) or size_down_2 (delta ≤ −1.5) → smart_estimate
 //   4. Any SOFT_WARNING / recovery                         → fit_advisory
 //   5. Clean match                                         → verified_fit
 //
@@ -29,10 +29,6 @@ function deriveConfidenceLevel(gates: GateInputs): ConfidenceLevel {
 
   if (firedCount > 1) return 'LOW'
 
-  // Two-class fabric delta always lowers to LOW even if SOFT_WARNING
-  // (e.g. rigid → high_stretch fires SOFT_WARNING but is 2 classes apart)
-  if (gates.fabricGate.classesApart >= 2) return 'LOW'
-
   if (firedCount >= 1)                    return 'MEDIUM'
   if (gates.coldStart)                    return 'MEDIUM'
   if (gates.fabricGate.classesApart === 1) return 'MEDIUM'  // adjacent, no gate
@@ -49,20 +45,22 @@ export function resolveOutputState(gates: GateInputs): ResolverResult {
 
   const confidenceLevel = deriveConfidenceLevel(gates)
 
+  const coldStart = gates.coldStart
+
   if (gates.sizeCap) {
-    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired }
+    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired, coldStart }
   }
 
   const hasHardStop =
     gates.fabricGate.type   === 'HARD_STOP' ||
     gates.contractGate.type === 'HARD_STOP'
   if (hasHardStop) {
-    return { outputState: 'smart_estimate', confidenceLevel, firedGates: fired }
+    return { outputState: 'smart_estimate', confidenceLevel, firedGates: fired, coldStart }
   }
 
-  // Compounding uncertainty: fabric soft warning + size_up_2 → escalate per §10
-  if (gates.fabricGate.type === 'SOFT_WARNING' && gates.sizeAdjustment >= 2) {
-    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired }
+  // Size delta escalation: size_up_2 or size_down_2 independently triggers smart_estimate
+  if (gates.sizeAdjustment > 1.5 || gates.sizeAdjustment <= -1.5) {
+    return { outputState: 'smart_estimate', confidenceLevel: 'LOW', firedGates: fired, coldStart }
   }
 
   const hasSoftWarning =
@@ -71,8 +69,8 @@ export function resolveOutputState(gates: GateInputs): ResolverResult {
     gates.riseGate.type     === 'SOFT_WARNING' ||
     gates.recoveryWarning
   if (hasSoftWarning) {
-    return { outputState: 'fit_advisory', confidenceLevel, firedGates: fired }
+    return { outputState: 'fit_advisory', confidenceLevel, firedGates: fired, coldStart }
   }
 
-  return { outputState: 'verified_fit', confidenceLevel, firedGates: fired }
+  return { outputState: 'verified_fit', confidenceLevel, firedGates: fired, coldStart }
 }

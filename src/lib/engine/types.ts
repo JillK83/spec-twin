@@ -34,6 +34,8 @@ export type BrandOffsetResult = {
   driftAdjustment: number
   effectiveOffset: number
   coldStart: boolean
+  offsetId: string | null
+  fitTag: string | null
 }
 
 export type GateInputs = {
@@ -50,4 +52,5 @@ export type ResolverResult = {
   outputState: OutputState
   confidenceLevel: ConfidenceLevel
   firedGates: string[]
+  coldStart: boolean
 }

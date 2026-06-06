@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Card } from './ui/magic/Card'
 import { Button } from './ui/magic/Button'
 import { ChevronDown, AlertTriangle, Info } from 'lucide-react'
+import { useAppMode } from '@/contexts/AppModeContext'
 
 export type VerdictState = 'verified' | 'advisory' | 'estimate' | 'reduced'
 export type PillarStatus = 'verified' | 'advisory' | 'estimate'
@@ -54,8 +55,8 @@ export function VerdictCard({
   footerNote,
 }: VerdictCardProps) {
   const navigate = useNavigate()
-  const location = useLocation()
-  const isDemoMode = ['/verdict/1', '/verdict/2', '/verdict/3'].includes(location.pathname)
+  const { mode } = useAppMode()
+  const isDemoMode = mode === 'demo'
   const [expandedIds, setExpandedIds] = useState<string[]>([])
 
   const togglePillar = (id: string) => {
@@ -75,11 +76,11 @@ export function VerdictCard({
   let BannerIcon = AlertTriangle
 
   if (state === 'advisory') {
-    bannerText = advisoryBannerText ?? 'Fabric stretch differs from your anchor.'
+    bannerText = advisoryBannerText ?? null
     bannerClasses = 'bg-[#FFFBEB] text-foreground border-y-2 border-[#FFBF00]'
     BannerIcon = AlertTriangle
   } else if (state === 'estimate') {
-    bannerText = 'Incomplete data — verify before buying'
+    bannerText = advisoryBannerText ?? 'Incomplete data — verify before buying'
     bannerClasses = 'bg-[#F3E8FF] text-[#5B21B6] border-y-2 border-[#7C3AED]'
     BannerIcon = Info
   } else if (state === 'reduced') {
@@ -110,15 +111,15 @@ export function VerdictCard({
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-lg">
-      <Card className="w-full max-w-lg mx-auto border-2 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden relative">
+      <div className="w-full max-w-2xl">
+      <Card className="w-full max-w-2xl mx-auto border-4 border-border shadow-[8px_8px_0px_0px_var(--border)] rounded-2xl bg-card overflow-hidden relative">
       {/* Purple left accent for estimate/reduced */}
       {isEstimateOrReduced && (
         <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#7C3AED] z-20" />
       )}
 
       {/* Header */}
-      <div className="border-b-2 border-border p-6 relative">
+      <div className="border-b-4 border-border p-6 relative">
         <h2 className="font-heading font-black text-3xl text-foreground pr-36 leading-tight">
           {garmentName}
         </h2>
@@ -150,9 +151,13 @@ export function VerdictCard({
         <span className="font-mono text-xs uppercase tracking-[0.13em] text-muted-foreground mb-2">
           {sizeLabel}
         </span>
-        <span className={`font-heading font-black text-5xl leading-none ${sizeValueClass}`}>
-          {recommendedSize}
-        </span>
+        {recommendedSize === 'See brand size guide' ? (
+          <p className="font-mono text-sm text-muted-foreground text-center">{recommendedSize}</p>
+        ) : (
+          <span className={`font-heading font-black text-7xl leading-none ${sizeValueClass}`}>
+            {recommendedSize}
+          </span>
+        )}
         {sizeNote ? (
           <span className="font-mono text-xs text-muted-foreground mt-3">{sizeNote}</span>
         ) : isEstimateOrReduced ? (
@@ -197,7 +202,7 @@ export function VerdictCard({
       </div>
 
       {/* Footer */}
-      <div className="bg-muted border-t-2 border-border">
+      <div className="bg-muted border-t-4 border-border">
         {footerNote && (
           <div className="px-6 py-3 border-b-2 border-border">
             <p className="font-mono text-xs text-muted-foreground">{footerNote}</p>
@@ -221,7 +226,7 @@ export function VerdictCard({
                 if (isDemoMode) return
                 if (state === 'reduced') navigate('/anchor/new')
                 else if (state === 'estimate') return
-                else navigate('/vault')
+                else navigate('/audit/new')
               }}
               className={ctaButtonClass}
             >

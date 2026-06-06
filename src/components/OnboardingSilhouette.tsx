@@ -65,7 +65,24 @@ export function OnboardingSilhouette({ onContinue }: OnboardingSilhouetteProps) 
         <Button
           className={`w-full border-2 font-black text-base py-5 transition-all ${selectedIds.length > 0 ? 'bg-primary text-primary-foreground border-border shadow-hard shadow-hard-hover shadow-hard-active cursor-pointer' : 'bg-muted text-muted-foreground border-border/40 shadow-[1px_1px_0px_0px_var(--border)] cursor-not-allowed'}`}
           disabled={selectedIds.length === 0}
-          onClick={() => onContinue?.()}
+          onClick={() => {
+            const SILHOUETTE_TO_ENGINE: Record<string, string> = {
+              skinny: 'skinny',
+              straight: 'straight',
+              relaxed: 'relaxed_loose',
+              bootcut: 'bootcut_flare',
+              wide: 'wide_leg',
+            }
+            const primary = SILHOUETTE_TO_ENGINE[selectedIds[0]] ?? selectedIds[0]
+            const secondary = selectedIds.slice(1).map((id) => SILHOUETTE_TO_ENGINE[id] ?? id)
+            const existing = JSON.parse(localStorage.getItem('spec_twin_profile') ?? '{}')
+            localStorage.setItem('spec_twin_profile', JSON.stringify({
+              ...existing,
+              silhouette_primary: primary,
+              silhouette_secondary: secondary,
+            }))
+            onContinue?.()
+          }}
         >
           Continue
         </Button>

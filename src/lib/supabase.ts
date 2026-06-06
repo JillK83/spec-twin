@@ -5,3 +5,4 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey)
+console.log('Supabase key:', supabaseKey?.slice(0, 12))

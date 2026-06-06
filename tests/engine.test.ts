@@ -1,23 +1,24 @@
 // Engine unit tests + demo scenario dry-run.
-// Run: npm run test:engine
+// Run: npm test
 
 import assert from 'node:assert/strict'
-import type { BrandOffset } from '../database.types'
+import type { BrandOffset } from '../src/lib/database.types'
 import {
   getSizeRangeFromLabel,
   checkSizeCap,
   getFabricClass,
   getRecoveryClass,
-} from './normalization'
-import { getBrandOffset } from './brandOffset'
-import { calculateFitDelta, mapDeltaToSizeAdjustment } from './fitDelta'
+  inseamToDescriptor,
+} from '../src/lib/engine/normalization'
+import { getBrandOffset } from '../src/lib/engine/brandOffset'
+import { calculateFitDelta, mapDeltaToSizeAdjustment } from '../src/lib/engine/fitDelta'
 import {
   evaluateFabricGate,
   evaluateContractGate,
   evaluateRiseGate,
   evaluateRecoveryWarning,
-} from './gates'
-import { resolveOutputState } from './resolver'
+} from '../src/lib/engine/gates'
+import { resolveOutputState } from '../src/lib/engine/resolver'
 
 // ─── Test runner ──────────────────────────────────────────────────────────────
 
@@ -74,11 +75,11 @@ const MOCK_ROWS: BrandOffset[] = [
 
 console.log('\n── normalization ────────────────────────────────────────────────')
 
-test('getSizeRangeFromLabel("10") → {low:29, high:30.5}', () => {
+test('getSizeRangeFromLabel("10") → {low:30.5, high:32}', () => {
   const r = getSizeRangeFromLabel('10')
   assert.ok(r)
-  assert.equal(r.low,  29)
-  assert.equal(r.high, 30.5)
+  assert.equal(r.low,  30.5)
+  assert.equal(r.high, 32.0)
 })
 
 test('getSizeRangeFromLabel("28") → {low:28, high:28}', () => {
@@ -99,20 +100,81 @@ test('getSizeRangeFromLabel("XS") → null (unrecognized)', () => {
   assert.equal(getSizeRangeFromLabel('XS'), null)
 })
 
+test('getSizeRangeFromLabel("4 regular") → {low:27.5, high:28.5} (strips descriptor)', () => {
+  const r = getSizeRangeFromLabel('4 regular')
+  assert.ok(r)
+  assert.equal(r.low,  27.5)
+  assert.equal(r.high, 28.5)
+})
+
+test('getSizeRangeFromLabel("10 tall") → {low:30.5, high:32} (strips descriptor)', () => {
+  const r = getSizeRangeFromLabel('10 tall')
+  assert.ok(r)
+  assert.equal(r.low,  30.5)
+  assert.equal(r.high, 32.0)
+})
+
+test('getSizeRangeFromLabel("4 reg") → {low:27.5, high:28.5} (strips abbreviated descriptor)', () => {
+  const r = getSizeRangeFromLabel('4 reg')
+  assert.ok(r)
+  assert.equal(r.low,  27.5)
+  assert.equal(r.high, 28.5)
+})
+
 test('checkSizeCap("18") → true (women\'s numeric ≥ 18)', () => {
   assert.equal(checkSizeCap('18'), true)
 })
 
-test('checkSizeCap("16") → false (women\'s numeric < 18)', () => {
-  assert.equal(checkSizeCap('16'), false)
+test('checkSizeCap("16") → true (women\'s numeric ≥ 16)', () => {
+  assert.equal(checkSizeCap('16'), true)
 })
 
-test('checkSizeCap("33") → true (waist ≥ 33")', () => {
-  assert.equal(checkSizeCap('33'), true)
+test('checkSizeCap("16 regular") → true (strips descriptor, numeric ≥ 16)', () => {
+  assert.equal(checkSizeCap('16 regular'), true)
+})
+
+test('checkSizeCap("16 reg") → true (strips abbreviated descriptor, numeric ≥ 16)', () => {
+  assert.equal(checkSizeCap('16 reg'), true)
+})
+
+test('checkSizeCap("4 short") → false (strips descriptor, numeric < 16)', () => {
+  assert.equal(checkSizeCap('4 short'), false)
+})
+
+test('checkSizeCap("33") → false (waist < 36")', () => {
+  assert.equal(checkSizeCap('33'), false)
+})
+
+test('checkSizeCap("36") → true (waist ≥ 36")', () => {
+  assert.equal(checkSizeCap('36'), true)
 })
 
 test('checkSizeCap("32") → false (waist < 33")', () => {
   assert.equal(checkSizeCap('32'), false)
+})
+
+test('inseamToDescriptor(28) → short (boundary ≤28)', () => {
+  assert.equal(inseamToDescriptor(28), 'short')
+})
+
+test('inseamToDescriptor(26) → short', () => {
+  assert.equal(inseamToDescriptor(26), 'short')
+})
+
+test('inseamToDescriptor(30) → regular', () => {
+  assert.equal(inseamToDescriptor(30), 'regular')
+})
+
+test('inseamToDescriptor(29) → regular (boundary 29)', () => {
+  assert.equal(inseamToDescriptor(29), 'regular')
+})
+
+test('inseamToDescriptor(32) → long (boundary ≥32)', () => {
+  assert.equal(inseamToDescriptor(32), 'long')
+})
+
+test('inseamToDescriptor(34) → long', () => {
+  assert.equal(inseamToDescriptor(34), 'long')
 })
 
 test('getFabricClass(0) → rigid', () => {
@@ -363,7 +425,7 @@ test('Scenario 1 — verified_fit, no gates', () => {
     fabricGate,
     contractGate,
     riseGate,
-    recoveryWarning: recovery,
+    recoveryWarning: recovery as boolean,
     coldStart: anchor.coldStart || target.coldStart,
     sizeCap: false,
     sizeAdjustment: sizeAdj.adjustment,
@@ -397,7 +459,7 @@ test('Scenario 2 — fit_advisory, rise mismatch', () => {
     fabricGate,
     contractGate,
     riseGate,
-    recoveryWarning: recovery,
+    recoveryWarning: recovery as boolean,
     coldStart: anchor.coldStart || target.coldStart,
     sizeCap: false,
     sizeAdjustment: sizeAdj.adjustment,
@@ -431,7 +493,7 @@ test('Scenario 3 — smart_estimate, compounding uncertainty (COMFORT_TO_RIGID +
     fabricGate,
     contractGate,
     riseGate,
-    recoveryWarning: recovery,
+    recoveryWarning: recovery as boolean,
     coldStart: anchor.coldStart || target.coldStart,
     sizeCap: false,
     sizeAdjustment: sizeAdj.adjustment,
