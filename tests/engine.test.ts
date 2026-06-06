@@ -319,10 +319,10 @@ test('fabricGate: comfort_stretch → high_stretch → NO_GATE (tolerated upgrad
   assert.equal(r.classesApart, 1)
 })
 
-test('fabricGate: rigid → comfort_stretch → NO_GATE (tolerated upgrade)', () => {
+test('fabricGate: rigid → comfort_stretch → SOFT_WARNING (FABRIC_RIGID_TO_COMFORT)', () => {
   const r = evaluateFabricGate('rigid', 'comfort_stretch')
-  assert.equal(r.fired, false)
-  assert.equal(r.type,  'NO_GATE')
+  assert.equal(r.fired, true)
+  assert.equal(r.type,  'SOFT_WARNING')
 })
 
 test('fabricGate: comfort_stretch → rigid → SOFT_WARNING (spec §4)', () => {

@@ -43,7 +43,6 @@ export function evaluateFabricGate(
 
   // NO_GATE transitions (softer → firmer is tolerated without warning)
   if (anchor === 'comfort_stretch' && target === 'high_stretch') return NO_FABRIC_GATE(1)
-  if (anchor === 'rigid'           && target === 'comfort_stretch') return NO_FABRIC_GATE(1)
 
   // HARD_STOP — only high_stretch → rigid (two-class delta going to firmer)
   if (anchor === 'high_stretch' && target === 'rigid') {
@@ -75,6 +74,16 @@ export function evaluateFabricGate(
       outputState: 'fit_advisory',
       reasonCode: 'FABRIC_COMFORT_TO_RIGID',
       userText: 'This item will likely feel much firmer and less stretchy than your reference item.',
+      classesApart,
+    }
+  }
+  if (anchor === 'rigid' && target === 'comfort_stretch') {
+    return {
+      fired: true,
+      type: 'SOFT_WARNING',
+      outputState: 'fit_advisory',
+      reasonCode: 'FABRIC_RIGID_TO_COMFORT',
+      userText: 'This item will likely feel softer and more forgiving than your reference item.',
       classesApart,
     }
   }

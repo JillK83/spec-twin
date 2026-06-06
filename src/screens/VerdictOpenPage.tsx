@@ -351,7 +351,7 @@ export default function VerdictOpenPage() {
         pillars={pillars}
         advisoryBannerText={
           (auditOutput.outputState !== 'smart_estimate' || !auditOutput.coldStart)
-            ? (auditOutput.riseMismatchNote ?? (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined))
+            ? ((auditOutput.anchorRise !== auditOutput.targetRise ? auditOutput.riseMismatchNote : null) ?? (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined))
             : (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined)
         }
         onReset={() => navigate('/audit/new')}
