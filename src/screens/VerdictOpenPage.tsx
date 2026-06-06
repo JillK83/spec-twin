@@ -105,7 +105,7 @@ function getWaistHipPillar(
   verdictState: VerdictState,
   anchorBrand: string,
 ): Pillar {
-  const { riseMismatchWarning, contractGate, contractGateReason, coldStart, fitDeltaSign } = output
+  const { riseMismatchWarning, contractGate, contractGateReason, fabricGateReason, coldStart, fitDeltaSign } = output
 
   const triggered = riseMismatchWarning || contractGate
   const resolvedStatus: PillarStatus = triggered ? 'advisory' : 'verified'
@@ -122,8 +122,8 @@ function getWaistHipPillar(
     }
   }
 
-  // estimate override — no contract gate: fabric diverges, waist fit unconfirmable
-  if (verdictState === 'estimate' && !contractGate) {
+  // estimate override — no contract gate, not driven by fabric HARD_STOP: fabric diverges, waist fit unconfirmable
+  if (verdictState === 'estimate' && !contractGate && fabricGateReason !== 'FABRIC_HIGH_STRETCH_TO_RIGID') {
     return {
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
@@ -350,9 +350,9 @@ export default function VerdictOpenPage() {
         }
         pillars={pillars}
         advisoryBannerText={
-          auditOutput.riseMismatchNote ??
-          auditOutput.fabricGateUserText ??
-          undefined
+          (auditOutput.outputState !== 'smart_estimate' || !auditOutput.coldStart)
+            ? (auditOutput.riseMismatchNote ?? (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined))
+            : (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined)
         }
         onReset={() => navigate('/audit/new')}
         footerNote={
