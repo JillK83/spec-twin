@@ -4,7 +4,7 @@ import type { FabricClass, RecoveryClass } from './types'
 // Discrete table only — no arithmetic at query time.
 // Women's numeric sizes: even US 0–18.
 // Waist precision sizes: 22–42" (with and without "W" prefix).
-// Size cap thresholds: waist ≥ 36" OR women's numeric ≥ 16.
+// Size cap thresholds: waist ≥ 36" OR women's numeric ≥ 18.
 
 type SizeRange = { low: number; high: number }
 
@@ -64,12 +64,12 @@ export function getSizeRangeFromLabel(size: string): SizeRange | null {
 }
 
 // Returns true when either size-cap condition is met:
-//   waist ≥ 36"  OR  women's numeric size ≥ 16
+//   waist ≥ 36"  OR  women's numeric size ≥ 18
 export function checkSizeCap(size: string): boolean {
   const cleaned = stripLengthDescriptor(size)
   if (WOMENS_NUMERIC_KEYS.has(cleaned)) {
     const n = cleaned === '00' ? 0 : parseInt(cleaned, 10)
-    return n >= 16
+    return n >= 18
   }
   const range = getSizeRangeFromLabel(cleaned)
   return range !== null && range.low >= 36
@@ -82,7 +82,7 @@ export function checkSizeCap(size: string): boolean {
 
 export const WOMENS_NUMERIC_TO_WAIST: Record<number, number> = {
   0: 25, 2: 27, 4: 28, 6: 29, 8: 30,
-  10: 31, 12: 33, 14: 34, 16: 36
+  10: 31, 12: 33, 14: 34, 16: 35
 }
 
 export function parseWaistSize(sizeString: string): number | null {

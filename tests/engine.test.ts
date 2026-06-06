@@ -125,19 +125,19 @@ test('checkSizeCap("18") → true (women\'s numeric ≥ 18)', () => {
   assert.equal(checkSizeCap('18'), true)
 })
 
-test('checkSizeCap("16") → true (women\'s numeric ≥ 16)', () => {
-  assert.equal(checkSizeCap('16'), true)
+test('checkSizeCap("16") → false (women\'s numeric < 18)', () => {
+  assert.equal(checkSizeCap('16'), false)
 })
 
-test('checkSizeCap("16 regular") → true (strips descriptor, numeric ≥ 16)', () => {
-  assert.equal(checkSizeCap('16 regular'), true)
+test('checkSizeCap("16 regular") → false (strips descriptor, numeric < 18)', () => {
+  assert.equal(checkSizeCap('16 regular'), false)
 })
 
-test('checkSizeCap("16 reg") → true (strips abbreviated descriptor, numeric ≥ 16)', () => {
-  assert.equal(checkSizeCap('16 reg'), true)
+test('checkSizeCap("16 reg") → false (strips abbreviated descriptor, numeric < 18)', () => {
+  assert.equal(checkSizeCap('16 reg'), false)
 })
 
-test('checkSizeCap("4 short") → false (strips descriptor, numeric < 16)', () => {
+test('checkSizeCap("4 short") → false (strips descriptor, numeric < 18)', () => {
   assert.equal(checkSizeCap('4 short'), false)
 })
 
