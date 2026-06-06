@@ -2,7 +2,7 @@
 // Calls Gemini API to parse raw fabric/care text into structured data.
 // Swap GEMINI → Anthropic by changing the fetch URL, model string, and auth header.
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent'
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
 
 export type ParsedFabricData = {
   elastane_pct: number | null
