@@ -61,9 +61,12 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     .from('user_anchors')
     .select('*')
     .eq('id', input.anchorId)
-    .single()
+    .maybeSingle()
 
-  if (anchorError || !anchorData) {
+  if (anchorError) {
+    return { error: `Anchor fetch error: ${anchorError.message}` }
+  }
+  if (!anchorData) {
     return { error: 'Anchor not found' }
   }
   // Supabase generic resolves to never in this client version; cast explicitly
@@ -264,13 +267,16 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
       engine_version: ENGINE_VERSION,
     } as any)
     .select('id')
-    .single()
+    .maybeSingle()
 
   // Supabase insert returns never for product_audits in this client version; cast explicitly
   const savedAudit = savedAuditRaw as { id: string } | null
 
-  if (saveError || !savedAudit) {
-    return { error: `Failed to save audit: ${saveError?.message}` }
+  if (saveError) {
+    return { error: `Failed to save audit: ${saveError.message}` }
+  }
+  if (!savedAudit) {
+    return { error: 'Audit record not returned after insert' }
   }
 
   // ── Step 11: Return verdict to UI ────────────────────────────────────────────
