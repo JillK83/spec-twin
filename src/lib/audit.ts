@@ -150,7 +150,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     recoveryWarning,
     coldStart: brandOffsetResult.coldStart,
     sizeCap: sizeCapped,
-    sizeAdjustment: fitDelta,
+    sizeAdjustment: sizeAdjustment.adjustment,
   }
 
   const resolved: ResolverResult = resolveOutputState(gateInputs)
@@ -195,7 +195,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
 
   const inseamAvailable = targetInseam !== null
 
-  const computedWaist = anchorWaist !== null ? anchorWaist + sizeAdjustment.adjustment : null
+  const computedWaist = targetWaist !== null ? targetWaist + sizeAdjustment.adjustment : null
   // True when the input used "NxN" format (e.g. "4x28") — drives "6 x 28" output vs "6 short".
   const hasXInseam = /\d+\s*x\s*\d+/i.test(input.targetSize)
   const numericSizeLabel = isNumericFormat && computedWaist !== null

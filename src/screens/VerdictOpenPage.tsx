@@ -281,8 +281,6 @@ export default function VerdictOpenPage() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  console.log('VerdictOpenPage location.state:', location.state)
-
   const pageState = location.state as {
     auditOutput?: AuditOutput
     targetBrand?: string

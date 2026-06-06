@@ -54,7 +54,7 @@ export function getWomensNumericFromWaist(waist: number): string | null {
 // Applied before key lookups in getSizeRangeFromLabel and checkSizeCap.
 // parseWaistSize is unaffected — its regex already ignores non-numeric tokens.
 // Longer tokens (extra short, x-short) must appear before shorter ones (short, xs) to match greedily.
-const LENGTH_DESCRIPTOR_RE = /\b(extra\s+short|x-short|petite|regular|short|long|tall|xs)\b/gi
+const LENGTH_DESCRIPTOR_RE = /\b(extra\s+short|x-short|petite|regular|reg|short|sht|long|lng|tall|tll|xs)\b/gi
 function stripLengthDescriptor(size: string): string {
   return size.replace(LENGTH_DESCRIPTOR_RE, '').trim()
 }

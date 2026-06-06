@@ -114,6 +114,13 @@ test('getSizeRangeFromLabel("10 tall") → {low:30.5, high:32} (strips descripto
   assert.equal(r.high, 32.0)
 })
 
+test('getSizeRangeFromLabel("4 reg") → {low:27.5, high:28.5} (strips abbreviated descriptor)', () => {
+  const r = getSizeRangeFromLabel('4 reg')
+  assert.ok(r)
+  assert.equal(r.low,  27.5)
+  assert.equal(r.high, 28.5)
+})
+
 test('checkSizeCap("18") → true (women\'s numeric ≥ 18)', () => {
   assert.equal(checkSizeCap('18'), true)
 })
@@ -124,6 +131,10 @@ test('checkSizeCap("16") → true (women\'s numeric ≥ 16)', () => {
 
 test('checkSizeCap("16 regular") → true (strips descriptor, numeric ≥ 16)', () => {
   assert.equal(checkSizeCap('16 regular'), true)
+})
+
+test('checkSizeCap("16 reg") → true (strips abbreviated descriptor, numeric ≥ 16)', () => {
+  assert.equal(checkSizeCap('16 reg'), true)
 })
 
 test('checkSizeCap("4 short") → false (strips descriptor, numeric < 16)', () => {
