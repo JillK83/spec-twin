@@ -306,7 +306,7 @@ export async function runAudit(input: AuditInput): Promise<AuditOutput | { error
     inseamAvailable,
     coldStart: resolved.coldStart,
     fitDeltaSign,
-    anchorRise: (anchor.rise as Rise) ?? input.userPrimaryRise,
+    anchorRise: ((anchor.rise || null) as Rise) ?? input.userPrimaryRise,
     targetRise: input.targetRise,
     targetSizeOriginal: input.targetSize,
     fitTag: brandOffsetResult.fitTag,

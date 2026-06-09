@@ -68,6 +68,13 @@ Touch only what you must. Clean up only your own mess.
 - **Output state snake_case enforcement.** The `output_state` field must strictly use: `verified_fit`, `fit_advisory`, `smart_estimate`. Any other value is wrong. See retired names below.
 - **Do not touch inseam constants once validated.** The height-derived subtraction constants (e.g. Skinny/Slim = Height − 36") are confirmed build-ready. Do not adjust them unless explicitly asked.
 - **Do not touch gate logic after dry-run passes.** Once Antigravity dry-run confirms correct output for all three demo scenarios, the gate logic is frozen.
+-## Supabase MCP
+
+The Supabase MCP server is connected. Use it to read current table state 
+before any INSERT, UPDATE, or schema change — especially for `brand_offsets`, 
+where casing conflicts and duplicate rows have been an issue.
+
+Never assume the table matches the seed files. Query first, then write SQL.
 
 ---
 

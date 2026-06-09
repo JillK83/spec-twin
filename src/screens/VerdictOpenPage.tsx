@@ -310,6 +310,7 @@ export default function VerdictOpenPage() {
     )
   }
 
+  console.log('anchorRise:', auditOutput.anchorRise, 'targetRise:', auditOutput.targetRise)
   const verdictStateMap: Record<string, VerdictState> = {
     verified_fit: 'verified',
     fit_advisory: 'advisory',
@@ -351,7 +352,7 @@ export default function VerdictOpenPage() {
         pillars={pillars}
         advisoryBannerText={
           (auditOutput.outputState !== 'smart_estimate' || !auditOutput.coldStart)
-            ? ((auditOutput.anchorRise !== auditOutput.targetRise ? auditOutput.riseMismatchNote : null) ?? (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined))
+            ? ((!!auditOutput.anchorRise && auditOutput.anchorRise !== auditOutput.targetRise ? auditOutput.riseMismatchNote : null) ?? (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined))
             : (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined)
         }
         onReset={() => navigate('/audit/new')}
