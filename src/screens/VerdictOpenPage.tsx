@@ -83,6 +83,17 @@ function getFabricBehaviorPillar(
     }
   }
 
+  // State 4b — rigid → comfort_stretch: Soft Warning (amber)
+  if (fabricGateReason === 'FABRIC_RIGID_TO_COMFORT') {
+    return {
+      id: 'fabric',
+      name: 'Fabric Behavior',
+      status,
+      headline: `Has a little more give than your ${anchorBrand}`,
+      detail: `Your ${anchorBrand} has no stretch fiber. This item has a small amount — it will feel slightly softer and more forgiving, but the difference is mild. Size as recommended.`,
+    }
+  }
+
   // States 5–6 — no gate: same class or compatible upgrade (lime)
   return {
     id: 'fabric',
@@ -352,8 +363,8 @@ export default function VerdictOpenPage() {
         pillars={pillars}
         advisoryBannerText={
           (auditOutput.outputState !== 'smart_estimate' || !auditOutput.coldStart)
-            ? ((!!auditOutput.anchorRise && auditOutput.anchorRise !== auditOutput.targetRise ? auditOutput.riseMismatchNote : null) ?? (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined))
-            : (auditOutput.fabricGate ? auditOutput.fabricGateUserText ?? undefined : undefined)
+            ? ((!!auditOutput.anchorRise && auditOutput.anchorRise !== auditOutput.targetRise ? auditOutput.riseMismatchNote : null) ?? ((auditOutput.fabricGate && auditOutput.fabricGateReason !== 'FABRIC_RIGID_TO_COMFORT') ? auditOutput.fabricGateUserText ?? undefined : undefined))
+            : ((auditOutput.fabricGate && auditOutput.fabricGateReason !== 'FABRIC_RIGID_TO_COMFORT') ? auditOutput.fabricGateUserText ?? undefined : undefined)
         }
         onReset={() => navigate('/audit/new')}
         footerNote={
