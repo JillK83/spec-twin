@@ -218,7 +218,7 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: 'Recovery data unavailable',
+      headline: 'Will loosen with wear',
       detail: '100% cotton denim has no elastic fiber to snap back into shape. Expect the waist to relax up to an inch after a full day of wear, with some bagging at the knees and seat. Washing resets the fit — many people intentionally size down on first wear knowing this.',
     }
   }
@@ -229,7 +229,7 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: 'Recovery data unavailable',
+      headline: 'Standard stretch behavior',
       detail: "Most denim relaxes a little with wear. We don't have recovery data for this item, so we can't say how much — if fit staying snug through the day matters to you, check the fabric label before buying.",
     }
   }
@@ -283,7 +283,7 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
     id: 'shape',
     name: 'Shape Retention',
     status,
-    headline: `Matches your ${anchorBrand}`,
+    headline: `Matches ${anchorBrand}`,
     detail: `Both items have strong recovery fiber. The fit should snap back and hold its shape reliably through wear.`,
   }
 }
