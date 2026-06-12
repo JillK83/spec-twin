@@ -194,9 +194,9 @@ naming the pillar where that information lives.
 |---|---|---|---|
 | 1 | Size delta escalation (`size_up_2` or `size_down_2`) | `"A size difference this large is worth verifying — check the brand's size guide before buying."` | Waist and Hip Fit |
 | 2 | Fabric Hard Stop — `FABRIC_HIGH_STRETCH_TO_RIGID` | `"This item will likely feel much firmer and less stretchy than your reference item."` | Fabric Behavior |
-| 2 | Fabric Hard Stop — `FABRIC_RIGID_TO_HIGH_STRETCH` | `"This item uses a very different sizing system than your reference item — the stretch range means your usual size may not translate cleanly."` | Fabric Behavior |
 | 3 | Rise mismatch | `"This style sits differently than your usual preference, which may affect how the waist and hip feel."` | Waist and Hip Fit |
 | 4 | Fabric Soft Warning (`FABRIC_HIGH_STRETCH_TO_COMFORT`, `FABRIC_COMFORT_TO_RIGID`) | `fabricGateUserText` per gate reason | Fabric Behavior |
+| 4 | Fabric Soft Warning — `FABRIC_RIGID_TO_HIGH_STRETCH` | `"This item will likely feel softer and more forgiving than your current size."` | Fabric Behavior |
 | — | Nothing above active (includes: brand-offset-only adjustments, `FABRIC_RIGID_TO_COMFORT`, cold start alone, contract gates) | No banner | — |
 
 **Pointer suffix:** when a second, lower-tier condition is active, append a
@@ -209,10 +209,17 @@ component capabilities during implementation. Suggested content: "Also check
 `VerdictOpenPage.tsx` — this is a known gap to address during the Phase 2
 code session, not yet implemented.
 
-**Tier 2 note:** `FABRIC_RIGID_TO_HIGH_STRETCH` is currently classified as `SOFT_WARNING` in `gates.ts` (not `HARD_STOP`). Listing at Tier 2 here reflects planned severity elevation — banner wiring against `gates.ts` must be updated when the gate type is promoted.
+<!-- Matches live gates.ts (SOFT_WARNING/fit_advisory since engine-freeze b05b6d4).
+   Spec (spec_twin_logic.md) documents this as HARD_STOP — divergence logged as a
+   separate engine backlog item, not corrected here. -->
 
 **Out of scope:** Contract gate (`precision`↔`range`) banner wiring is not
 included in this tier system yet — logged separately as LM-5.
+
+**Example — Rise mismatch + rigid→high_stretch soft warning:**
+Active: Tier 3 (rise mismatch) + Tier 4 (FABRIC_RIGID_TO_HIGH_STRETCH).
+Tier 3 wins the primary slot.
+Banner: "This style sits differently than your usual preference, which may affect how the waist and hip feel. — also check Fabric Behavior below."
 
 ---
 
