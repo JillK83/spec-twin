@@ -202,7 +202,6 @@ Pillar dot colors by output state:
 - `verified_fit` → all three dots Electric Lime `#BFFF00`
 - `fit_advisory` → mix of Amber `#FFBF00` and Electric Lime depending on which pillars flagged
 - `smart_estimate` → all three dots Purple `#7C3AED`
-- Reduced Card (anchor incomplete) → two dots Purple, Fabric Behavior pillar absent entirely
 
 ---
 
@@ -226,8 +225,8 @@ Full copy reference lives in `/docs/VERDICT_CARD.md` — read before writing or 
 
 **Token rules**
 
-- `${anchorBrand}` resolves from `user_anchors.brand_name` — always use `"your ${anchorBrand}"` not bare `"${anchorBrand}"`
-- Fallback is `"your item"` — template strings must never contain "your" AND resolve to "your item" producing "your your item"
+- `${anchorBrand}` resolves from `user_anchors.brand_name` — use bare `${anchorBrand}` (no leading "your") in all headlines and details, per VERDICT_CARD.md Phase 1 reconciliation.
+- Fallback is `"your item"` — template strings must never contain "your" AND resolve to "your item" producing "your your item" <!-- TODO: fallback "your item" may need revisiting now that templates don't prepend "your" -->
 - `${anchorStretchDesc}` — `high_stretch` anchor → `"significant stretch"` / `comfort_stretch` anchor → `"a little stretch"`
 
 ---
@@ -239,7 +238,6 @@ Full copy reference lives in `/docs/VERDICT_CARD.md` — read before writing or 
 | `verified_fit` | SAVE FIT TO VAULT |
 | `fit_advisory` | SAVE FIT TO VAULT |
 | `smart_estimate` | VERIFY BEFORE SAVING |
-| Reduced Card | UPDATE ANCHOR |
 
 ---
 
@@ -384,7 +382,7 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 | `/verdict/1` | Verified Fit verdict card |
 | `/verdict/2` | Fit Advisory verdict card |
 | `/verdict/3` | Smart Estimate verdict card |
-| `/verdict/4` | Reduced Card (anchor incomplete) |
+| `/verdict/4` | Smart Estimate verdict card (alias of `/verdict/3`, same component) |
 
 ---
 
@@ -402,3 +400,23 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 | Parser / AI | Gemini API `gemini-3.1-flash-lite` |
 | Typography | Geist, Geist Mono |
 | Deployment | Vercel |
+
+---
+
+## Open Items / Carry-Forward Backlog
+
+### UI Behavior
+
+**B5 — Copy density pass:** Audit all pillar detail strings (Fabric Behavior, Waist and Hip Fit, Shape Retention) across all states for a 2-sentence maximum; remove redundant per-pillar "check the brand's size guide" CTAs in favor of the banner/size-block handling this universally. Scope: copy-only, `VerdictOpenPage.tsx` + `VERDICT_CARD.md`. Sequencing: after B4 styling sweep, before or alongside mobile/responsive pass.
+
+**isSameBrand conditional copy:** When `anchorBrand === targetBrand`, pillar copy referencing `${anchorBrand}` needs a same-brand-aware variant to avoid broken sentences (e.g., "less stretchy than Levi's" when both items are Levi's). Requires exposing `targetBrand` to pillar functions alongside `anchorBrand` (similar shape to riseDirection wiring — small `AuditOutput`/prop addition + conditional branches in the three pillar functions). UI/data-passing layer only, no engine logic.
+
+**Anchor completeness / reduced-state UX:** Decide whether incomplete anchors (missing fabric composition, etc.) warrant a dedicated degraded card + "UPDATE ANCHOR" CTA, or whether existing unknown-state pillar logic (State 7, etc.) is sufficient. If the former, define what "incomplete" means (which fields, what threshold) before building. Currently no code path produces a degraded/reduced card — this would be new feature work, not a bug fix.
+
+### LM Bucket
+
+**LM-5 — Contract gate banner wiring:** `precision`↔`range` contract gates (`gates.ts`) already fire and produce `userText`, but are not wired into `advisoryBannerText` / the severity-tier system in `VerdictOpenPage.tsx`. Wire as an additional tier (display-only, no new engine logic) once Phase 2's Tier 1–4 wiring is stable.
+
+### Engine-Side Backlog (MVP correctness — dedicated session required, never on main)
+
+**FABRIC_RIGID_TO_HIGH_STRETCH gate type reconciliation:** `gates.ts` has had this as `SOFT_WARNING/fit_advisory` since engine-freeze (`b05b6d4`); `spec_twin_logic.md` documents it as `HARD_STOP/smart_estimate` per the Sizing Model Mismatch Principle (rigid↔high_stretch should be symmetric with `HIGH_STRETCH_TO_RIGID`, which is `HARD_STOP`). No commit explains the divergence. Decide: promote to `HARD_STOP` (update `userText` to spec string, update existing gate test, add resolver test for `smart_estimate` path) or formally document `SOFT_WARNING` as accepted MVP behavior (asymmetric, update `spec_twin_logic.md`). Requires a dedicated engine session on its own branch.

@@ -26,7 +26,7 @@ function getFabricBehaviorPillar(
       name: 'Fabric Behavior',
       status,
       headline: 'Fabric data unavailable',
-      detail: `We couldn't read the fabric composition for this item. Check the label before buying — the fit and feel may differ from your ${anchorBrand}.`,
+      detail: `We couldn't read the fabric composition for this item. Check the label before buying — the fit and feel may differ from ${anchorBrand}.`,
     }
   }
 
@@ -36,7 +36,7 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Very different fabric from your ${anchorBrand}`,
+      headline: `Very different fabric from ${anchorBrand}`,
       detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
     }
   }
@@ -48,8 +48,8 @@ function getFabricBehaviorPillar(
         id: 'fabric',
         name: 'Fabric Behavior',
         status,
-        headline: `Very different fabric from your ${anchorBrand}`,
-        detail: `Your ${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+        headline: `Very different fabric from ${anchorBrand}`,
+        detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
       }
     }
     return {
@@ -67,8 +67,8 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Less stretch than your ${anchorBrand}`,
-      detail: `This item has less give than your ${anchorBrand} and may feel slightly firmer through the hip and thigh. The difference is moderate — your usual size should still work.`,
+      headline: `Less stretch than ${anchorBrand}`,
+      detail: `This item has less give than ${anchorBrand} and may feel slightly firmer through the hip and thigh. The difference is moderate — your usual size should still work.`,
     }
   }
 
@@ -78,8 +78,8 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `More stretch than your ${anchorBrand}`,
-      detail: `This item is softer and more forgiving than your ${anchorBrand}. You may want to size down if you prefer a snug fit.`,
+      headline: `More stretch than ${anchorBrand}`,
+      detail: `This item is softer and more forgiving than ${anchorBrand}. You may want to size down if you prefer a snug fit.`,
     }
   }
 
@@ -89,8 +89,8 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Has a little more give than your ${anchorBrand}`,
-      detail: `Your ${anchorBrand} has no stretch fiber. This item has a small amount — it will feel slightly softer and more forgiving, but the difference is mild. Size as recommended.`,
+      headline: `Has a little more give than ${anchorBrand}`,
+      detail: `${anchorBrand} has no stretch fiber. This item has a small amount — it will feel slightly softer and more forgiving, but the difference is mild. Size as recommended.`,
     }
   }
 
@@ -140,7 +140,7 @@ function getWaistHipPillar(
       name: 'Waist and Hip Fit',
       status,
       headline: 'Waist fit uncertain',
-      detail: `Because the fabric is very different from your ${anchorBrand}, we can't predict how the waist and hips will actually feel. Check the brand's size guide before ordering.`,
+      detail: `Because the fabric is very different from ${anchorBrand}, we can't predict how the waist and hips will actually feel. Check the brand's size guide before ordering.`,
     }
   }
 
@@ -164,7 +164,7 @@ function getWaistHipPillar(
       name: 'Waist and Hip Fit',
       status,
       headline: `Different rise than ${anchorBrand}`,
-      detail: `The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than your ${anchorBrand}, so the rise and hip feel may vary. Check the return policy before ordering.`,
+      detail: `The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than ${anchorBrand}, so the rise and hip feel may vary. Check the return policy before ordering.`,
     }
   }
 
@@ -177,8 +177,8 @@ function getWaistHipPillar(
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
       status,
-      headline: `Runs smaller than your ${anchorBrand}`,
-      detail: `This brand cuts slightly smaller than your ${anchorBrand}. We've accounted for that in the recommended size.`,
+      headline: `Runs smaller than ${anchorBrand}`,
+      detail: `This brand cuts slightly smaller than ${anchorBrand}. We've accounted for that in the recommended size.`,
     }
   }
 
@@ -188,8 +188,8 @@ function getWaistHipPillar(
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
       status,
-      headline: `Runs larger than your ${anchorBrand}`,
-      detail: `This brand cuts slightly larger than your ${anchorBrand}. We've accounted for that in the recommended size.`,
+      headline: `Runs larger than ${anchorBrand}`,
+      detail: `This brand cuts slightly larger than ${anchorBrand}. We've accounted for that in the recommended size.`,
     }
   }
 
@@ -348,6 +348,35 @@ export default function VerdictOpenPage() {
     ? 'See brand size guide'
     : auditOutput.recommendedSize
 
+  // Severity-tier banner resolution per VERDICT_CARD.md Banner Text — Severity Tier System.
+  // Tier 1 (size delta escalation) requires a sizeEscalation flag not yet in AuditOutput —
+  // wiring it requires touching resolver.ts/audit.ts (engine-side, out of scope this session).
+  // Implementing Tiers 2–4 only.
+  const bannerCandidates: Array<{ tier: number; text: string; pillar: string }> = []
+
+  if (auditOutput.fabricGateReason === 'FABRIC_HIGH_STRETCH_TO_RIGID' && auditOutput.fabricGateUserText) {
+    bannerCandidates.push({ tier: 2, text: auditOutput.fabricGateUserText, pillar: 'Fabric Behavior' })
+  }
+
+  if (!!auditOutput.anchorRise && auditOutput.anchorRise !== auditOutput.targetRise && auditOutput.riseMismatchNote) {
+    bannerCandidates.push({ tier: 3, text: auditOutput.riseMismatchNote, pillar: 'Waist and Hip Fit' })
+  }
+
+  const tier4Reasons = ['FABRIC_HIGH_STRETCH_TO_COMFORT', 'FABRIC_COMFORT_TO_RIGID', 'FABRIC_RIGID_TO_HIGH_STRETCH']
+  if (auditOutput.fabricGate && auditOutput.fabricGateReason && tier4Reasons.includes(auditOutput.fabricGateReason) && auditOutput.fabricGateUserText) {
+    bannerCandidates.push({ tier: 4, text: auditOutput.fabricGateUserText, pillar: 'Fabric Behavior' })
+  }
+
+  let advisoryBannerText: string | undefined
+  if (bannerCandidates.length > 0) {
+    const sorted = [...bannerCandidates].sort((a, b) => a.tier - b.tier)
+    const primary = sorted[0]
+    const secondary = sorted[1]
+    advisoryBannerText = secondary && secondary.pillar !== primary.pillar
+      ? `${primary.text} — also check ${secondary.pillar} below.`
+      : primary.text
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <VerdictCard
@@ -361,11 +390,7 @@ export default function VerdictOpenPage() {
             : (auditOutput.inseamNote ?? undefined)
         }
         pillars={pillars}
-        advisoryBannerText={
-          (auditOutput.outputState !== 'smart_estimate' || !auditOutput.coldStart)
-            ? ((!!auditOutput.anchorRise && auditOutput.anchorRise !== auditOutput.targetRise ? auditOutput.riseMismatchNote : null) ?? ((auditOutput.fabricGate && auditOutput.fabricGateReason !== 'FABRIC_RIGID_TO_COMFORT') ? auditOutput.fabricGateUserText ?? undefined : undefined))
-            : ((auditOutput.fabricGate && auditOutput.fabricGateReason !== 'FABRIC_RIGID_TO_COMFORT') ? auditOutput.fabricGateUserText ?? undefined : undefined)
-        }
+        advisoryBannerText={advisoryBannerText}
         onReset={() => navigate('/audit/new')}
         footerNote={
           auditOutput.coldStart
