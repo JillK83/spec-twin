@@ -67,7 +67,8 @@ export function resolveOutputState(gates: GateInputs): ResolverResult {
     gates.fabricGate.type   === 'SOFT_WARNING' ||
     gates.contractGate.type === 'SOFT_WARNING' ||
     gates.riseGate.type     === 'SOFT_WARNING' ||
-    gates.recoveryWarning
+    gates.recoveryWarning ||
+    gates.coldStart
   if (hasSoftWarning) {
     return { outputState: 'fit_advisory', confidenceLevel, firedGates: fired, coldStart }
   }

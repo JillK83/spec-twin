@@ -507,6 +507,24 @@ test('Scenario 3 — smart_estimate, compounding uncertainty (COMFORT_TO_RIGID +
   assert.ok(result.firedGates.includes('FABRIC_COMFORT_TO_RIGID'))
 })
 
+// ─── 6. Resolver — cold-start edge cases ──────────────────────────────────────
+
+test('cold start with no other gates → fit_advisory (State 8 reachable)', () => {
+  const noGate = { fired: false, type: 'NO_GATE' as const, outputState: null, reasonCode: null, userText: null }
+  const result = resolveOutputState({
+    fabricGate:      { ...noGate, classesApart: 0 },
+    contractGate:    noGate,
+    riseGate:        noGate,
+    recoveryWarning: false,
+    coldStart:       true,
+    sizeCap:         false,
+    sizeAdjustment:  0,
+  })
+  assert.equal(result.outputState,     'fit_advisory')
+  assert.equal(result.confidenceLevel, 'MEDIUM')
+  assert.equal(result.coldStart,       true)
+})
+
 // ─── Summary ──────────────────────────────────────────────────────────────────
 
 console.log(`\n── results: ${passed} passed, ${failed} failed ──────────────────────────────────\n`)
