@@ -41,8 +41,9 @@ Read this before writing or editing any verdict card copy.
 | `${smaller/larger}` | sign of `fit_delta` or `fit_tag` direction | omit sizing direction |
 | `${target_size_original}` | `product_audits.target_size_original` raw string | `"this size"` |
 
-Always use `"your ${anchorBrand}"` not bare `"${anchorBrand}"`.
+Use bare `${anchorBrand}` (no leading "your") in all headlines and details.
 Fallback `"your item"` must never combine with a "your" already in the template — producing `"your your item"` is a bug.
+<!-- TODO: fallback "your item" may need revisiting now that templates don't prepend "your" -->
 
 ---
 
@@ -50,38 +51,40 @@ Fallback `"your item"` must never combine with a "your" already in the template 
 
 **Lime — same fabric class**
 - Status: `verified`
-- Headline: `"Fabric matches your ${anchorBrand}"`
-- Detail: `"Both items have the same amount of stretch. The fabric won't be a factor in how this fits compared to your ${anchorBrand}."`
-
-**Lime — rigid → comfort_stretch**
-- Status: `verified`
-- Headline: `"Similar feel to your ${anchorBrand}"`
-- Detail: `"This item has a little more give than your ${anchorBrand}. If anything, it may feel slightly more forgiving — not enough to change your size."`
+- Headline: `"Fabric matches ${anchorBrand}"`
+- Detail: `"Both items have the same amount of stretch. The fabric won't be a factor in how this fits compared to ${anchorBrand}."`
 
 **Lime — comfort_stretch → high_stretch**
 - Status: `verified`
-- Headline: `"Similar feel to your ${anchorBrand}"`
-- Detail: `"This item has a bit more stretch than your ${anchorBrand}. The fit should still feel comparable — slightly more movement, same basic size."`
+- Headline: `"Similar feel to ${anchorBrand}"`
+- Detail: `"This item has a bit more stretch than ${anchorBrand}. The fit should still feel comparable — slightly more movement, same basic size."`
 
 **Amber — comfort_stretch → rigid**
 - Status: `advisory`
-- Headline: `"Less stretch than your ${anchorBrand}"`
-- Detail: `"This item has less give than your ${anchorBrand} and may feel tighter or more structured. Rigid denim softens with wear — if you're between sizes, lean toward the larger one."`
+- Headline: `"Less stretch than ${anchorBrand}"`
+- Detail: `"This item has less give than ${anchorBrand} and may feel tighter or more structured. Rigid denim softens with wear — if you're between sizes, lean toward the larger one."`
 
 **Amber — high_stretch → comfort_stretch**
 - Status: `advisory`
-- Headline: `"Less stretch than your ${anchorBrand}"`
-- Detail: `"This item has less give than your ${anchorBrand} and may feel slightly firmer through the hip and thigh. The difference is moderate — your usual size should still work."`
+- Headline: `"Less stretch than ${anchorBrand}"`
+- Detail: `"This item has less give than ${anchorBrand} and may feel slightly firmer through the hip and thigh. The difference is moderate — your usual size should still work."`
 
 **Amber — rigid → high_stretch**
 - Status: `advisory`
-- Headline: `"More stretch than your ${anchorBrand}"`
-- Detail: `"This item is softer and more forgiving than your ${anchorBrand}. You may want to size down if you prefer a snug fit."`
+- Headline: `"More stretch than ${anchorBrand}"`
+- Detail: `"This item is softer and more forgiving than ${anchorBrand}. You may want to size down if you prefer a snug fit."`
 
-**Purple — Hard Stop (high_stretch or comfort_stretch → rigid)**
+**Amber — rigid → comfort_stretch**
+- Status: `advisory`
+- Headline: `"Has a little more give than ${anchorBrand}"`
+- Detail: `"${anchorBrand} has no stretch fiber. This item has a small amount — it will feel slightly softer and more forgiving, but the difference is mild. Size as recommended."`
+
+<!-- Reclassified from Lime/verified to Amber/advisory to match gates.ts FABRIC_RIGID_TO_COMFORT SOFT_WARNING (commit 7330b5c). Doc was previously out of sync with implemented gate behavior. -->
+
+**Purple — Hard Stop (high_stretch → rigid)**
 - Status: `estimate`
-- Headline: `"Very different fabric from your ${anchorBrand}"`
-- Detail: `"Your ${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying."`
+- Headline: `"Very different fabric from ${anchorBrand}"`
+- Detail: `"${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying."`
 
 ---
 
@@ -89,38 +92,38 @@ Fallback `"your item"` must never combine with a "your" already in the template 
 
 **Lime — clean match, no adjustment**
 - Status: `verified`
-- Headline: `"Fits like your ${anchorBrand}"`
-- Detail: `"This sits and fits the same way as your ${anchorBrand}. You should be able to order your usual size with confidence."`
+- Headline: `"Fits like ${anchorBrand}"`
+- Detail: `"This sits and fits the same way as ${anchorBrand}. You should be able to order your usual size with confidence."`
 
 **Lime — size adjustment, no gates**
 - Status: `verified`
-- Headline: `"Runs ${smaller/larger} than your ${anchorBrand}"`
-- Detail: `"The shape and rise match your ${anchorBrand}. We've adjusted the size to account for how this brand typically cuts."`
+- Headline: `"Runs ${smaller/larger} than ${anchorBrand}"`
+- Detail: `"The shape and rise match ${anchorBrand}. We've adjusted the size to account for how this brand typically cuts."`
 
 **Amber — rise mismatch only**
 - Status: `advisory`
-- Headline: `"Different rise than your ${anchorBrand}"`
-- Detail: `"The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than your ${anchorBrand}, so the rise and hip feel may vary. Check the return policy before ordering."` (note: `"differently"` is a placeholder — `${higher/lower}` pending riseDirection wiring)
+- Headline: `"Different rise than ${anchorBrand}"`
+- Detail: `"The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than ${anchorBrand}, so the rise and hip feel may vary. Check the return policy before ordering."` (note: `"differently"` is a placeholder — `${higher/lower}` pending riseDirection wiring)
 
 **Amber — rise mismatch + brand offset combined**
 - Status: `advisory`
-- Headline: `"Different rise and cut than your ${anchorBrand}"`
-- Detail: `"This style sits ${higher/lower} than your ${anchorBrand} and this brand tends to cut ${smaller/larger}. Both factors affect how the waist and hips will feel — we've adjusted the size to compensate for the cut, but the rise difference is worth trying before buying."`
+- Headline: `"Different rise and cut than ${anchorBrand}"`
+- Detail: `"This style sits ${higher/lower} than ${anchorBrand} and this brand tends to cut ${smaller/larger}. Both factors affect how the waist and hips will feel — we've adjusted the size to compensate for the cut, but the rise difference is worth trying before buying."`
 
 **Amber — brand runs small (`euro_slim`)**
 - Status: `advisory`
-- Headline: `"Runs smaller than your ${anchorBrand}"`
-- Detail: `"This brand cuts narrower than the label suggests. We've sized up to compensate — the waist and hips should have comparable give to your ${anchorBrand}."`
+- Headline: `"Runs smaller than ${anchorBrand}"`
+- Detail: `"This brand cuts narrower than the label suggests. We've sized up to compensate — the waist and hips should have comparable give to ${anchorBrand}."`
 
 **Amber — brand runs small (`rigid_bias`)**
 - Status: `advisory`
-- Headline: `"Runs smaller than your ${anchorBrand}"`
-- Detail: `"This brand's fabric construction makes it fit smaller than the label suggests. We've sized up to compensate — expect a firmer feel through the waist and hips than your ${anchorBrand}."`
+- Headline: `"Runs smaller than ${anchorBrand}"`
+- Detail: `"This brand's fabric construction makes it fit smaller than the label suggests. We've sized up to compensate — expect a firmer feel through the waist and hips than ${anchorBrand}."`
 
 **Amber — brand runs large (`vanity_high`)**
 - Status: `advisory`
-- Headline: `"Runs larger than your ${anchorBrand}"`
-- Detail: `"This brand sizes generously. We've sized down to compensate — the waist and hips should feel comparable to your ${anchorBrand}."`
+- Headline: `"Runs larger than ${anchorBrand}"`
+- Detail: `"This brand sizes generously. We've sized down to compensate — the waist and hips should feel comparable to ${anchorBrand}."`
 
 **Amber — cold start**
 - Status: `advisory`
@@ -135,59 +138,81 @@ Fallback `"your item"` must never combine with a "your" already in the template 
 **Purple — clean pass, smart_estimate override (fabric Hard Stop)**
 - Status: `estimate` (overridden by `output_state = smart_estimate`)
 - Headline: `"Waist fit uncertain"`
-- Detail: `"Because the fabric is very different from your ${anchorBrand}, we can't predict how the waist and hips will actually feel. Check the brand's size guide before ordering."`
+- Detail: `"Because the fabric is very different from ${anchorBrand}, we can't predict how the waist and hips will actually feel. Check the brand's size guide before ordering."`
 
 ---
 
 ## Shape Retention Pillar
 
-**Amber — `recovery_class: unknown`**
+> **Note:** `estimate` (purple) status on this pillar is a dot-color override only — applied per the Pillar status override rule when `output_state = smart_estimate`. Headlines and details are state-driven (1a/1b/2/3/4/5/6 below) regardless of dot color; there is no separate purple-only headline for this pillar.
+
+**Amber — State 1a: `recovery_class: unknown`, target fabric is `rigid`**
 - Status: `advisory`
-- Headline: `"Recovery data unavailable"`
+- Headline: `"Will loosen with wear"`
+- Detail: `"100% cotton denim has no elastic fiber to snap back into shape. Expect the waist to relax up to an inch after a full day of wear, with some bagging at the knees and seat. Washing resets the fit — many people intentionally size down on first wear knowing this."`
+
+**Amber — State 1b: `recovery_class: unknown`, other fabric classes**
+- Status: `advisory`
+- Headline: `"Standard stretch behavior"`
 - Detail: `"Most denim relaxes a little with wear. We don't have recovery data for this item, so we can't say how much — if fit staying snug through the day matters to you, check the fabric label before buying."`
 
-**Amber — `RECOVERY_PRESENT_TO_ABSENT`**
+**Amber — `RECOVERY_PRESENT_TO_ABSENT` (anchor has recovery, target does not)**
 - Status: `advisory`
-- Headline: `"May loosen more than your ${anchorBrand}"`
-- Detail: `"Your ${anchorBrand} has recovery fiber that helps it hold its shape. This item doesn't — you may notice it feeling slightly looser by evening."`
+- Headline: `"May loosen more than ${anchorBrand}"`
+- Detail: `"${anchorBrand} has recovery fiber that helps it hold its shape. This item doesn't — you may notice it feeling slightly looser by evening."`
 
 **Lime — low/low**
 - Status: `verified`
-- Headline: `"Matches your ${anchorBrand}"`
-- Detail: `"Both items lack recovery fiber. Like your ${anchorBrand}, expect this to relax and soften as you wear it — that's normal behavior for this fabric type."`
+- Headline: `"Matches ${anchorBrand}"`
+- Detail: `"Both items lack recovery fiber. Like ${anchorBrand}, expect this to relax and soften as you wear it — that's normal behavior for this fabric type."`
 
 **Lime — moderate/moderate**
 - Status: `verified`
-- Headline: `"Matches your ${anchorBrand}"`
-- Detail: `"Recovery is similar to your ${anchorBrand}. Expect it to hold its shape through the day about the same way — some relaxation by evening, recovers after washing."`
+- Headline: `"Matches ${anchorBrand}"`
+- Detail: `"Recovery is similar to ${anchorBrand}. Expect it to hold its shape through the day about the same way — some relaxation by evening, recovers after washing."`
 
 **Lime — high/high**
 - Status: `verified`
-- Headline: `"Matches your ${anchorBrand}"`
-- Detail: `"Like your ${anchorBrand}, this fabric bounces back after stretching. Expect it to stay snug and consistent from morning to evening."`
+- Headline: `"Matches ${anchorBrand}"`
+- Detail: `"Like ${anchorBrand}, this fabric bounces back after stretching. Expect it to stay snug and consistent from morning to evening."`
 
 **Lime — upgrade (low → moderate or high)**
 - Status: `verified`
-- Headline: `"Holds shape better than your ${anchorBrand}"`
-- Detail: `"This fabric has better recovery than your ${anchorBrand} and will stay more consistent through the day. If your ${anchorBrand} tends to loosen by evening, this one should hold up better."`
-
-**Purple — clean pass, smart_estimate override (fabric Hard Stop)**
-- Status: `estimate` (overridden by `output_state = smart_estimate`)
-- Headline: `"Recovery data unavailable"`
-- Detail: `"We don't have recovery data for this item. Given the fabric difference from your ${anchorBrand}, check the brand's size guide before buying."`
+- Headline: `"Holds shape better than ${anchorBrand}"`
+- Detail: `"This fabric has better recovery than ${anchorBrand} and will stay more consistent through the day. If ${anchorBrand} tends to loosen by evening, this one should hold up better."`
 
 ---
 
-## Banner Text by Output State
+## Banner Text — Severity Tier System
 
-| Output state | Trigger | Banner text |
-|---|---|---|
-| `verified_fit` | — | No banner |
-| `fit_advisory` | Rise mismatch | `"This style sits differently than your usual preference, which may affect how the waist and hip feel."` |
-| `fit_advisory` | Fabric soft warning | `"This item has a different amount of stretch than your reference item — it may feel slightly different."` |
-| `smart_estimate` | Fabric Hard Stop | `"This item will likely feel much firmer and less stretchy than your reference item."` |
-| `smart_estimate` | Contract Hard Stop | `"This item uses a very different sizing system — your usual size may not translate cleanly."` |
-| `reduced` | Incomplete anchor | `"Incomplete anchor — material data missing"` |
+The verdict card has a single banner slot. When multiple gate conditions are
+active simultaneously, the highest-severity tier's text wins the slot. If a
+second, lower-tier condition is also active, a pointer suffix is appended
+naming the pillar where that information lives.
+
+| Tier | Condition | Banner text | Points to (if also active) |
+|---|---|---|---|
+| 1 | Size delta escalation (`size_up_2` or `size_down_2`) | `"A size difference this large is worth verifying — check the brand's size guide before buying."` | Waist and Hip Fit |
+| 2 | Fabric Hard Stop — `FABRIC_HIGH_STRETCH_TO_RIGID` | `"This item will likely feel much firmer and less stretchy than your reference item."` | Fabric Behavior |
+| 2 | Fabric Hard Stop — `FABRIC_RIGID_TO_HIGH_STRETCH` | `"This item uses a very different sizing system than your reference item — the stretch range means your usual size may not translate cleanly."` | Fabric Behavior |
+| 3 | Rise mismatch | `"This style sits differently than your usual preference, which may affect how the waist and hip feel."` | Waist and Hip Fit |
+| 4 | Fabric Soft Warning (`FABRIC_HIGH_STRETCH_TO_COMFORT`, `FABRIC_COMFORT_TO_RIGID`) | `fabricGateUserText` per gate reason | Fabric Behavior |
+| — | Nothing above active (includes: brand-offset-only adjustments, `FABRIC_RIGID_TO_COMFORT`, cold start alone, contract gates) | No banner | — |
+
+**Pointer suffix:** when a second, lower-tier condition is active, append a
+suffix naming the relevant pillar. Exact suffix wording/formatting (plain
+text vs. styled element) is TBD — confirm against `VerdictCard.tsx` banner
+component capabilities during implementation. Suggested content: "Also check
+{Pillar Name} below."
+
+**Tier 1 note:** Size delta escalation banner text is not currently wired in
+`VerdictOpenPage.tsx` — this is a known gap to address during the Phase 2
+code session, not yet implemented.
+
+**Tier 2 note:** `FABRIC_RIGID_TO_HIGH_STRETCH` is currently classified as `SOFT_WARNING` in `gates.ts` (not `HARD_STOP`). Listing at Tier 2 here reflects planned severity elevation — banner wiring against `gates.ts` must be updated when the gate type is promoted.
+
+**Out of scope:** Contract gate (`precision`↔`range`) banner wiring is not
+included in this tier system yet — logged separately as LM-5.
 
 ---
 
@@ -198,7 +223,6 @@ Fallback `"your item"` must never combine with a "your" already in the template 
 | `verified_fit` | Recommended size | `"27 x 30"` large heading, ink color |
 | `fit_advisory` | Recommended size | `"27 x 30"` large heading, ink color |
 | `smart_estimate` | No specific size | `"See brand size guide"` mono text, muted |
-| `reduced` | No size shown | — |
 
 ---
 
@@ -209,4 +233,3 @@ Fallback `"your item"` must never combine with a "your" already in the template 
 | `verified_fit` | `SAVE FIT TO VAULT` |
 | `fit_advisory` | `SAVE FIT TO VAULT` |
 | `smart_estimate` | `VERIFY BEFORE SAVING` |
-| `reduced` | `UPDATE ANCHOR` |
