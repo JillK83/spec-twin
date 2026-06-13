@@ -1,5 +1,9 @@
 # UI Updates — Pending
-Last updated: 2026-05-10
+Last updated: 2026-06-12
+
+See also: CLAUDE.md "Open Items / Carry-Forward Backlog" for the engine-side
+FABRIC_RIGID_TO_HIGH_STRETCH gate type reconciliation item (separate dedicated
+session, never on main — not a UI item, tracked in CLAUDE.md only).
 
 Work through in session order below. Each session is a separate Claude Code prompt.
 
@@ -58,9 +62,18 @@ Work through in session order below. Each session is a separate Claude Code prom
 - [ ] Fabric Behavior: write distinct detail copy for each gate state
 - [ ] Waist and Hip Fit: write distinct detail copy for each gate state  
 - [ ] Shape Retention: write distinct detail copy for each gate state
-- [ ] Smart estimate banner: 'Incomplete data — verify before buying' 
+      Constraint added during VERDICT_CARD.md reconciliation: 2-sentence
+      maximum per detail string; remove redundant per-pillar "check the
+      brand's size guide" CTAs — banner/size-block now handles this
+      universally (see VERDICT_CARD.md Banner Text — Severity Tier System).
+      Cross-ref: B5 in CLAUDE.md backlog.
+- [x] Smart estimate banner: 'Incomplete data — verify before buying' 
       should only show for cold start, not fabric hard stop
       Fabric hard stop should show fabric-specific banner copy
+      Superseded and resolved by Phase 2 severity-tier banner rewrite
+      (VerdictOpenPage.tsx, commit landed, 63/63 tests passing — Tier 2 =
+      fabric hard stop gets fabricGateUserText; cold-start-alone produces
+      no banner per VERDICT_CARD.md Banner Text — Severity Tier System).
 
 ---
 
@@ -71,6 +84,29 @@ Work through in session order below. Each session is a separate Claude Code prom
       earlier session — re-test loading state timing
 - [ ] Loading state: confirm three Geist Mono lines cycle at ~250ms each
       and verdict card fades in at 200ms after third step
+
+---
+
+## Session 7 — Verdict card copy follow-ups (from VERDICT_CARD.md reconciliation)
+- [ ] isSameBrand conditional copy: when anchorBrand === targetBrand, pillar
+      copy referencing ${anchorBrand} needs a same-brand-aware variant to
+      avoid broken sentences (e.g., "less stretchy than Levi's" when both
+      items are Levi's). Requires exposing targetBrand to pillar functions
+      alongside anchorBrand (similar shape to riseDirection wiring — small
+      AuditOutput/prop addition + conditional branches in the three pillar
+      functions). UI/data-passing layer only, no engine logic.
+- [ ] LM-5 — Contract gate banner wiring: precision<->range contract gates
+      (gates.ts) already fire and produce userText, but are not wired into
+      advisoryBannerText / the severity-tier system in VerdictOpenPage.tsx.
+      Wire as an additional tier (display-only, no new engine logic) — Tier
+      1-4 wiring confirmed stable as of Phase 2 (63/63 tests passing).
+- [ ] Anchor completeness / reduced-state UX: decide whether incomplete
+      anchors (missing fabric composition, etc.) warrant a dedicated
+      degraded card + "UPDATE ANCHOR" CTA, or whether existing unknown-state
+      pillar logic (State 7, etc.) is sufficient. If the former, define what
+      "incomplete" means (which fields, what threshold) before building.
+      Currently no code path produces a degraded/reduced card — new feature
+      work, not a bug fix.
 
 ---
 
