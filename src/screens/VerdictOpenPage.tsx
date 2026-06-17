@@ -351,7 +351,7 @@ export default function VerdictOpenPage() {
   // Severity-tier banner resolution per VERDICT_CARD.md Banner Text — Severity Tier System.
   // Tier 1 (size delta escalation) requires a sizeEscalation flag not yet in AuditOutput —
   // wiring it requires touching resolver.ts/audit.ts (engine-side, out of scope this session).
-  // Implementing Tiers 2–4 only.
+  // Implementing Tiers 2–5.
   const bannerCandidates: Array<{ tier: number; text: string; pillar: string }> = []
 
   if (auditOutput.fabricGateReason === 'FABRIC_HIGH_STRETCH_TO_RIGID' && auditOutput.fabricGateUserText) {
@@ -362,9 +362,13 @@ export default function VerdictOpenPage() {
     bannerCandidates.push({ tier: 3, text: auditOutput.riseMismatchNote, pillar: 'Waist and Hip Fit' })
   }
 
-  const tier4Reasons = ['FABRIC_HIGH_STRETCH_TO_COMFORT', 'FABRIC_COMFORT_TO_RIGID', 'FABRIC_RIGID_TO_HIGH_STRETCH']
-  if (auditOutput.fabricGate && auditOutput.fabricGateReason && tier4Reasons.includes(auditOutput.fabricGateReason) && auditOutput.fabricGateUserText) {
-    bannerCandidates.push({ tier: 4, text: auditOutput.fabricGateUserText, pillar: 'Fabric Behavior' })
+  if (auditOutput.contractGate && auditOutput.contractGateUserText) {
+    bannerCandidates.push({ tier: 4, text: auditOutput.contractGateUserText, pillar: 'Waist and Hip Fit' })
+  }
+
+  const tier5Reasons = ['FABRIC_HIGH_STRETCH_TO_COMFORT', 'FABRIC_COMFORT_TO_RIGID', 'FABRIC_RIGID_TO_HIGH_STRETCH']
+  if (auditOutput.fabricGate && auditOutput.fabricGateReason && tier5Reasons.includes(auditOutput.fabricGateReason) && auditOutput.fabricGateUserText) {
+    bannerCandidates.push({ tier: 5, text: auditOutput.fabricGateUserText, pillar: 'Fabric Behavior' })
   }
 
   let advisoryBannerText: string | undefined
