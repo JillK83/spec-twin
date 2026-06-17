@@ -8,6 +8,7 @@ function getFabricBehaviorPillar(
   output: AuditOutput,
   verdictState: VerdictState,
   anchorBrand: string,
+  targetBrand: string,
 ): Pillar {
   const { fabricGate, fabricGateReason, targetFabricClass } = output
 
@@ -19,6 +20,10 @@ function getFabricBehaviorPillar(
     ? 'significant stretch'
     : 'a little stretch'
 
+  const isSameBrand = anchorBrand.toLowerCase() === targetBrand.toLowerCase()
+  const brandRef = isSameBrand ? 'your anchor' : anchorBrand
+  const brandRefTitle = isSameBrand ? 'Your anchor' : anchorBrand
+
   // State 7 — unknown fabric class: composition unparseable (amber)
   if (targetFabricClass === 'unknown') {
     return {
@@ -26,7 +31,7 @@ function getFabricBehaviorPillar(
       name: 'Fabric Behavior',
       status,
       headline: 'Fabric data unavailable',
-      detail: `We couldn't read the fabric composition for this item. Check the label before buying — the fit and feel may differ from ${anchorBrand}.`,
+      detail: `We couldn't read the fabric composition for this item. Check the label before buying — the fit and feel may differ from ${brandRef}.`,
     }
   }
 
@@ -36,8 +41,8 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Very different fabric from ${anchorBrand}`,
-      detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip.`,
+      headline: `Very different fabric from ${brandRef}`,
+      detail: `${brandRefTitle} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip.`,
     }
   }
 
@@ -48,16 +53,16 @@ function getFabricBehaviorPillar(
         id: 'fabric',
         name: 'Fabric Behavior',
         status,
-        headline: `Very different fabric from ${anchorBrand}`,
-        detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip.`,
+        headline: `Very different fabric from ${brandRef}`,
+        detail: `${brandRefTitle} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip.`,
       }
     }
     return {
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Less stretch than ${anchorBrand}`,
-      detail: `This item has no elastane — it will feel more structured than ${anchorBrand}. The waist and hip fit may feel tighter, especially after a few hours of wear.`,
+      headline: `Less stretch than ${brandRef}`,
+      detail: `This item has no elastane — it will feel more structured than ${brandRef}. The waist and hip fit may feel tighter, especially after a few hours of wear.`,
     }
   }
 
@@ -67,8 +72,8 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Less stretch than ${anchorBrand}`,
-      detail: `This item has less give than ${anchorBrand} and may feel slightly firmer through the hip and thigh. The difference is moderate — your usual size should still work.`,
+      headline: `Less stretch than ${brandRef}`,
+      detail: `This item has less give than ${brandRef} and may feel slightly firmer through the hip and thigh. The difference is moderate — your usual size should still work.`,
     }
   }
 
@@ -78,8 +83,8 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `More stretch than ${anchorBrand}`,
-      detail: `This item is softer and more forgiving than ${anchorBrand}. You may want to size down if you prefer a snug fit.`,
+      headline: `More stretch than ${brandRef}`,
+      detail: `This item is softer and more forgiving than ${brandRef}. You may want to size down if you prefer a snug fit.`,
     }
   }
 
@@ -89,8 +94,8 @@ function getFabricBehaviorPillar(
       id: 'fabric',
       name: 'Fabric Behavior',
       status,
-      headline: `Has a little more give than ${anchorBrand}`,
-      detail: `${anchorBrand} has no stretch fiber. This item has a small amount — it will feel slightly softer and more forgiving, but the difference is mild. Size as recommended.`,
+      headline: `Has a little more give than ${brandRef}`,
+      detail: `${brandRefTitle} has no stretch fiber. This item has a small amount — it will feel slightly softer and more forgiving, but the difference is mild. Size as recommended.`,
     }
   }
 
@@ -99,8 +104,8 @@ function getFabricBehaviorPillar(
     id: 'fabric',
     name: 'Fabric Behavior',
     status,
-    headline: `Fabric matches ${anchorBrand}`,
-    detail: `Both items have the same amount of stretch. The fabric won't be a factor in how this fits compared to ${anchorBrand}.`,
+    headline: `Fabric matches ${brandRef}`,
+    detail: `Both items have the same amount of stretch. The fabric won't be a factor in how this fits compared to ${brandRef}.`,
   }
 }
 
@@ -115,12 +120,16 @@ function getWaistHipPillar(
   output: AuditOutput,
   verdictState: VerdictState,
   anchorBrand: string,
+  targetBrand: string,
 ): Pillar {
   const { riseMismatchWarning, contractGate, contractGateReason, fabricGateReason, coldStart, fitDeltaSign } = output
 
   const triggered = riseMismatchWarning || contractGate
   const resolvedStatus: PillarStatus = triggered ? 'advisory' : 'verified'
   const status: PillarStatus = verdictState === 'estimate' ? 'estimate' : resolvedStatus
+
+  const isSameBrand = anchorBrand.toLowerCase() === targetBrand.toLowerCase()
+  const brandRef = isSameBrand ? 'your anchor' : anchorBrand
 
   // State 9 — range → precision HARD_STOP: sizing systems incompatible (purple)
   if (contractGateReason === 'CONTRACT_RANGE_TO_PRECISION') {
@@ -140,7 +149,7 @@ function getWaistHipPillar(
       name: 'Waist and Hip Fit',
       status,
       headline: 'Waist fit uncertain',
-      detail: `Because the fabric is very different from ${anchorBrand}, we can't predict how the waist and hips will actually feel. Brand sizing differences may also apply — check the size guide before ordering.`,
+      detail: `Because the fabric is very different from ${brandRef}, we can't predict how the waist and hips will actually feel. Brand sizing differences may also apply — check the size guide before ordering.`,
     }
   }
 
@@ -163,8 +172,8 @@ function getWaistHipPillar(
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
       status,
-      headline: `Different rise than ${anchorBrand}`,
-      detail: `The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than ${anchorBrand}, so the rise and hip feel may vary. Check the return policy before ordering.`,
+      headline: `Different rise than ${brandRef}`,
+      detail: `The recommended size accounts for how this brand cuts — the waist estimate is still valid. This style sits differently than ${brandRef}, so the rise and hip feel may vary. Check the return policy before ordering.`,
     }
   }
 
@@ -177,8 +186,8 @@ function getWaistHipPillar(
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
       status,
-      headline: `Runs smaller than ${anchorBrand}`,
-      detail: `This brand cuts slightly smaller than ${anchorBrand}. We've accounted for that in the recommended size.`,
+      headline: `Runs smaller than ${brandRef}`,
+      detail: `This brand cuts slightly smaller than ${brandRef}. We've accounted for that in the recommended size.`,
     }
   }
 
@@ -188,8 +197,8 @@ function getWaistHipPillar(
       id: 'waist-hip',
       name: 'Waist and Hip Fit',
       status,
-      headline: `Runs larger than ${anchorBrand}`,
-      detail: `This brand cuts slightly larger than ${anchorBrand}. We've accounted for that in the recommended size.`,
+      headline: `Runs larger than ${brandRef}`,
+      detail: `This brand cuts slightly larger than ${brandRef}. We've accounted for that in the recommended size.`,
     }
   }
 
@@ -198,12 +207,12 @@ function getWaistHipPillar(
     id: 'waist-hip',
     name: 'Waist and Hip Fit',
     status,
-    headline: `Fits like ${anchorBrand}`,
-    detail: `This sits and fits the same way as ${anchorBrand}. You should be able to order your usual size with confidence.`,
+    headline: `Fits like ${brandRef}`,
+    detail: `This sits and fits the same way as ${brandRef}. You should be able to order your usual size with confidence.`,
   }
 }
 
-function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState, anchorBrand: string): Pillar {
+function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState, anchorBrand: string, targetBrand: string): Pillar {
   const { recoveryWarning, targetRecoveryClass } = output
 
   const resolvedStatus: PillarStatus =
@@ -211,6 +220,10 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
       ? 'advisory'
       : 'verified'
   const status: PillarStatus = verdictState === 'estimate' ? 'estimate' : resolvedStatus
+
+  const isSameBrand = anchorBrand.toLowerCase() === targetBrand.toLowerCase()
+  const brandRef = isSameBrand ? 'your anchor' : anchorBrand
+  const brandRefTitle = isSameBrand ? 'Your anchor' : anchorBrand
 
   // State 1a — rigid target, no recovery data: 100% cotton specific behavior
   if (targetRecoveryClass === 'unknown' && output.targetFabricClass === 'rigid') {
@@ -240,8 +253,8 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `May loosen more than ${anchorBrand}`,
-      detail: `${anchorBrand} has recovery fiber that helps it bounce back. This item doesn't — it may relax and loosen slightly over time.`,
+      headline: `May loosen more than ${brandRef}`,
+      detail: `${brandRefTitle} has recovery fiber that helps it bounce back. This item doesn't — it may relax and loosen slightly over time.`,
     }
   }
 
@@ -251,8 +264,8 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `Holds shape better than ${anchorBrand}`,
-      detail: `This item has more recovery fiber than ${anchorBrand}. It should bounce back more reliably and hold its shape through wear.`,
+      headline: `Holds shape better than ${brandRef}`,
+      detail: `This item has more recovery fiber than ${brandRef}. It should bounce back more reliably and hold its shape through wear.`,
     }
   }
 
@@ -262,7 +275,7 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `Matches ${anchorBrand}`,
+      headline: `Matches ${brandRef}`,
       detail: `Both items have no recovery fiber. Expect a similar break-in pattern — the fabric may relax slightly with wear over time.`,
     }
   }
@@ -273,7 +286,7 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
       id: 'shape',
       name: 'Shape Retention',
       status,
-      headline: `Matches ${anchorBrand}`,
+      headline: `Matches ${brandRef}`,
       detail: `Both items have a similar fiber profile. Shape retention should be consistent — expect the fit to hold through the day.`,
     }
   }
@@ -283,7 +296,7 @@ function getShapeRetentionPillar(output: AuditOutput, verdictState: VerdictState
     id: 'shape',
     name: 'Shape Retention',
     status,
-    headline: `Matches ${anchorBrand}`,
+    headline: `Matches ${brandRef}`,
     detail: `Both items have strong recovery fiber. The fit should snap back and hold its shape reliably through wear.`,
   }
 }
@@ -334,10 +347,15 @@ export default function VerdictOpenPage() {
     ? rawAnchorBrand.replace(/\b\w/g, c => c.toUpperCase())
     : 'item'
 
+  const rawTargetBrand = pageState?.targetBrand
+  const targetBrand = rawTargetBrand
+    ? rawTargetBrand.replace(/\b\w/g, c => c.toUpperCase())
+    : ''
+
   const pillars: Pillar[] = [
-    getFabricBehaviorPillar(auditOutput, verdictState, anchorBrand),
-    getWaistHipPillar(auditOutput, verdictState, anchorBrand),
-    getShapeRetentionPillar(auditOutput, verdictState, anchorBrand),
+    getFabricBehaviorPillar(auditOutput, verdictState, anchorBrand, targetBrand),
+    getWaistHipPillar(auditOutput, verdictState, anchorBrand, targetBrand),
+    getShapeRetentionPillar(auditOutput, verdictState, anchorBrand, targetBrand),
   ]
 
   const garmentName =
