@@ -37,7 +37,7 @@ function getFabricBehaviorPillar(
       name: 'Fabric Behavior',
       status,
       headline: `Very different fabric from ${anchorBrand}`,
-      detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+      detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip.`,
     }
   }
 
@@ -49,7 +49,7 @@ function getFabricBehaviorPillar(
         name: 'Fabric Behavior',
         status,
         headline: `Very different fabric from ${anchorBrand}`,
-        detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip. Check the brand's size guide before buying.`,
+        detail: `${anchorBrand} has ${anchorStretchDesc}. This item has none — it will feel noticeably more structured and may fit very differently through the waist and hip.`,
       }
     }
     return {
@@ -129,7 +129,7 @@ function getWaistHipPillar(
       name: 'Waist and Hip Fit',
       status,
       headline: "Can't confirm waist fit",
-      detail: "This item's sizing system doesn't translate cleanly to your numeric anchor size. We can't confidently resolve the waist and hip fit. Check the brand's measurement guide before buying.",
+      detail: "This item's sizing system doesn't translate cleanly to your numeric anchor size. We can't confidently resolve the waist and hip fit.",
     }
   }
 
@@ -140,7 +140,7 @@ function getWaistHipPillar(
       name: 'Waist and Hip Fit',
       status,
       headline: 'Waist fit uncertain',
-      detail: `Because the fabric is very different from ${anchorBrand}, we can't predict how the waist and hips will actually feel. Check the brand's size guide before ordering.`,
+      detail: `Because the fabric is very different from ${anchorBrand}, we can't predict how the waist and hips will actually feel. Brand sizing differences may also apply — check the size guide before ordering.`,
     }
   }
 
@@ -151,7 +151,7 @@ function getWaistHipPillar(
       name: 'Waist and Hip Fit',
       status,
       headline: 'New to our system',
-      detail: "We don't have enough data on how this brand fits yet. The waist and hip recommendation is a starting point — check the brand's size guide before ordering.",
+      detail: "We don't have enough data on how this brand fits yet. The waist and hip recommendation is a starting point.",
     }
   }
 
