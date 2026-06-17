@@ -195,7 +195,8 @@ naming the pillar where that information lives.
 | 1 | Size delta escalation (`size_up_2` or `size_down_2`) | `"A size difference this large is worth verifying — check the brand's size guide before buying."` | Waist and Hip Fit |
 | 2 | Fabric Hard Stop — `FABRIC_HIGH_STRETCH_TO_RIGID` | `"This item will likely feel much firmer and less stretchy than your reference item."` | Fabric Behavior |
 | 3 | Rise mismatch | `"This style sits differently than your usual preference, which may affect how the waist and hip feel."` | Waist and Hip Fit |
-| 4 | Fabric Soft Warning (`FABRIC_HIGH_STRETCH_TO_COMFORT`, `FABRIC_COMFORT_TO_RIGID`) | `fabricGateUserText` per gate reason | Fabric Behavior |
+| 4 | Fabric Soft Warning — `FABRIC_HIGH_STRETCH_TO_COMFORT` | `fabricGateUserText` per gate reason (retain distinct userText — do not replace with FABRIC_COMFORT_TO_RIGID string) | Fabric Behavior |
+| 4 | Fabric Soft Warning — `FABRIC_COMFORT_TO_RIGID` | `"This item has less stretch than your reference item and may feel slightly firmer."` | Fabric Behavior |
 | 4 | Fabric Soft Warning — `FABRIC_RIGID_TO_HIGH_STRETCH` | `"This item will likely feel softer and more forgiving than your current size."` | Fabric Behavior |
 | — | Nothing above active (includes: brand-offset-only adjustments, `FABRIC_RIGID_TO_COMFORT`, cold start alone, contract gates) | No banner | — |
 

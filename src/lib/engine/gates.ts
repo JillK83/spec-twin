@@ -73,7 +73,7 @@ export function evaluateFabricGate(
       type: 'SOFT_WARNING',
       outputState: 'fit_advisory',
       reasonCode: 'FABRIC_COMFORT_TO_RIGID',
-      userText: 'This item will likely feel much firmer and less stretchy than your reference item.',
+      userText: 'This item has less stretch than your reference item and may feel slightly firmer.',
       classesApart,
     }
   }
