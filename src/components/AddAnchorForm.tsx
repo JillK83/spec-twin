@@ -104,7 +104,7 @@ export function AddAnchorForm() {
       .from('user_anchors')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert({
-        brand_model: `${formData.brand.trim()} ${formData.modelName.trim()}`.trim(),
+        brand_model: `${normalizeBrandName(formData.brand)} ${formData.modelName.trim()}`.trim(),
         brand_name: normalizeBrandName(formData.brand),
         model_name: formData.modelName.trim() || null,
         category: formData.category,

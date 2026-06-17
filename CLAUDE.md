@@ -413,6 +413,8 @@ Five screens captured in order. Rise and Height are required and load-bearing. B
 
 **Anchor completeness / reduced-state UX:** Decide whether incomplete anchors (missing fabric composition, etc.) warrant a dedicated degraded card + "UPDATE ANCHOR" CTA, or whether existing unknown-state pillar logic (State 7, etc.) is sufficient. If the former, define what "incomplete" means (which fields, what threshold) before building. Currently no code path produces a degraded/reduced card — this would be new feature work, not a bug fix.
 
+**Layer 2 brand name fuzzy matching (post-MVP):** `brandOffset.ts` lookup currently uses exact LOWER() match. A Levenshtein distance check against known `brand_offsets` names would catch typos like "Madwell" → "Madewell" at query time even if bad data reached `user_anchors`. Implement after `normalizeBrandName` (Layer 1) is stable and after deploy. Do not implement on main before deploy.
+
 ### LM Bucket
 
 **LM-5 — Contract gate banner wiring:** `precision`↔`range` contract gates (`gates.ts`) already fire and produce `userText`, but are not wired into `advisoryBannerText` / the severity-tier system in `VerdictOpenPage.tsx`. Wire as an additional tier (display-only, no new engine logic) once Phase 2's Tier 1–4 wiring is stable.
