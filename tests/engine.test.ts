@@ -9,6 +9,7 @@ import {
   getFabricClass,
   getRecoveryClass,
   inseamToDescriptor,
+  normalizeBrandName,
 } from '../src/lib/engine/normalization'
 import { getBrandOffset } from '../src/lib/engine/brandOffset'
 import { calculateFitDelta, mapDeltaToSizeAdjustment } from '../src/lib/engine/fitDelta'
@@ -523,6 +524,42 @@ test('cold start with no other gates → fit_advisory (State 8 reachable)', () =
   assert.equal(result.outputState,     'fit_advisory')
   assert.equal(result.confidenceLevel, 'MEDIUM')
   assert.equal(result.coldStart,       true)
+})
+
+// ─── 7. Brand name normalization ──────────────────────────────────────────────
+
+console.log('\n── normalizeBrandName ───────────────────────────────────────────')
+
+test('normalizeBrandName("madewell") → "Madewell"', () => {
+  assert.equal(normalizeBrandName('madewell'), 'Madewell')
+})
+
+test('normalizeBrandName("MADEWELL") → "Madewell"', () => {
+  assert.equal(normalizeBrandName('MADEWELL'), 'Madewell')
+})
+
+test('normalizeBrandName("ag jeans") → "AG Jeans"', () => {
+  assert.equal(normalizeBrandName('ag jeans'), 'AG Jeans')
+})
+
+test("normalizeBrandName(\"levi'S\") → \"Levi's\"", () => {
+  assert.equal(normalizeBrandName("levi'S"), "Levi's")
+})
+
+test('normalizeBrandName("GAP") → "Gap"', () => {
+  assert.equal(normalizeBrandName('GAP'), 'Gap')
+})
+
+test('normalizeBrandName("abercrombie & fitch") → "Abercrombie & Fitch"', () => {
+  assert.equal(normalizeBrandName('abercrombie & fitch'), 'Abercrombie & Fitch')
+})
+
+test('normalizeBrandName("  zara  ") → "Zara" (trims whitespace)', () => {
+  assert.equal(normalizeBrandName('  zara  '), 'Zara')
+})
+
+test('normalizeBrandName("h&m") → "H&M"', () => {
+  assert.equal(normalizeBrandName('h&m'), 'H&M')
 })
 
 // ─── Summary ──────────────────────────────────────────────────────────────────

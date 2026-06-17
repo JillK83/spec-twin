@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { parseProductDetails } from '../lib/parser'
-import { getFabricClass, getRecoveryClass } from '../lib/engine/normalization'
+import { getFabricClass, getRecoveryClass, normalizeBrandName } from '../lib/engine/normalization'
 import { Input } from './ui/magic/Input'
 import { Label } from './ui/magic/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/magic/Select'
@@ -105,7 +105,7 @@ export function AddAnchorForm() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert({
         brand_model: `${formData.brand.trim()} ${formData.modelName.trim()}`.trim(),
-        brand_name: formData.brand,
+        brand_name: normalizeBrandName(formData.brand),
         model_name: formData.modelName.trim() || null,
         category: formData.category,
         size: formData.size.replace(/X/g, 'x'),
@@ -142,7 +142,7 @@ export function AddAnchorForm() {
       return
     }
 
-    toast.success(`Anchor Saved — ${[formData.brand, formData.modelName].filter(Boolean).join(' ')}`, {
+    toast.success(`Anchor Saved — ${[normalizeBrandName(formData.brand), formData.modelName].filter(Boolean).join(' ')}`, {
       style: {
         backgroundColor: 'var(--secondary)',
         color: 'var(--secondary-foreground)',

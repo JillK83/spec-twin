@@ -166,3 +166,35 @@ export function getRecoveryClass(polyPct: number | null): RecoveryClass {
   if (polyPct < 4) return 'moderate'
   return 'high'
 }
+
+// ─── Brand name normalization ─────────────────────────────────────────────────
+// Canonical casing for known all-caps and mixed-case brand abbreviations.
+// Rule order: trim → collapse spaces → per-token title case with exceptions.
+
+const KNOWN_BRAND_NAMES: { pattern: RegExp; canonical: string }[] = [
+  { pattern: /^ag$/i,      canonical: 'AG'     },
+  { pattern: /^h&m$/i,     canonical: 'H&M'    },
+  { pattern: /^apc$/i,     canonical: 'APC'    },
+  { pattern: /^nydj$/i,    canonical: 'NYDJ'   },
+  // Note: only matches "J.Crew" with literal dot — "J Crew"
+  // and "Jcrew" variants require a pre-split whole-string
+  // check (future improvement)
+  { pattern: /^j\.crew$/i, canonical: 'J.Crew' },
+]
+
+function titleCaseToken(token: string): string {
+  for (const { pattern, canonical } of KNOWN_BRAND_NAMES) {
+    if (pattern.test(token)) return canonical
+  }
+  // Capitalize first char, lowercase rest — handles apostrophe-S (e.g. "levi'S" → "Levi's")
+  return token.charAt(0).toUpperCase() + token.slice(1).toLowerCase()
+}
+
+export function normalizeBrandName(input: string): string {
+  return input
+    .trim()
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map(titleCaseToken)
+    .join(' ')
+}

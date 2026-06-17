@@ -15,6 +15,7 @@ import { Search, AlertTriangle } from 'lucide-react'
 import type { Rise } from '../lib/engine/types'
 import type { UserAnchor } from '../lib/database.types'
 import { buildAnchorLabel, SILHOUETTE_LABELS } from '../lib/anchorLabel'
+import { normalizeBrandName } from '../lib/engine/normalization'
 
 export function AuditNewItemForm() {
   const navigate = useNavigate()
@@ -108,7 +109,7 @@ export function AuditNewItemForm() {
 
     auditPromiseRef.current = runAudit({
       anchorId: anchor.id,
-      targetBrand: formData.brand.trim(),
+      targetBrand: normalizeBrandName(formData.brand),
       targetModel: formData.styleName.trim() || undefined,
       targetSize: formData.size.trim(),
       targetSilhouette: formData.silhouette,
@@ -162,7 +163,7 @@ export function AuditNewItemForm() {
     navigate('/verdict/open', {
       state: {
         auditOutput: result,
-        targetBrand: formData.brand.trim(),
+        targetBrand: normalizeBrandName(formData.brand),
         targetModel: formData.styleName.trim() || undefined,
         anchorLabel: anchor ? buildAnchorLabel(anchor) : 'Your anchor',
         anchorBrand: anchor?.brand_name ?? undefined,
